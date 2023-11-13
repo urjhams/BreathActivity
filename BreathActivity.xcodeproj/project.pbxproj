@@ -1,0 +1,667 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4F6DBBCF2B02EC9100E94332 /* PythonKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4F6DBBCE2B02EC9100E94332 /* PythonKit */; };
+		4FE0C3872B02A8EF00C82853 /* BreathActivityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */; };
+		4FE0C38B2B02A8F000C82853 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C38A2B02A8F000C82853 /* Assets.xcassets */; };
+		4FE0C38E2B02A8F000C82853 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C38D2B02A8F000C82853 /* Preview Assets.xcassets */; };
+		4FE0C3992B02A8F000C82853 /* BreathActivityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3982B02A8F000C82853 /* BreathActivityTests.swift */; };
+		4FE0C3A32B02A8F000C82853 /* BreathActivityUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3A22B02A8F000C82853 /* BreathActivityUITests.swift */; };
+		4FE0C3A52B02A8F000C82853 /* BreathActivityUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3A42B02A8F000C82853 /* BreathActivityUITestsLaunchTests.swift */; };
+		4FE0C3B52B02A9E300C82853 /* Views in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C3B12B02A9E300C82853 /* Views */; };
+		4FE0C3B62B02A9E300C82853 /* Python in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C3B22B02A9E300C82853 /* Python */; };
+		4FE0C3B72B02A9E300C82853 /* SupportingFiles in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C3B32B02A9E300C82853 /* SupportingFiles */; };
+		4FE0C3B82B02A9E300C82853 /* Essential in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C3B42B02A9E300C82853 /* Essential */; };
+		4FE0C3BE2B02AB6500C82853 /* BreathObsever in Frameworks */ = {isa = PBXBuildFile; productRef = 4FE0C3BD2B02AB6500C82853 /* BreathObsever */; };
+		4FE0C3C12B02ABA800C82853 /* CombineExt in Frameworks */ = {isa = PBXBuildFile; productRef = 4FE0C3C02B02ABA800C82853 /* CombineExt */; };
+		4FE0C3C52B02AF6D00C82853 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3C42B02AF6D00C82853 /* ContentView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4FE0C3952B02A8F000C82853 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4FE0C37B2B02A8EF00C82853 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4FE0C3822B02A8EF00C82853;
+			remoteInfo = BreathActivity;
+		};
+		4FE0C39F2B02A8F000C82853 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4FE0C37B2B02A8EF00C82853 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4FE0C3822B02A8EF00C82853;
+			remoteInfo = BreathActivity;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		4FE0C3832B02A8EF00C82853 /* BreathActivity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BreathActivity.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathActivityApp.swift; sourceTree = "<group>"; };
+		4FE0C38A2B02A8F000C82853 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		4FE0C38D2B02A8F000C82853 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		4FE0C38F2B02A8F000C82853 /* BreathActivity.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BreathActivity.entitlements; sourceTree = "<group>"; };
+		4FE0C3942B02A8F000C82853 /* BreathActivityTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BreathActivityTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4FE0C3982B02A8F000C82853 /* BreathActivityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathActivityTests.swift; sourceTree = "<group>"; };
+		4FE0C39E2B02A8F000C82853 /* BreathActivityUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BreathActivityUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4FE0C3A22B02A8F000C82853 /* BreathActivityUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathActivityUITests.swift; sourceTree = "<group>"; };
+		4FE0C3A42B02A8F000C82853 /* BreathActivityUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathActivityUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		4FE0C3B12B02A9E300C82853 /* Views */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Views; sourceTree = "<group>"; };
+		4FE0C3B22B02A9E300C82853 /* Python */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Python; sourceTree = "<group>"; };
+		4FE0C3B32B02A9E300C82853 /* SupportingFiles */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SupportingFiles; sourceTree = "<group>"; };
+		4FE0C3B42B02A9E300C82853 /* Essential */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Essential; sourceTree = "<group>"; };
+		4FE0C3C32B02AF4100C82853 /* BreathObsever */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = BreathObsever; path = ../BreathObsever; sourceTree = "<group>"; };
+		4FE0C3C42B02AF6D00C82853 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4FE0C3802B02A8EF00C82853 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4FE0C3C12B02ABA800C82853 /* CombineExt in Frameworks */,
+				4FE0C3BE2B02AB6500C82853 /* BreathObsever in Frameworks */,
+				4F6DBBCF2B02EC9100E94332 /* PythonKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4FE0C3912B02A8F000C82853 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4FE0C39B2B02A8F000C82853 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4FE0C37A2B02A8EF00C82853 = {
+			isa = PBXGroup;
+			children = (
+				4FE0C3C32B02AF4100C82853 /* BreathObsever */,
+				4FE0C3852B02A8EF00C82853 /* BreathActivity */,
+				4FE0C3972B02A8F000C82853 /* BreathActivityTests */,
+				4FE0C3A12B02A8F000C82853 /* BreathActivityUITests */,
+				4FE0C3842B02A8EF00C82853 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4FE0C3842B02A8EF00C82853 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4FE0C3832B02A8EF00C82853 /* BreathActivity.app */,
+				4FE0C3942B02A8F000C82853 /* BreathActivityTests.xctest */,
+				4FE0C39E2B02A8F000C82853 /* BreathActivityUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4FE0C3852B02A8EF00C82853 /* BreathActivity */ = {
+			isa = PBXGroup;
+			children = (
+				4FE0C3C42B02AF6D00C82853 /* ContentView.swift */,
+				4FE0C3B42B02A9E300C82853 /* Essential */,
+				4FE0C3B22B02A9E300C82853 /* Python */,
+				4FE0C3B32B02A9E300C82853 /* SupportingFiles */,
+				4FE0C3B12B02A9E300C82853 /* Views */,
+				4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */,
+				4FE0C38A2B02A8F000C82853 /* Assets.xcassets */,
+				4FE0C38F2B02A8F000C82853 /* BreathActivity.entitlements */,
+				4FE0C38C2B02A8F000C82853 /* Preview Content */,
+			);
+			path = BreathActivity;
+			sourceTree = "<group>";
+		};
+		4FE0C38C2B02A8F000C82853 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				4FE0C38D2B02A8F000C82853 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		4FE0C3972B02A8F000C82853 /* BreathActivityTests */ = {
+			isa = PBXGroup;
+			children = (
+				4FE0C3982B02A8F000C82853 /* BreathActivityTests.swift */,
+			);
+			path = BreathActivityTests;
+			sourceTree = "<group>";
+		};
+		4FE0C3A12B02A8F000C82853 /* BreathActivityUITests */ = {
+			isa = PBXGroup;
+			children = (
+				4FE0C3A22B02A8F000C82853 /* BreathActivityUITests.swift */,
+				4FE0C3A42B02A8F000C82853 /* BreathActivityUITestsLaunchTests.swift */,
+			);
+			path = BreathActivityUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4FE0C3822B02A8EF00C82853 /* BreathActivity */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4FE0C3A82B02A8F000C82853 /* Build configuration list for PBXNativeTarget "BreathActivity" */;
+			buildPhases = (
+				4FE0C37F2B02A8EF00C82853 /* Sources */,
+				4FE0C3802B02A8EF00C82853 /* Frameworks */,
+				4FE0C3812B02A8EF00C82853 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BreathActivity;
+			packageProductDependencies = (
+				4FE0C3BD2B02AB6500C82853 /* BreathObsever */,
+				4FE0C3C02B02ABA800C82853 /* CombineExt */,
+				4F6DBBCE2B02EC9100E94332 /* PythonKit */,
+			);
+			productName = BreathActivity;
+			productReference = 4FE0C3832B02A8EF00C82853 /* BreathActivity.app */;
+			productType = "com.apple.product-type.application";
+		};
+		4FE0C3932B02A8F000C82853 /* BreathActivityTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4FE0C3AB2B02A8F000C82853 /* Build configuration list for PBXNativeTarget "BreathActivityTests" */;
+			buildPhases = (
+				4FE0C3902B02A8F000C82853 /* Sources */,
+				4FE0C3912B02A8F000C82853 /* Frameworks */,
+				4FE0C3922B02A8F000C82853 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4FE0C3962B02A8F000C82853 /* PBXTargetDependency */,
+			);
+			name = BreathActivityTests;
+			productName = BreathActivityTests;
+			productReference = 4FE0C3942B02A8F000C82853 /* BreathActivityTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		4FE0C39D2B02A8F000C82853 /* BreathActivityUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4FE0C3AE2B02A8F000C82853 /* Build configuration list for PBXNativeTarget "BreathActivityUITests" */;
+			buildPhases = (
+				4FE0C39A2B02A8F000C82853 /* Sources */,
+				4FE0C39B2B02A8F000C82853 /* Frameworks */,
+				4FE0C39C2B02A8F000C82853 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4FE0C3A02B02A8F000C82853 /* PBXTargetDependency */,
+			);
+			name = BreathActivityUITests;
+			productName = BreathActivityUITests;
+			productReference = 4FE0C39E2B02A8F000C82853 /* BreathActivityUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4FE0C37B2B02A8EF00C82853 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					4FE0C3822B02A8EF00C82853 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					4FE0C3932B02A8F000C82853 = {
+						CreatedOnToolsVersion = 15.0;
+						TestTargetID = 4FE0C3822B02A8EF00C82853;
+					};
+					4FE0C39D2B02A8F000C82853 = {
+						CreatedOnToolsVersion = 15.0;
+						TestTargetID = 4FE0C3822B02A8EF00C82853;
+					};
+				};
+			};
+			buildConfigurationList = 4FE0C37E2B02A8EF00C82853 /* Build configuration list for PBXProject "BreathActivity" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 4FE0C37A2B02A8EF00C82853;
+			packageReferences = (
+				4FE0C3BC2B02AB6500C82853 /* XCRemoteSwiftPackageReference "BreathObsever" */,
+				4FE0C3BF2B02ABA800C82853 /* XCRemoteSwiftPackageReference "CombineExt" */,
+				4F6DBBCD2B02EC9100E94332 /* XCRemoteSwiftPackageReference "PythonKit" */,
+			);
+			productRefGroup = 4FE0C3842B02A8EF00C82853 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4FE0C3822B02A8EF00C82853 /* BreathActivity */,
+				4FE0C3932B02A8F000C82853 /* BreathActivityTests */,
+				4FE0C39D2B02A8F000C82853 /* BreathActivityUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4FE0C3812B02A8EF00C82853 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4FE0C3B62B02A9E300C82853 /* Python in Resources */,
+				4FE0C3B52B02A9E300C82853 /* Views in Resources */,
+				4FE0C38E2B02A8F000C82853 /* Preview Assets.xcassets in Resources */,
+				4FE0C3B82B02A9E300C82853 /* Essential in Resources */,
+				4FE0C3B72B02A9E300C82853 /* SupportingFiles in Resources */,
+				4FE0C38B2B02A8F000C82853 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4FE0C3922B02A8F000C82853 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4FE0C39C2B02A8F000C82853 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4FE0C37F2B02A8EF00C82853 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4FE0C3C52B02AF6D00C82853 /* ContentView.swift in Sources */,
+				4FE0C3872B02A8EF00C82853 /* BreathActivityApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4FE0C3902B02A8F000C82853 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4FE0C3992B02A8F000C82853 /* BreathActivityTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4FE0C39A2B02A8F000C82853 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4FE0C3A32B02A8F000C82853 /* BreathActivityUITests.swift in Sources */,
+				4FE0C3A52B02A8F000C82853 /* BreathActivityUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4FE0C3962B02A8F000C82853 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4FE0C3822B02A8EF00C82853 /* BreathActivity */;
+			targetProxy = 4FE0C3952B02A8F000C82853 /* PBXContainerItemProxy */;
+		};
+		4FE0C3A02B02A8F000C82853 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4FE0C3822B02A8EF00C82853 /* BreathActivity */;
+			targetProxy = 4FE0C39F2B02A8F000C82853 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		4FE0C3A62B02A8F000C82853 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		4FE0C3A72B02A8F000C82853 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		4FE0C3A92B02A8F000C82853 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BreathActivity/BreathActivity.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"BreathActivity/Preview Content\"";
+				DEVELOPMENT_TEAM = TX9R26AVUZ;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "To capture breathing.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.quan.thesis.BreathActivity;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		4FE0C3AA2B02A8F000C82853 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BreathActivity/BreathActivity.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"BreathActivity/Preview Content\"";
+				DEVELOPMENT_TEAM = TX9R26AVUZ;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "To capture breathing.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.quan.thesis.BreathActivity;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		4FE0C3AC2B02A8F000C82853 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TX9R26AVUZ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.quan.thesis.BreathActivityTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BreathActivity.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BreathActivity";
+			};
+			name = Debug;
+		};
+		4FE0C3AD2B02A8F000C82853 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TX9R26AVUZ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.quan.thesis.BreathActivityTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BreathActivity.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BreathActivity";
+			};
+			name = Release;
+		};
+		4FE0C3AF2B02A8F000C82853 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TX9R26AVUZ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.quan.thesis.BreathActivityUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = BreathActivity;
+			};
+			name = Debug;
+		};
+		4FE0C3B02B02A8F000C82853 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TX9R26AVUZ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.quan.thesis.BreathActivityUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = BreathActivity;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4FE0C37E2B02A8EF00C82853 /* Build configuration list for PBXProject "BreathActivity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4FE0C3A62B02A8F000C82853 /* Debug */,
+				4FE0C3A72B02A8F000C82853 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4FE0C3A82B02A8F000C82853 /* Build configuration list for PBXNativeTarget "BreathActivity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4FE0C3A92B02A8F000C82853 /* Debug */,
+				4FE0C3AA2B02A8F000C82853 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4FE0C3AB2B02A8F000C82853 /* Build configuration list for PBXNativeTarget "BreathActivityTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4FE0C3AC2B02A8F000C82853 /* Debug */,
+				4FE0C3AD2B02A8F000C82853 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4FE0C3AE2B02A8F000C82853 /* Build configuration list for PBXNativeTarget "BreathActivityUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4FE0C3AF2B02A8F000C82853 /* Debug */,
+				4FE0C3B02B02A8F000C82853 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4F6DBBCD2B02EC9100E94332 /* XCRemoteSwiftPackageReference "PythonKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:pvieito/PythonKit.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		4FE0C3BC2B02AB6500C82853 /* XCRemoteSwiftPackageReference "BreathObsever" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:urjhams/BreathObsever.git";
+			requirement = {
+				branch = feature/original;
+				kind = branch;
+			};
+		};
+		4FE0C3BF2B02ABA800C82853 /* XCRemoteSwiftPackageReference "CombineExt" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:CombineCommunity/CombineExt.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.8.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4F6DBBCE2B02EC9100E94332 /* PythonKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4F6DBBCD2B02EC9100E94332 /* XCRemoteSwiftPackageReference "PythonKit" */;
+			productName = PythonKit;
+		};
+		4FE0C3BD2B02AB6500C82853 /* BreathObsever */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4FE0C3BC2B02AB6500C82853 /* XCRemoteSwiftPackageReference "BreathObsever" */;
+			productName = BreathObsever;
+		};
+		4FE0C3C02B02ABA800C82853 /* CombineExt */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4FE0C3BF2B02ABA800C82853 /* XCRemoteSwiftPackageReference "CombineExt" */;
+			productName = CombineExt;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 4FE0C37B2B02A8EF00C82853 /* Project object */;
+}
