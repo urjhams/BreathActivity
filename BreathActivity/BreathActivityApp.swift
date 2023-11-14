@@ -11,7 +11,8 @@ import SwiftUI
 struct BreathActivityApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+          ContentView()
+            .frame(maxWidth: 800, maxHeight: 400)
         }
     }
 }

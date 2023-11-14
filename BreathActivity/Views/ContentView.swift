@@ -29,6 +29,18 @@ struct ContentView: View {
   
   var body: some View {
     VStack {
+      ScrollView {
+        HStack(spacing: 1) {
+          ForEach(amplitudes, id: \.self) { amplitude in
+            RoundedRectangle(cornerRadius: 2)
+              .frame(width: offSet, height: CGFloat(amplitude) * offSet)
+              .foregroundColor(.white)
+          }
+        }
+      }
+      .frame(height: 80 * offSet)
+      
+      Spacer()
       HStack {
         Button {
           if running {
@@ -52,14 +64,7 @@ struct ContentView: View {
             .foregroundColor(available ? .accentColor : .red)
         }
       }
-      HStack(spacing: 1) {
-        ForEach(amplitudes, id: \.self) { amplitude in
-          RoundedRectangle(cornerRadius: 2)
-            .frame(width: offSet, height: CGFloat(amplitude) * offSet)
-            .foregroundColor(.white)
-        }
-      }
-      .frame(height: 80 * offSet)
+      .padding()
     }
     // TODO: could we try to implement Tobii pro python sdk and combine the data with this?
     .onReceive(observer.amplitudeSubject) { value in
