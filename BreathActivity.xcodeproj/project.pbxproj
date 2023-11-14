@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4F5DAA8E2B03F5B000A64D25 /* LineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5DAA8D2B03F5B000A64D25 /* LineChartView.swift */; };
+		4F5DAA902B03F9DE00A64D25 /* ExperimentalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5DAA8F2B03F9DE00A64D25 /* ExperimentalView.swift */; };
 		4FE0C3872B02A8EF00C82853 /* BreathActivityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */; };
 		4FE0C38B2B02A8F000C82853 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C38A2B02A8F000C82853 /* Assets.xcassets */; };
 		4FE0C38E2B02A8F000C82853 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C38D2B02A8F000C82853 /* Preview Assets.xcassets */; };
@@ -40,7 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		4F5DAA8D2B03F5B000A64D25 /* LineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChartView.swift; sourceTree = "<group>"; };
+		4F5DAA8F2B03F9DE00A64D25 /* ExperimentalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentalView.swift; sourceTree = "<group>"; };
 		4FE0C3832B02A8EF00C82853 /* BreathActivity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BreathActivity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathActivityApp.swift; sourceTree = "<group>"; };
 		4FE0C38A2B02A8F000C82853 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -89,7 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				4FE0C3C42B02AF6D00C82853 /* ContentView.swift */,
-				4F5DAA8D2B03F5B000A64D25 /* LineChartView.swift */,
+				4F5DAA8F2B03F9DE00A64D25 /* ExperimentalView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -297,8 +297,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				4FE0C3C52B02AF6D00C82853 /* ContentView.swift in Sources */,
+				4F5DAA902B03F9DE00A64D25 /* ExperimentalView.swift in Sources */,
 				4FE0C3872B02A8EF00C82853 /* BreathActivityApp.swift in Sources */,
-				4F5DAA8E2B03F5B000A64D25 /* LineChartView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

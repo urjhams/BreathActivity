@@ -29,7 +29,7 @@ struct ContentView: View {
   
   var body: some View {
     VStack {
-      ScrollView {
+      ScrollView(.vertical) {
         HStack(spacing: 1) {
           ForEach(amplitudes, id: \.self) { amplitude in
             RoundedRectangle(cornerRadius: 2)
@@ -39,8 +39,11 @@ struct ContentView: View {
         }
       }
       .frame(height: 80 * offSet)
+      .scenePadding([.leading, .trailing])
+      .padding()
       
       Spacer()
+      
       HStack {
         Button {
           if running {
