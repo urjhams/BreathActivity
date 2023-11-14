@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4F6DBBCF2B02EC9100E94332 /* PythonKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4F6DBBCE2B02EC9100E94332 /* PythonKit */; };
 		4FE0C3872B02A8EF00C82853 /* BreathActivityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */; };
 		4FE0C38B2B02A8F000C82853 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C38A2B02A8F000C82853 /* Assets.xcassets */; };
 		4FE0C38E2B02A8F000C82853 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C38D2B02A8F000C82853 /* Preview Assets.xcassets */; };
@@ -66,7 +65,6 @@
 			files = (
 				4FE0C3C12B02ABA800C82853 /* CombineExt in Frameworks */,
 				4FE0C3BE2B02AB6500C82853 /* BreathObsever in Frameworks */,
-				4F6DBBCF2B02EC9100E94332 /* PythonKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -168,7 +166,6 @@
 			packageProductDependencies = (
 				4FE0C3BD2B02AB6500C82853 /* BreathObsever */,
 				4FE0C3C02B02ABA800C82853 /* CombineExt */,
-				4F6DBBCE2B02EC9100E94332 /* PythonKit */,
 			);
 			productName = BreathActivity;
 			productReference = 4FE0C3832B02A8EF00C82853 /* BreathActivity.app */;
@@ -245,7 +242,6 @@
 			packageReferences = (
 				4FE0C3BC2B02AB6500C82853 /* XCRemoteSwiftPackageReference "BreathObsever" */,
 				4FE0C3BF2B02ABA800C82853 /* XCRemoteSwiftPackageReference "CombineExt" */,
-				4F6DBBCD2B02EC9100E94332 /* XCRemoteSwiftPackageReference "PythonKit" */,
 			);
 			productRefGroup = 4FE0C3842B02A8EF00C82853 /* Products */;
 			projectDirPath = "";
@@ -622,14 +618,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		4F6DBBCD2B02EC9100E94332 /* XCRemoteSwiftPackageReference "PythonKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:pvieito/PythonKit.git";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
 		4FE0C3BC2B02AB6500C82853 /* XCRemoteSwiftPackageReference "BreathObsever" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:urjhams/BreathObsever.git";
@@ -649,11 +637,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		4F6DBBCE2B02EC9100E94332 /* PythonKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 4F6DBBCD2B02EC9100E94332 /* XCRemoteSwiftPackageReference "PythonKit" */;
-			productName = PythonKit;
-		};
 		4FE0C3BD2B02AB6500C82853 /* BreathObsever */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4FE0C3BC2B02AB6500C82853 /* XCRemoteSwiftPackageReference "BreathObsever" */;

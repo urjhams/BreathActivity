@@ -1,5 +1,13 @@
 import time
 import os
+import tobii_research as tobii
+
+#try to get the eye tracker (at [0])
+eyetrackers = tobii.find_all_eyetrackers()
+
+os.system(f'echo {len(eyetrackers)}')
+
+eyetracker = eyetrackers[0]
 
 a = 0
 

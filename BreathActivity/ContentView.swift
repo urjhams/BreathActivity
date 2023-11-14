@@ -75,8 +75,12 @@ struct ContentView: View {
       else {
         return
       }
-      process.launchPath = "/usr/local/bin/python3"
-      process.arguments = [scriptPath]
+      // because the python script will need to run as x86_64 architechture
+      // we need a bit config for the command
+      let python = "/usr/local/bin/python3"
+      let command = "arch -x86_64 \(python) \(scriptPath)"
+      process.arguments = ["-c", command]
+      process.executableURL = URL(fileURLWithPath: "/bin/zsh")
       
       let pipe = Pipe()
       process.standardOutput = pipe
