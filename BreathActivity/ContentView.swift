@@ -21,6 +21,8 @@ struct ContentView: View {
   private let offSet: CGFloat = 3
   
   @State var available = true
+  
+  @State var timer: AnyCancellable?
     
   // breath observer
   let observer = BreathObsever()
@@ -66,12 +68,53 @@ struct ContentView: View {
       amplitudes.append(value * 1000)
     }
     .onAppear {
-      print(Python.versionInfo.description)
-      let sys = Python.import("sys")
-      let scriptPath = Bundle.main.bundlePath + "/Contents/Resources/Python/"
-      sys.path.append(scriptPath)
-      let script = Python.import("script")
-      script.test()
+//      print(Python.versionInfo.description)
+//      let sys = Python.import("sys")
+//      let scriptPath = Bundle.main.bundlePath + "/Contents/Resources/Python/"
+//      sys.path.append(scriptPath)
+//      let script = Python.import("script")
+//      timer = Timer.publish(every: 1, on: .main, in: .common)
+//        .autoconnect()
+//        .sink(receiveValue: { _ in
+//          let response = script.test()
+//          print(String(response) ?? "")
+//        })
+      
+      let process = Process()
+      guard 
+        let scriptPath = Bundle.main.path(forResource: "Python/script", ofType: "py")
+      else {
+        return
+      }
+      process.launchPath = "/usr/local/bin/"
+      process.arguments = ["python3", scriptPath]
+      
+      let pipe = Pipe()
+      process.standardOutput = pipe
+      do {
+        try process.run()
+      } catch {
+        print(error.localizedDescription)
+      }
+      
+//      let fileHandle = pipe.fileHandleForReading
+//      fileHandle.waitForDataInBackgroundAndNotify()
+//      
+//      var output = Data()
+//      
+//      NotificationCenter.default.addObserver(
+//        forName: .NSFileHandleDataAvailable,
+//        object: fileHandle,
+//        queue: nil
+//      ) { _ in
+//        let data = fileHandle.availableData
+//        output.append(data)
+//        fileHandle.waitForDataInBackgroundAndNotify()
+//        
+//        if let result = String(data: output, encoding: .utf8) {
+//          print("output from python script: \(result)")
+//        }
+//      }
     }
     .padding()
   }
