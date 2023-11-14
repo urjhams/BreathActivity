@@ -66,7 +66,12 @@ struct ContentView: View {
       amplitudes.append(value * 1000)
     }
     .onAppear {
-//      print(Python.versionInfo.description)
+      print(Python.versionInfo.description)
+      let sys = Python.import("sys")
+      let scriptPath = Bundle.main.bundlePath + "/Contents/Resources/Python/"
+      sys.path.append(scriptPath)
+      let script = Python.import("script")
+      script.test()
     }
     .padding()
   }
