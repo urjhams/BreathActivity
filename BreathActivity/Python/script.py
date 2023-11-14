@@ -7,7 +7,7 @@ eyetrackers = tobii.find_all_eyetrackers()
 
 os.system(f'echo {len(eyetrackers)}')
 
-eyetracker = eyetrackers[0]
+#eyetracker = eyetrackers[0]
 
 a = 0
 

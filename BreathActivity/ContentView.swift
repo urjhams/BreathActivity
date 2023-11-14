@@ -69,6 +69,10 @@ struct ContentView: View {
     }
     .onAppear {
       
+      /* Bash command:
+        arch -x86_64 /usr/local/homebrew/bin/python3.10 /Users/quandinh/Documents/GitHub/BreathActivity/BreathActivity/Python/script.py
+      */
+      
       let process = Process()
       guard 
         let scriptPath = Bundle.main.path(forResource: "Python/script", ofType: "py")
@@ -77,17 +81,24 @@ struct ContentView: View {
       }
       // because the python script will need to run as x86_64 architechture
       // we need a bit config for the command
-      let python = "/usr/local/bin/python3"
+      
+      // mac M1 default python: "/usr/local/bin/python3"
+      let python = "/usr/local/homebrew/bin/python3.10"
+      
       let command = "arch -x86_64 \(python) \(scriptPath)"
+      
+      // progress configuration
       process.arguments = ["-c", command]
       process.executableURL = URL(fileURLWithPath: "/bin/zsh")
       
+      // install pipline for data output comunication
       let pipe = Pipe()
       process.standardOutput = pipe
       
       let fileHandle = pipe.fileHandleForReading
       fileHandle.waitForDataInBackgroundAndNotify()
-                  
+      
+      // Notificaiton center observer for the data output
       NotificationCenter.default.addObserver(
         forName: .NSFileHandleDataAvailable,
         object: fileHandle,
