@@ -82,7 +82,8 @@ struct ContentView: View {
       // because the python script will need to run as x86_64 architechture
       // we need a bit config for the command
       
-      // mac M1 default python: "/usr/local/bin/python3"
+      // mac M1 default python (installed by homebrew): "/usr/local/bin/python3"
+      // this is the python we installed via x86_64 context
       let python = "/usr/local/homebrew/bin/python3.10"
       
       let command = "arch -x86_64 \(python) \(scriptPath)"
