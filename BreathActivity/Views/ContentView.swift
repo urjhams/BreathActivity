@@ -21,9 +21,7 @@ struct ContentView: View {
   private let offSet: CGFloat = 3
   
   @State var available = true
-  
-  @State var timer: AnyCancellable?
-    
+      
   // breath observer
   let observer = BreathObsever()
   
