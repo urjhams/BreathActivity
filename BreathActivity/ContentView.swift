@@ -91,8 +91,10 @@ struct ContentView: View {
       ) { _ in
         let data = fileHandle.availableData
         if data.count > 0 {
-          if let str = String(data: data, encoding: .utf8),
-              let double = Double(str.filter { !"\n".contains($0) } ) {
+          // we expect the echo command will show something like '{value}\n'
+          // so we need to remove the newLine by dropLast
+          if let echoWithoutNewLine = String(data: data, encoding: .utf8)?.dropLast(),
+             let double = Double(String(echoWithoutNewLine)) {
             print(double)
           }
           fileHandle.waitForDataInBackgroundAndNotify()
