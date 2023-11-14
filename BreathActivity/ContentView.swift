@@ -70,7 +70,7 @@ struct ContentView: View {
     .onAppear {
       
       /* Bash command:
-        arch -x86_64 /usr/local/homebrew/bin/python3.10 /Users/quandinh/Documents/GitHub/BreathActivity/BreathActivity/Python/script.py
+        arch -x86_64 /usr/local/homebrew/bin/python3.10 [script.py in the bundle]
       */
       
       let process = Process()
@@ -109,8 +109,8 @@ struct ContentView: View {
         if data.count > 0 {
           // we expect the echo command will show something like '{value}\n'
           // so we need to remove the newLine by dropLast
-          if let echoWithoutNewLine = String(data: data, encoding: .utf8)?.dropLast(),
-             let double = Double(String(echoWithoutNewLine)) {
+          if let output = String(data: data, encoding: .utf8)?.dropLast(),
+             let double = Double(String(output)) {
             print(double)
           }
           fileHandle.waitForDataInBackgroundAndNotify()
