@@ -83,7 +83,7 @@ struct ContentView: View {
       
       let fileHandle = pipe.fileHandleForReading
       fileHandle.waitForDataInBackgroundAndNotify()
-            
+                  
       NotificationCenter.default.addObserver(
         forName: .NSFileHandleDataAvailable,
         object: fileHandle,
@@ -91,8 +91,9 @@ struct ContentView: View {
       ) { _ in
         let data = fileHandle.availableData
         if data.count > 0 {
-          if let str = String(data: data, encoding: .utf8) {
-            print("got output: \(str)")
+          if let str = String(data: data, encoding: .utf8),
+              let double = Double(str.filter { !"\n".contains($0) } ) {
+            print(double)
           }
           fileHandle.waitForDataInBackgroundAndNotify()
         } else {
