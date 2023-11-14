@@ -13,6 +13,19 @@ import Combine
 struct BreathActivityApp: App {
   
   init() {
+    readEyeTrackingData()
+  }
+  
+  var body: some Scene {
+    WindowGroup {
+      ContentView()
+        .frame(maxWidth: 800, maxHeight: 400)
+    }
+  }
+}
+
+extension BreathActivityApp {
+  private func readEyeTrackingData() {
     /* Bash command:
      arch -x86_64 /usr/local/homebrew/bin/python3.10 [script.py in the bundle]
      */
@@ -68,13 +81,6 @@ struct BreathActivityApp: App {
     } catch {
       print(error.localizedDescription)
       return
-    }
-  }
-  
-  var body: some Scene {
-    WindowGroup {
-      ContentView()
-        .frame(maxWidth: 800, maxHeight: 400)
     }
   }
 }
