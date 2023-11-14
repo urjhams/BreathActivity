@@ -68,17 +68,6 @@ struct ContentView: View {
       amplitudes.append(value * 1000)
     }
     .onAppear {
-//      print(Python.versionInfo.description)
-//      let sys = Python.import("sys")
-//      let scriptPath = Bundle.main.bundlePath + "/Contents/Resources/Python/"
-//      sys.path.append(scriptPath)
-//      let script = Python.import("script")
-//      timer = Timer.publish(every: 1, on: .main, in: .common)
-//        .autoconnect()
-//        .sink(receiveValue: { _ in
-//          let response = script.test()
-//          print(String(response) ?? "")
-//        })
       
       let process = Process()
       guard 
@@ -86,35 +75,37 @@ struct ContentView: View {
       else {
         return
       }
-      process.launchPath = "/usr/local/bin/"
-      process.arguments = ["python3", scriptPath]
+      process.launchPath = "/usr/local/bin/python3"
+      process.arguments = [scriptPath]
       
       let pipe = Pipe()
       process.standardOutput = pipe
+      
+      let fileHandle = pipe.fileHandleForReading
+      fileHandle.waitForDataInBackgroundAndNotify()
+            
+      NotificationCenter.default.addObserver(
+        forName: .NSFileHandleDataAvailable,
+        object: fileHandle,
+        queue: nil
+      ) { _ in
+        let data = fileHandle.availableData
+        if data.count > 0 {
+          if let str = String(data: data, encoding: .utf8) {
+            print("got output: \(str)")
+          }
+          fileHandle.waitForDataInBackgroundAndNotify()
+        } else {
+          print("fail")
+        }
+      }
+      
       do {
         try process.run()
       } catch {
         print(error.localizedDescription)
+        return
       }
-      
-//      let fileHandle = pipe.fileHandleForReading
-//      fileHandle.waitForDataInBackgroundAndNotify()
-//      
-//      var output = Data()
-//      
-//      NotificationCenter.default.addObserver(
-//        forName: .NSFileHandleDataAvailable,
-//        object: fileHandle,
-//        queue: nil
-//      ) { _ in
-//        let data = fileHandle.availableData
-//        output.append(data)
-//        fileHandle.waitForDataInBackgroundAndNotify()
-//        
-//        if let result = String(data: output, encoding: .utf8) {
-//          print("output from python script: \(result)")
-//        }
-//      }
     }
     .padding()
   }
