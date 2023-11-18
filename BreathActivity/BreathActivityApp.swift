@@ -66,13 +66,17 @@ extension BreathActivityApp {
       if data.count > 0 {
         // we expect the echo command will show something like '{value}\n'
         // so we need to remove the newLine by dropLast
-        if let output = String(data: data, encoding: .utf8)?.dropLast(),
-           let double = Double(String(output)) {
-          print(double)
+        if let output = String(data: data, encoding: .utf8)?.dropLast() {
+          if let double = Double(String(output)) {
+            print("output data: \(double)")
+          } else {
+            print(output)
+          }
+          
         }
         fileHandle.waitForDataInBackgroundAndNotify()
       } else {
-        print("fail")
+        // terminated state or fail state
       }
     }
     
