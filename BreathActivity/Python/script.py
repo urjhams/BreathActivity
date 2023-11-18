@@ -7,7 +7,7 @@ import atexit
 #try to get the eye tracker (at [0])
 eyetrackers = tobii.find_all_eyetrackers()
 
-os.system(f'echo " eye tracker connected: {len(eyetrackers)}"')
+os.system(f'echo "Eye tracker connected: {len(eyetrackers)}"')
 
 # this project just get the first eye tracker that it found.
 # (actually we just have one eye tracker stick to the mac anyway)

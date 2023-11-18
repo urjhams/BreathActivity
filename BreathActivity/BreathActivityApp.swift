@@ -12,6 +12,8 @@ import Combine
 @main
 struct BreathActivityApp: App {
   
+  var avgPupilDiameter = PassthroughSubject<Float, Never>()
+  
   init() {
     readEyeTrackingData()
   }
@@ -28,7 +30,7 @@ extension BreathActivityApp {
   private func readEyeTrackingData() {
     /* Bash command:
      arch -x86_64 /usr/local/homebrew/bin/python3.10 [script.py in the bundle]
-     */
+    */
     
     let process = Process()
     guard
@@ -67,9 +69,8 @@ extension BreathActivityApp {
         // we expect the echo command will show something like '{value}\n'
         // so we need to remove the newLine by dropLast
         if let output = String(data: data, encoding: .utf8)?.dropLast() {
-          if let double = Double(String(output)) {
-            // TODO: assign this output to a PassthroughSubject
-            print("output data: \(double)")
+          if let float = Float(String(output)) {
+            avgPupilDiameter.send(float)
           } else {
             print(output)
           }
