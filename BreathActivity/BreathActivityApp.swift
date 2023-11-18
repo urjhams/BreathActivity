@@ -15,7 +15,10 @@ struct BreathActivityApp: App {
   /// Store the average value of Pupil diameters (left and right eye)
   var avgPupilDiameter = PassthroughSubject<Float, Never>()
   
+  let process = Process()
+  
   init() {
+    setupProcess()
     readEyeTrackingData()
   }
   
@@ -28,12 +31,12 @@ struct BreathActivityApp: App {
 }
 
 extension BreathActivityApp {
-  private func readEyeTrackingData() {
+  // TODO: Move this process into seperate files or seperate object
+  private func setupProcess() {
     /* Bash command:
      arch -x86_64 /usr/local/homebrew/bin/python3.10 [script.py in the bundle]
-    */
+     */
     
-    let process = Process()
     guard
       let scriptPath = Bundle.main.path(forResource: "Python/script", ofType: "py")
     else {
@@ -51,6 +54,9 @@ extension BreathActivityApp {
     // progress configuration
     process.arguments = ["-c", command]
     process.executableURL = URL(fileURLWithPath: "/bin/zsh")
+  }
+  
+  private func readEyeTrackingData() {
     
     // install pipline for data output comunication
     let pipe = Pipe()
@@ -89,5 +95,9 @@ extension BreathActivityApp {
       print(error.localizedDescription)
       return
     }
+  }
+  
+  func stopReadEyeTrackingData() {
+    process.terminate()
   }
 }
