@@ -19,6 +19,8 @@ struct ContentView: View {
   private let offSet: CGFloat = 3
   
   @State var available = true
+  
+  var avgPupilDiameter: PassthroughSubject<Float, Never>
       
   // breath observer
   let observer = BreathObsever()
@@ -65,11 +67,23 @@ struct ContentView: View {
       }
       .padding()
     }
-    // TODO: could we try to implement Tobii pro python sdk and combine the data with this?
-    .onReceive(observer.amplitudeSubject) { value in
-      // scale up with 1000 because the data is something like 0,007. 
+    .onReceive(
+      observer.amplitudeSubject.withLatestFrom(
+        avgPupilDiameter,
+        resultSelector: {
+          ($0, $1)
+        }
+      )
+    ) { (amplitude, pupilDiameter) in
+      
+      // scale up with 1000 because the data is something like 0,007.
       // So we would like it to start from 1 to around 80
-      amplitudes.append(value * 1000)
+      // add amplutudes value to draw
+      amplitudes.append(amplitude * 1000)
+      
+      Task { @MainActor in
+        print("\(amplitude) - \(pupilDiameter)")
+      }
     }
     .padding()
   }
@@ -77,6 +91,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
-    ContentView()
+    ContentView(avgPupilDiameter: PassthroughSubject<Float, Never>())
   }
 }

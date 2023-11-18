@@ -12,6 +12,7 @@ import Combine
 @main
 struct BreathActivityApp: App {
   
+  /// Store the average value of Pupil diameters (left and right eye)
   var avgPupilDiameter = PassthroughSubject<Float, Never>()
   
   init() {
@@ -20,7 +21,7 @@ struct BreathActivityApp: App {
   
   var body: some Scene {
     WindowGroup {
-      ContentView()
+      ContentView(avgPupilDiameter: avgPupilDiameter)
         .frame(maxWidth: 800, maxHeight: 400)
     }
   }
