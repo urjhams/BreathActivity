@@ -68,15 +68,16 @@ extension BreathActivityApp {
         // so we need to remove the newLine by dropLast
         if let output = String(data: data, encoding: .utf8)?.dropLast() {
           if let double = Double(String(output)) {
+            // TODO: assign this output to a PassthroughSubject
             print("output data: \(double)")
           } else {
             print(output)
           }
-          
         }
         fileHandle.waitForDataInBackgroundAndNotify()
       } else {
         // terminated state or fail state
+        print("terminated state")
       }
     }
     

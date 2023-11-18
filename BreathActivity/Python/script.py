@@ -58,7 +58,9 @@ atexit.register(exit_handler)
 
 while True:
   leftDiameter = gazeData.get('left_pupil_diameter')
-  if gazeData != None and not math.isnan(leftDiameter):
-    command = f'echo {leftDiameter}'
+  rightDiameter = gazeData.get('right_pupil_diameter')
+  if gazeData != None and not math.isnan(leftDiameter) and not math.isnan(rightDiameter):
+    average = (leftDiameter + rightDiameter) / 2
+    command = f'echo {average}'
     os.system(command)
 
