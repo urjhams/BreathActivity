@@ -20,10 +20,10 @@ struct ContentView: View {
   
   @State var available = true
   
-  var avgPupilDiameter: PassthroughSubject<Float, Never>
+  @EnvironmentObject var tobii: TobiiTracker
       
   // breath observer
-  let observer = BreathObsever()
+  @EnvironmentObject var observer: BreathObsever
   
   var body: some View {
     VStack {
@@ -46,12 +46,14 @@ struct ContentView: View {
         Button {
           if running {
             // stop process
+            tobii.stopReadPupilDiameter()
             observer.stopAnalyzing()
             running = false
           } else {
             // start process
             do {
               try observer.startAnalyzing()
+              tobii.startReadPupilDiameter()
               amplitudes = []
               running = true
               available = true
@@ -69,13 +71,13 @@ struct ContentView: View {
     }
     .onReceive(
       observer.amplitudeSubject.withLatestFrom(
-        avgPupilDiameter,
+        tobii.avgPupilDiameter,
         resultSelector: {
           ($0, $1)
         }
       )
     ) { (amplitude, pupilDiameter) in
-      
+      // TODO: test this when connect to tobii, otherwise this closure will never be executed
       // scale up with 1000 because the data is something like 0,007.
       // So we would like it to start from 1 to around 80
       // add amplutudes value to draw
@@ -85,12 +87,17 @@ struct ContentView: View {
         print("\(amplitude) - \(pupilDiameter)")
       }
     }
+//    .onReceive(observer.amplitudeSubject) { value in
+//      // scale up with 1000 because the data is something like 0,007.
+//      // So we would like it to start from 1 to around 80
+//      amplitudes.append(value * 1000)
+//    }
     .padding()
   }
 }
 
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
-    ContentView(avgPupilDiameter: PassthroughSubject<Float, Never>())
+    ContentView()
   }
 }

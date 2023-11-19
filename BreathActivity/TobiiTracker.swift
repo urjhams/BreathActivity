@@ -1,6 +1,7 @@
 import Combine
+import Foundation
 
-public class TobiiTracker: NSObject, ObservableObject {
+public class TobiiTracker: ObservableObject {
   /// Store the average value of Pupil diameters (left and right eye)
   public var avgPupilDiameter = PassthroughSubject<Float, Never>()
   
@@ -60,14 +61,14 @@ extension TobiiTracker {
       forName: .NSFileHandleDataAvailable,
       object: fileHandle,
       queue: nil
-    ) { _ in
+    ) { [weak self] _ in
       let data = fileHandle.availableData
       if data.count > 0 {
         // we expect the echo command will show something like '{value}\n'
         // so we need to remove the newLine by dropLast
         if let output = String(data: data, encoding: .utf8)?.dropLast() {
           if let float = Float(String(output)) {
-            avgPupilDiameter.send(float)
+            self?.avgPupilDiameter.send(float)
           } else {
             print(output)
           }
