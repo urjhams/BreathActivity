@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4F11AAD52B0984F700C4F210 /* TobiiTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */; };
+		4F11AAD92B09939D00C4F210 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F11AAD82B09939D00C4F210 /* Extensions.swift */; };
 		4F5DAA902B03F9DE00A64D25 /* ExperimentalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5DAA8F2B03F9DE00A64D25 /* ExperimentalView.swift */; };
 		4FE0C3872B02A8EF00C82853 /* BreathActivityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */; };
 		4FE0C38B2B02A8F000C82853 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C38A2B02A8F000C82853 /* Assets.xcassets */; };
@@ -17,7 +18,6 @@
 		4FE0C3A52B02A8F000C82853 /* BreathActivityUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3A42B02A8F000C82853 /* BreathActivityUITestsLaunchTests.swift */; };
 		4FE0C3B62B02A9E300C82853 /* Python in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C3B22B02A9E300C82853 /* Python */; };
 		4FE0C3B72B02A9E300C82853 /* SupportingFiles in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C3B32B02A9E300C82853 /* SupportingFiles */; };
-		4FE0C3B82B02A9E300C82853 /* Essential in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C3B42B02A9E300C82853 /* Essential */; };
 		4FE0C3BE2B02AB6500C82853 /* BreathObsever in Frameworks */ = {isa = PBXBuildFile; productRef = 4FE0C3BD2B02AB6500C82853 /* BreathObsever */; };
 		4FE0C3C12B02ABA800C82853 /* CombineExt in Frameworks */ = {isa = PBXBuildFile; productRef = 4FE0C3C02B02ABA800C82853 /* CombineExt */; };
 		4FE0C3C52B02AF6D00C82853 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3C42B02AF6D00C82853 /* ContentView.swift */; };
@@ -42,6 +42,7 @@
 
 /* Begin PBXFileReference section */
 		4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TobiiTracker.swift; sourceTree = "<group>"; };
+		4F11AAD82B09939D00C4F210 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		4F5DAA8F2B03F9DE00A64D25 /* ExperimentalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentalView.swift; sourceTree = "<group>"; };
 		4FE0C3832B02A8EF00C82853 /* BreathActivity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BreathActivity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathActivityApp.swift; sourceTree = "<group>"; };
@@ -55,7 +56,6 @@
 		4FE0C3A42B02A8F000C82853 /* BreathActivityUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathActivityUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		4FE0C3B22B02A9E300C82853 /* Python */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Python; sourceTree = "<group>"; };
 		4FE0C3B32B02A9E300C82853 /* SupportingFiles */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SupportingFiles; sourceTree = "<group>"; };
-		4FE0C3B42B02A9E300C82853 /* Essential */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Essential; sourceTree = "<group>"; };
 		4FE0C3C32B02AF4100C82853 /* BreathObsever */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = BreathObsever; path = ../BreathObsever; sourceTree = "<group>"; };
 		4FE0C3C42B02AF6D00C82853 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -87,6 +87,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4F11AADA2B0993B500C4F210 /* Essential */ = {
+			isa = PBXGroup;
+			children = (
+				4F11AAD82B09939D00C4F210 /* Extensions.swift */,
+				4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */,
+			);
+			path = Essential;
+			sourceTree = "<group>";
+		};
 		4F5DAA8C2B03F57100A64D25 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -120,9 +129,8 @@
 		4FE0C3852B02A8EF00C82853 /* BreathActivity */ = {
 			isa = PBXGroup;
 			children = (
-				4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */,
+				4F11AADA2B0993B500C4F210 /* Essential */,
 				4F5DAA8C2B03F57100A64D25 /* Views */,
-				4FE0C3B42B02A9E300C82853 /* Essential */,
 				4FE0C3B22B02A9E300C82853 /* Python */,
 				4FE0C3B32B02A9E300C82853 /* SupportingFiles */,
 				4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */,
@@ -272,7 +280,6 @@
 			files = (
 				4FE0C3B62B02A9E300C82853 /* Python in Resources */,
 				4FE0C38E2B02A8F000C82853 /* Preview Assets.xcassets in Resources */,
-				4FE0C3B82B02A9E300C82853 /* Essential in Resources */,
 				4FE0C3B72B02A9E300C82853 /* SupportingFiles in Resources */,
 				4FE0C38B2B02A8F000C82853 /* Assets.xcassets in Resources */,
 			);
@@ -299,6 +306,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4F11AAD92B09939D00C4F210 /* Extensions.swift in Sources */,
 				4F11AAD52B0984F700C4F210 /* TobiiTracker.swift in Sources */,
 				4FE0C3C52B02AF6D00C82853 /* ContentView.swift in Sources */,
 				4F5DAA902B03F9DE00A64D25 /* ExperimentalView.swift in Sources */,

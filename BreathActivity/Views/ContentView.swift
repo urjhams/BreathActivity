@@ -8,7 +8,6 @@
 import SwiftUI
 import BreathObsever
 import Combine
-import CombineExt
 
 struct ContentView: View {
   
@@ -70,14 +69,8 @@ struct ContentView: View {
       .padding()
     }
     .onReceive(
-      observer.amplitudeSubject.withLatestFrom(
-        tobii.avgPupilDiameter,
-        resultSelector: {
-          ($0, $1)
-        }
-      )
+      observer.amplitudeSubject.withLatestFrom(tobii.avgPupilDiameter)
     ) { (amplitude, pupilDiameter) in
-      // TODO: test this when connect to tobii, otherwise this closure will never be executed
       // scale up with 1000 because the data is something like 0,007.
       // So we would like it to start from 1 to around 80
       // add amplutudes value to draw
