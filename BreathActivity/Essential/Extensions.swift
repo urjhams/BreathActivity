@@ -21,10 +21,10 @@ extension Publisher {
     
     return map { (value: $0, token: UUID()) }
       .combineLatest(other)
-      .removeDuplicates(by: { (old, new) in
+      .removeDuplicates { (old, new) in
         let lhs = old.0, rhs = new.0
         return lhs.token == rhs.token
-      })
+      }
       .map { ($0.value, $1.value) }
       .compactMap { (left, right) in
         right.map { (left, $0) }
