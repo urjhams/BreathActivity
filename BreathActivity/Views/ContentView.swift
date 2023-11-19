@@ -19,9 +19,12 @@ struct ContentView: View {
   
   @State var available = true
   
+  // TODO: use an array to store, construct the respiratory rate from amplitudes
+  
+  /// Tobii tracker object that read the python script
   @EnvironmentObject var tobii: TobiiTracker
       
-  // breath observer
+  /// breath observer
   @EnvironmentObject var observer: BreathObsever
   
   var body: some View {
