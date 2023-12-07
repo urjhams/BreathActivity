@@ -70,13 +70,14 @@ extension TobiiTracker {
           if let float = Float(String(output)) {
             self?.avgPupilDiameter.send(float)
           } else {
+            print("the output is not the pupil diameter, probably the error")
             print(output)
           }
         }
         fileHandle.waitForDataInBackgroundAndNotify()
       } else {
         // terminated state or fail state
-        print("terminated state")
+        print("terminated state or fail state")
       }
     }
 
