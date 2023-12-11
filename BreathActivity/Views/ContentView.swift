@@ -27,7 +27,37 @@ struct ContentView: View {
   /// breath observer
   @EnvironmentObject var observer: BreathObsever
   
+  @State private var selectedView: Int? = 0
+  private let defaultText = "..."
+  
   var body: some View {
+    
+    NavigationSplitView {
+      
+      List(0..<2, selection: $selectedView) { value in
+        NavigationLink(value: value) {
+          switch value {
+          case 0:
+            Text("􀪷 Experiment")
+          case 1:
+            Text("􀍟 Setting")
+          default:
+            Text(defaultText)
+          }
+        }
+      }
+      .listStyle(.sidebar)
+    } detail: {
+      switch selectedView ?? 0 {
+      case 0:
+        StartView()
+      case 1:
+        SettingView()
+      default:
+        Text(defaultText)
+      }
+    }
+    /*
     VStack {
       amplitudeView
         .frame(height: 80 * offSet)
@@ -56,6 +86,7 @@ struct ContentView: View {
 //      amplitudes.append(value * 1000)
 //    }
     .padding()
+     */
   }
 }
 
