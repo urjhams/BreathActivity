@@ -39,36 +39,6 @@ struct ContentView: View {
         Text(defaultText)
       }
     }
-    /*
-    VStack {
-      amplitudeView
-        .frame(height: 80 * offSet)
-        .scenePadding([.leading, .trailing])
-        .padding()
-      
-      Spacer()
-      
-      startView
-    }
-    .onReceive(
-      observer.amplitudeSubject.withLatestFrom(tobii.avgPupilDiameter)
-    ) { (amplitude, pupilDiameter) in
-      // scale up with 1000 because the data is something like 0,007.
-      // So we would like it to start from 1 to around 80
-      // add amplutudes value to draw
-      amplitudes.append(amplitude * 1000)
-      
-      Task { @MainActor in
-        print("\(amplitude) - \(pupilDiameter)")
-      }
-    }
-//    .onReceive(observer.amplitudeSubject) { value in
-//      // scale up with 1000 because the data is something like 0,007.
-//      // So we would like it to start from 1 to around 80
-//      amplitudes.append(value * 1000)
-//    }
-    .padding()
-     */
   }
 }
 
