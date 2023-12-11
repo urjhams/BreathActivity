@@ -16,12 +16,31 @@ struct BreathActivityApp: App {
   @StateObject var tobii = TobiiTracker()
   @StateObject var breathObserver = BreathObsever()
   
+  @Environment(\.dismissWindow) var closeWindow
+  
   var body: some Scene {
     WindowGroup {
       ContentView()
+        .frame(minWidth: 500, minHeight: 300)
+        .onReceive(
+          NotificationCenter
+            .default
+            .publisher(for: NSApplication.willTerminateNotification)
+        ) { _ in
+          closeWindow(id: "Experiment")
+        }
+    }
+    WindowGroup(id: "Experiment") {
+      ExperimentalView()
         .environmentObject(tobii)
         .environmentObject(breathObserver)
-        .frame(maxWidth: 800, maxHeight: 400)
+        .onAppear {
+          Task { @MainActor in
+            if let window = NSApplication.shared.windows.last {
+              window.toggleFullScreen(nil)
+            }
+          }
+        }
     }
   }
 }

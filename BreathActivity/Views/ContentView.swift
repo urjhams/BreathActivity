@@ -6,26 +6,8 @@
 //
 
 import SwiftUI
-import BreathObsever
-import Combine
 
 struct ContentView: View {
-  
-  @State var running = false
-  
-  @State var amplitudes = [Float]()
-  
-  private let offSet: CGFloat = 3
-  
-  @State var available = true
-  
-  // TODO: use an array to store, construct the respiratory rate from amplitudes
-  
-  /// Tobii tracker object that read the python script
-  @EnvironmentObject var tobii: TobiiTracker
-      
-  /// breath observer
-  @EnvironmentObject var observer: BreathObsever
   
   @State private var selectedView: Int? = 0
   private let defaultText = "..."
@@ -90,49 +72,6 @@ struct ContentView: View {
   }
 }
 
-extension ContentView {
-  
-  private var amplitudeView: some View {
-    ScrollView(.vertical) {
-      HStack(spacing: 1) {
-        ForEach(amplitudes, id: \.self) { amplitude in
-          RoundedRectangle(cornerRadius: 2)
-            .frame(width: offSet, height: CGFloat(amplitude) * offSet)
-            .foregroundColor(.white)
-        }
-      }
-    }
-  }
-  
-  private var startView: some View {
-    HStack {
-      Button {
-        if running {
-          // stop process
-          tobii.stopReadPupilDiameter()
-          observer.stopAnalyzing()
-          running = false
-        } else {
-          // start process
-          do {
-            try observer.startAnalyzing()
-            tobii.startReadPupilDiameter()
-            amplitudes = []
-            running = true
-            available = true
-          } catch {
-            available = false
-          }
-        }
-      } label: {
-        Image(systemName: running ? "square.fill" : "play.fill")
-          .font(.largeTitle)
-          .foregroundColor(available ? .accentColor : .red)
-      }
-    }
-    .padding()
-  }
-}
 
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {

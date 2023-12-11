@@ -8,8 +8,17 @@
 import SwiftUI
 
 struct StartView: View {
+  @Environment(\.openWindow) var openWindow
     var body: some View {
-        Text("Start View")
+      VStack {
+        Button {
+          openWindow(id: "Experiment")
+        } label: {
+          Image(systemName: "play.fill")
+            .font(.largeTitle)
+            .foregroundColor(.accentColor)
+        }
+      }
     }
 }
 
