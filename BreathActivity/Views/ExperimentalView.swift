@@ -9,10 +9,6 @@ import SwiftUI
 import Combine
 import BreathObsever
 
-enum Mode {
-  
-}
-
 struct ExperimentalView: View {
     
   @FocusState private var focused: Bool
