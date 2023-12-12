@@ -27,6 +27,7 @@ struct BreathActivityApp: App {
             .default
             .publisher(for: NSApplication.willTerminateNotification)
         ) { _ in
+          // make sure close the experiment windows when the app is terminated
           closeWindow(id: "Experiment")
         }
     }
@@ -36,9 +37,8 @@ struct BreathActivityApp: App {
         .environmentObject(breathObserver)
         .onAppear {
           Task { @MainActor in
-            if let window = NSApplication.shared.windows.last {
-              window.toggleFullScreen(nil)
-            }
+            // open this view in full screen
+            NSApplication.shared.windows.last?.toggleFullScreen(nil)
           }
         }
     }
