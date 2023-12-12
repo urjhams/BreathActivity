@@ -38,7 +38,9 @@ struct BreathActivityApp: App {
         .onAppear {
           Task { @MainActor in
             // open this view in full screen
-            NSApplication.shared.windows.last?.toggleFullScreen(nil)
+            if let last = NSApplication.shared.windows.last {
+              last.toggleFullScreen(nil)
+            }
           }
         }
     }

@@ -1,9 +1,19 @@
 import Combine
 import Foundation
 
+public enum TobiiData {
+  case data(Float)
+  case message(String)
+  case errorMessage(TobiiError)
+}
+
+public enum TobiiError: Error {
+  case outputError(content: String)
+}
+
 public class TobiiTracker: ObservableObject {
   /// Store the average value of Pupil diameters (left and right eye)
-  public var avgPupilDiameter = PassthroughSubject<Float, Never>()
+  public var avgPupilDiameter = PassthroughSubject<TobiiData, Never>()
   
   var process = Process()
   
@@ -83,13 +93,15 @@ extension TobiiTracker {
         // so we need to remove the newLine by dropLast
         if let output = String(data: data, encoding: .utf8)?.dropLast() {
           if let float = Float(String(output)) {
-            self?.avgPupilDiameter.send(float)
+            self?.avgPupilDiameter.send(.data(float))
           } else {
             if String(output).contains("Eye tracker connected") {
-              print(output)
+              self?.avgPupilDiameter.send(.message(String(output)))
             } else {
-              print("the output is not the pupil diameter, probably the error")
-              print(output)
+              let error = TobiiError.outputError(content: String(output))
+              self?
+                .avgPupilDiameter
+                .send(.errorMessage(error))
               self?.stopReadPupilDiameter()
             }
           }

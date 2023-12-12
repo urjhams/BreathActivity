@@ -21,6 +21,8 @@ struct ExperimentalView: View {
   
   @State var available = true
   
+  @State var content: String = ""
+  
   // TODO: use an array to store, construct the respiratory rate from amplitudes
   
   /// Tobii tracker object that read the python script
@@ -31,6 +33,9 @@ struct ExperimentalView: View {
   
   var body: some View {
     VStack {
+      
+      Text(content)
+      
       amplitudeView
         .frame(height: 80 * offSet)
         .scenePadding([.leading, .trailing])
@@ -40,23 +45,36 @@ struct ExperimentalView: View {
       
       startView
     }
+    .onReceive(tobii.avgPupilDiameter) { tobiiData in
+      switch tobiiData {
+      case .message(let content):
+        self.content = content
+      default:
+        break
+      }
+    }
+    .onReceive(observer.amplitudeSubject) { value in
+      // scale up with 1000 because the data is something like 0,007.
+      // So we would like it to start from 1 to around 80
+      amplitudes.append(value * 1000)
+    }
     .onReceive(
       observer.amplitudeSubject.withLatestFrom(tobii.avgPupilDiameter)
-    ) { (amplitude, pupilDiameter) in
+    ) { (amplitude, tobiiData) in
+      
+      guard case .data(let data) = tobiiData else {
+        return
+      }
+      
       // scale up with 1000 because the data is something like 0,007.
       // So we would like it to start from 1 to around 80
       // add amplutudes value to draw
       amplitudes.append(amplitude * 1000)
       
       Task { @MainActor in
-        print("\(amplitude) - \(pupilDiameter)")
+        print("\(amplitude) - \(data)")
       }
     }
-    //    .onReceive(observer.amplitudeSubject) { value in
-    //      // scale up with 1000 because the data is something like 0,007.
-    //      // So we would like it to start from 1 to around 80
-    //      amplitudes.append(value * 1000)
-    //    }
     .padding()
   }
 }
