@@ -5,9 +5,16 @@
 //  Created by Quân Đinh on 21.06.23.
 //
 
+import BreathObsever
 import SwiftUI
 
 struct ContentView: View {
+  
+  /// Tobii tracker object that read the python script
+  @EnvironmentObject var tobii: TobiiTracker
+  
+  /// breath observer
+  @EnvironmentObject var observer: BreathObsever
   
   @State private var selectedView: Int? = 0
   private let defaultText = "..."
@@ -32,7 +39,9 @@ struct ContentView: View {
     } detail: {
       switch selectedView ?? 0 {
       case 0:
-        StartView()
+        ExperimentalView()
+          .environmentObject(tobii)
+          .environmentObject(observer)
       case 1:
         SettingView()
       default:

@@ -6,15 +6,15 @@
 //
 
 import SwiftUI
-import SpriteKit
 import Combine
 import BreathObsever
 
+enum Mode {
+  
+}
 
 struct ExperimentalView: View {
-  
-  @Environment(\.dismissWindow) var closeWindow
-  
+    
   @FocusState private var focused: Bool
   
   @State var running = false
@@ -52,10 +52,21 @@ struct ExperimentalView: View {
           print("pressed space")
           return .handled
         }
-        .onKeyPress(.escape) {
-          closeWindow(id: "Experiment")
-          return .handled
+      
+      LazyHGrid(
+        rows: Array(repeating: GridItem(.flexible(), spacing: 15), count: 3),
+        spacing: 40
+      ) {
+        ForEach(0..<9, id:\.self) { index in
+          ZStack {
+            Color.white
+          }
+          .cornerRadius(10)
+          .frame(width: 100, height: 100)
         }
+      }
+      .padding(15)
+      .frame(width: 400, height: 400)
       
       debugView
     }
