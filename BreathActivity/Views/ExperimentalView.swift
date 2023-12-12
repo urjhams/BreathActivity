@@ -13,6 +13,8 @@ import BreathObsever
 
 struct ExperimentalView: View {
   
+  @Environment(\.dismissWindow) var closeWindow
+  
   @FocusState private var focused: Bool
   
   @State var running = false
@@ -35,19 +37,27 @@ struct ExperimentalView: View {
   
   var body: some View {
     VStack {
+      // focus state have a border so we apply the focus and keypress receiver
+      // on a spacer
+      Spacer()
+        .focusable()
+        .focused($focused)
+        .onAppear {
+          focused = true
+        }
+        .onDisappear {
+          focused = false
+        }
+        .onKeyPress(.space) {
+          print("pressed space")
+          return .handled
+        }
+        .onKeyPress(.escape) {
+          closeWindow(id: "Experiment")
+          return .handled
+        }
+      
       debugView
-    }
-    .focusable()
-    .focused($focused)
-    .onAppear {
-      focused = true
-    }
-    .onDisappear {
-      focused = false
-    }
-    .onKeyPress(.space) {
-      print("pressed space")
-      return .handled
     }
     .onReceive(tobii.avgPupilDiameter) { tobiiData in
       switch tobiiData {
