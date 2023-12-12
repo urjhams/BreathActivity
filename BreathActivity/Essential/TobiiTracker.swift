@@ -99,9 +99,7 @@ extension TobiiTracker {
               self?.avgPupilDiameter.send(.message(String(output)))
             } else {
               let error = TobiiError.outputError(content: String(output))
-              self?
-                .avgPupilDiameter
-                .send(.errorMessage(error))
+              self?.avgPupilDiameter.send(.errorMessage(error))
               self?.stopReadPupilDiameter()
             }
           }

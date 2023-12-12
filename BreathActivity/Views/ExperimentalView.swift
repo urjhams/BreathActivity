@@ -13,6 +13,8 @@ import BreathObsever
 
 struct ExperimentalView: View {
   
+  @FocusState private var focused: Bool
+  
   @State var running = false
   
   @State var amplitudes = [Float]()
@@ -33,17 +35,19 @@ struct ExperimentalView: View {
   
   var body: some View {
     VStack {
-      
-      Text(content)
-      
-      amplitudeView
-        .frame(height: 80 * offSet)
-        .scenePadding([.leading, .trailing])
-        .padding()
-      
-      Spacer()
-      
-      startView
+      debugView
+    }
+    .focusable()
+    .focused($focused)
+    .onAppear {
+      focused = true
+    }
+    .onDisappear {
+      focused = false
+    }
+    .onKeyPress(.space) {
+      print("pressed space")
+      return .handled
     }
     .onReceive(tobii.avgPupilDiameter) { tobiiData in
       switch tobiiData {
@@ -80,6 +84,22 @@ struct ExperimentalView: View {
 }
 
 extension ExperimentalView {
+  
+  private var debugView: some View {
+    VStack {
+      Text(content)
+      
+      amplitudeView
+        .frame(height: 80 * offSet)
+        .scenePadding([.leading, .trailing])
+        .padding()
+      
+      Spacer()
+      
+      startView
+    }
+  }
+  
   private var amplitudeView: some View {
     ScrollView(.vertical) {
       HStack(spacing: 1) {
