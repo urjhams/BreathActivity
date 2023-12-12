@@ -5,13 +5,39 @@ public class TobiiTracker: ObservableObject {
   /// Store the average value of Pupil diameters (left and right eye)
   public var avgPupilDiameter = PassthroughSubject<Float, Never>()
   
-  let process = Process()
+  var process = Process()
   
-  init() {
+  init() {}
+}
+
+extension TobiiTracker {
+  public func startReadPupilDiameter() {
+    if process.isRunning {
+      process.terminate()
+    }
+    // re-create the process whenver we want to use it
+    // to prevent process can't launch after terminated
+    process = Process()
     setupProcess()
+    
+    prepareToReadPupilDiameter()
+    
+    do {
+      try process.run()
+    } catch {
+      print(error.localizedDescription)
+      return
+    }
+  }
+  
+  public func stopReadPupilDiameter() {
+    if process.isRunning {
+      process.terminate()
+    }
   }
 }
 
+//MARK: - setup and preparation
 extension TobiiTracker {
   private func setupProcess() {
     /* Bash command:
@@ -37,17 +63,6 @@ extension TobiiTracker {
     process.executableURL = URL(fileURLWithPath: "/bin/zsh")
   }
   
-  public func startReadPupilDiameter() {
-    prepareToReadPupilDiameter()
-    
-    do {
-      try process.run()
-    } catch {
-      print(error.localizedDescription)
-      return
-    }
-  }
-  
   private func prepareToReadPupilDiameter() {
     // install pipline for data output comunication
     let pipe = Pipe()
@@ -70,20 +85,21 @@ extension TobiiTracker {
           if let float = Float(String(output)) {
             self?.avgPupilDiameter.send(float)
           } else {
-            print("the output is not the pupil diameter, probably the error")
-            print(output)
+            if String(output).contains("Eye tracker connected") {
+              print(output)
+            } else {
+              print("the output is not the pupil diameter, probably the error")
+              print(output)
+              self?.stopReadPupilDiameter()
+            }
           }
         }
         fileHandle.waitForDataInBackgroundAndNotify()
       } else {
         // terminated state or fail state
-        print("terminated state or fail state")
+        print("terminated state or fail state, stop the process now.")
+        self?.stopReadPupilDiameter()
       }
     }
-
-  }
-  
-  public func stopReadPupilDiameter() {
-    process.terminate()
   }
 }
