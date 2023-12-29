@@ -9,7 +9,21 @@ import SwiftUI
 import Combine
 import BreathObsever
 
+enum Level: Int {
+  case easy = 1
+  case normal = 2
+  case hard = 3
+  
+  var steps: Int {
+    rawValue
+  }
+}
+
 struct ExperimentalView: View {
+  
+  let time: TimeInterval = 180
+  
+  @State var level: Level = .easy
     
   @FocusState private var focused: Bool
   
@@ -68,7 +82,9 @@ struct ExperimentalView: View {
       
       Spacer()
       
-      startView
+      if !running {
+        startView
+      }
     }
     .onReceive(tobii.avgPupilDiameter) { tobiiData in
       switch tobiiData {
