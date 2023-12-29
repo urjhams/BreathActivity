@@ -65,6 +65,10 @@ struct ExperimentalView: View {
       .frame(width: 400, height: 400)
       
       debugView
+      
+      Spacer()
+      
+      startView
     }
     .onReceive(tobii.avgPupilDiameter) { tobiiData in
       switch tobiiData {
@@ -110,10 +114,6 @@ extension ExperimentalView {
         .frame(height: 80 * offSet)
         .scenePadding([.leading, .trailing])
         .padding()
-      
-      Spacer()
-      
-      startView
     }
   }
   
