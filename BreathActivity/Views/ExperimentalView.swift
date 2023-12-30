@@ -9,19 +9,13 @@ import SwiftUI
 import Combine
 import BreathObsever
 
-enum Level: Int {
-  case easy = 1
-  case normal = 2
-  case hard = 3
-  
-  var steps: Int {
-    rawValue
-  }
-}
-
+// TODO: do the simple stack to keep n latest image (name)
+// The size of the stack will be equal to the step (n)
+// then we just need to check the top of the stack to match with the bottom
+// when the user select "yes"
 struct ExperimentalView: View {
   
-  let time: TimeInterval = 180
+  let levelTime: TimeInterval = 180
   
   @State var level: Level = .easy
     

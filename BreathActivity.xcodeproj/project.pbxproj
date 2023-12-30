@@ -21,7 +21,7 @@
 		4FE0C3B72B02A9E300C82853 /* SupportingFiles in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C3B32B02A9E300C82853 /* SupportingFiles */; };
 		4FE0C3BE2B02AB6500C82853 /* BreathObsever in Frameworks */ = {isa = PBXBuildFile; productRef = 4FE0C3BD2B02AB6500C82853 /* BreathObsever */; };
 		4FE0C3C52B02AF6D00C82853 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3C42B02AF6D00C82853 /* ContentView.swift */; };
-		4FFC9F172B28C82C00E70731 /* NBackEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FFC9F162B28C82C00E70731 /* NBackEngine.swift */; };
+		4FFC9F172B28C82C00E70731 /* ImageStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FFC9F162B28C82C00E70731 /* ImageStack.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,7 +60,7 @@
 		4FE0C3B32B02A9E300C82853 /* SupportingFiles */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SupportingFiles; sourceTree = "<group>"; };
 		4FE0C3C32B02AF4100C82853 /* BreathObsever */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = BreathObsever; path = ../BreathObsever; sourceTree = "<group>"; };
 		4FE0C3C42B02AF6D00C82853 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		4FFC9F162B28C82C00E70731 /* NBackEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NBackEngine.swift; sourceTree = "<group>"; };
+		4FFC9F162B28C82C00E70731 /* ImageStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageStack.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,7 +94,7 @@
 			children = (
 				4F11AAD82B09939D00C4F210 /* Extensions.swift */,
 				4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */,
-				4FFC9F162B28C82C00E70731 /* NBackEngine.swift */,
+				4FFC9F162B28C82C00E70731 /* ImageStack.swift */,
 			);
 			path = Essential;
 			sourceTree = "<group>";
@@ -314,7 +314,7 @@
 				4F2458042B27B2C100602B15 /* SettingView.swift in Sources */,
 				4F5DAA902B03F9DE00A64D25 /* ExperimentalView.swift in Sources */,
 				4FE0C3872B02A8EF00C82853 /* BreathActivityApp.swift in Sources */,
-				4FFC9F172B28C82C00E70731 /* NBackEngine.swift in Sources */,
+				4FFC9F172B28C82C00E70731 /* ImageStack.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
