@@ -15,6 +15,10 @@ import BreathObsever
 // when the user select "yes"
 struct ExperimentalView: View {
   
+  let imageBank: [String]
+  
+  var stack: ImageStack
+  
   let levelTime: TimeInterval = 180
   
   @State var level: Level = .easy
@@ -22,6 +26,8 @@ struct ExperimentalView: View {
   @FocusState private var focused: Bool
   
   @State var running = false
+  
+  var currentImage: String? = nil
   
   @State var amplitudes = [Float]()
   
@@ -57,20 +63,9 @@ struct ExperimentalView: View {
           return .handled
         }
       
-      LazyHGrid(
-        rows: Array(repeating: GridItem(.flexible(), spacing: 15), count: 3),
-        spacing: 40
-      ) {
-        ForEach(0..<9, id:\.self) { index in
-          ZStack {
-            Color.white
-          }
-          .cornerRadius(10)
-          .frame(width: 100, height: 100)
-        }
+      if running, let imageName = currentImage {
+        Image(imageName)
       }
-      .padding(15)
-      .frame(width: 400, height: 400)
       
       debugView
       
@@ -170,5 +165,5 @@ extension ExperimentalView {
 }
 
 #Preview {
-  ExperimentalView()
+  ExperimentalView(imageBank: [], stack: .init(level: .easy))
 }

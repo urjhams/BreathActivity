@@ -39,7 +39,7 @@ struct ContentView: View {
     } detail: {
       switch selectedView ?? 0 {
       case 0:
-        ExperimentalView()
+        ExperimentalView(imageBank: [], stack: .init(level: .easy))
           .environmentObject(tobii)
           .environmentObject(observer)
       case 1:
