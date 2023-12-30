@@ -39,6 +39,14 @@ public struct ImageStack {
     images.count
   }
   
+  /// indicate that the stack is at its capacity
+  ///
+  /// This is used for let say we have 3 steps, so first and 2nd images we check this to be false
+  /// then those images will show in few secs instead of start to show yes or no to compare target
+  var atCapacity: Bool {
+    images.count == level.steps
+  }
+  
   // check the current image is matched with the target image or not
   // current image is the last image, which added latest into the stack
   // target image is the first image in the bottom of the stack
