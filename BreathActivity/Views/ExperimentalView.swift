@@ -45,9 +45,8 @@ struct ExperimentalView: View {
   
   private let offSet: CGFloat = 3
   
-  @State var available = true
-  
-  @State var content: String = ""
+  /// debug text
+  @State var debugContent: String = ""
   
   // use an array to store, construct the respiratory rate from amplitudes
   let storage = DataStorage()
@@ -91,7 +90,7 @@ struct ExperimentalView: View {
     .onReceive(tobii.avgPupilDiameter) { tobiiData in
       switch tobiiData {
       case .message(let content):
-        self.content = content
+        self.debugContent = content
       default:
         break
       }
@@ -133,7 +132,7 @@ extension ExperimentalView {
   
   private var debugView: some View {
     VStack {
-      Text(content)
+      Text(debugContent)
       
       amplitudeView
         .frame(height: 80 * offSet)
@@ -169,15 +168,14 @@ extension ExperimentalView {
             tobii.startReadPupilDiameter()
             amplitudes = []
             running = true
-            available = true
           } catch {
-            available = false
+            running = false
           }
         }
       } label: {
-        Image(systemName: running ? "square.fill" : "play.fill")
+        Image(systemName: "play.fill")
           .font(.largeTitle)
-          .foregroundColor(available ? .accentColor : .red)
+          .foregroundStyle(.mint)
       }
     }
     .padding()
@@ -185,5 +183,12 @@ extension ExperimentalView {
 }
 
 #Preview {
-  ExperimentalView(images: [], stack: .init(level: .easy), levelTime: 180)
+  
+  @StateObject var tobii = TobiiTracker()
+  @StateObject var breathObserver = BreathObsever()
+  
+  return ExperimentalView(images: [], stack: .init(level: .easy), levelTime: 180)
+    .frame(minWidth: 500)
+    .environmentObject(tobii)
+    .environmentObject(breathObserver)
 }
