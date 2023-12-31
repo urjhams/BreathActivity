@@ -29,7 +29,7 @@ struct ContentView: View {
           case 0:
             Text("􀪷 Experiment")
           case 1:
-            Text("􀍟 Setting")
+            Text("􁌵 Information")
           default:
             Text(defaultText)
           }
@@ -43,7 +43,7 @@ struct ContentView: View {
           .environmentObject(tobii)
           .environmentObject(observer)
       case 1:
-        SettingView()
+        InfomationView()
       default:
         Text(defaultText)
       }
