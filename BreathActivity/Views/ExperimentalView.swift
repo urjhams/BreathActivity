@@ -9,17 +9,29 @@ import SwiftUI
 import Combine
 import BreathObsever
 
+internal struct CollectedData {
+  let amplitude: Float
+  let pupilSize: Float
+  let currentLevel: String
+}
+
+internal class DataStorage {
+  var collectedData: [CollectedData] = []
+}
+
 // TODO: do the simple stack to keep n latest image (name)
 // The size of the stack will be equal to the step (n)
 // then we just need to check the top of the stack to match with the bottom
 // when the user select "yes"
 struct ExperimentalView: View {
   
-  let imageBank: [String]
+  let images: [String]
   
   var stack: ImageStack
   
-  let levelTime: TimeInterval = 180
+  @State var levelTime: Int
+  
+  let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
   
   @State var level: Level = .easy
     
@@ -37,7 +49,8 @@ struct ExperimentalView: View {
   
   @State var content: String = ""
   
-  // TODO: use an array to store, construct the respiratory rate from amplitudes
+  // use an array to store, construct the respiratory rate from amplitudes
+  let storage = DataStorage()
   
   /// Tobii tracker object that read the python script
   @EnvironmentObject var tobii: TobiiTracker
@@ -102,7 +115,14 @@ struct ExperimentalView: View {
       amplitudes.append(amplitude * 1000)
       
       Task { @MainActor in
-        print("\(amplitude) - \(data)")
+        print("\(amplitude) - \(data) - \(level.rawValue)")
+        // store the data into the storage
+        let collected = CollectedData(
+          amplitude: amplitude,
+          pupilSize: data,
+          currentLevel: level.rawValue
+        )
+        storage.collectedData.append(collected)
       }
     }
     .padding()
@@ -165,5 +185,5 @@ extension ExperimentalView {
 }
 
 #Preview {
-  ExperimentalView(imageBank: [], stack: .init(level: .easy))
+  ExperimentalView(images: [], stack: .init(level: .easy), levelTime: 180)
 }

@@ -1,12 +1,19 @@
 import Foundation
 
-public enum Level: Int {
-  case easy = 2
-  case normal = 3
-  case hard = 4
+public enum Level: String {
+  case easy
+  case normal
+  case hard
   
   var steps: Int {
-    rawValue
+    switch self {
+    case .easy:
+      2
+    case .normal:
+      3
+    case .hard:
+      4
+    }
   }
 }
 
