@@ -53,9 +53,9 @@ internal class ExperimentalEngine: ObservableObject {
 // when the user select "yes"
 struct ExperimentalView: View {
   
-  let images: [String]
+  let images: [String] = []
     
-  @State var levelTime: Int
+  @State var levelTime: Int = 180
   
   let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
   
@@ -75,14 +75,14 @@ struct ExperimentalView: View {
   /// breath observer
   @EnvironmentObject var observer: BreathObsever
   
+  @State var showAmplitude: Bool = false
+  
   /// debug text
-  @State var debugContent: String = ""
+  @State var tobiiInfoText: String = ""
   
   @State var amplitudes = [Float]()
   
   private let offSet: CGFloat = 3
-  
-  @State var showDebbug: Bool
   
   var body: some View {
     VStack {
@@ -91,34 +91,17 @@ struct ExperimentalView: View {
         if let currentImage = engine.current {
           Image(currentImage)
         }
-        if showDebbug {
+        if showAmplitude {
           Spacer()
           debugView
         }
       } else {
-        VStack {
-          TextField("Candidate Name", text: $storage.candidateName)
-            .padding(.all)
-            .clipShape(.rect(cornerRadius: 10))
-          Picker("Level", selection: $engine.stack.level) {
-            ForEach(Level.allCases, id: \.self) { level in
-              Text(level.name)
-            }
-          }
-          .pickerStyle(.radioGroup)
-          .horizontalRadioGroupLayout()
-          .frame(maxWidth: .infinity)
-          .padding(.leading)
-        }
-        .padding(20)
-        
-        Text("Each Level will be 2 minutes (180 seconds)")
-        Text("Press left arrow button for \"Yes\"")
-        Text("and right arrow button for \"No\".")
-        
-        Spacer()
-        
-        startView
+        StartView(
+          showAmplitude: $showAmplitude,
+          engine: engine,
+          storage: storage,
+          startButtonClick: startButtonClick
+        )
       }
     }
     .onAppear {
@@ -146,7 +129,7 @@ struct ExperimentalView: View {
     .onReceive(tobii.avgPupilDiameter) { tobiiData in
       switch tobiiData {
       case .message(let content):
-        self.debugContent = content
+        self.tobiiInfoText = content
       default:
         break
       }
@@ -188,7 +171,7 @@ extension ExperimentalView {
   
   private var debugView: some View {
     VStack {
-      Text(debugContent)
+      Text(tobiiInfoText)
       
       amplitudeView
         .frame(height: 80 * offSet)
@@ -209,27 +192,15 @@ extension ExperimentalView {
     }
   }
   
-  private var startView: some View {
-    
-    func startButtonClick() {
-      if running {
-        // stop process
-        stopSession()
-      } else {
-        // start process
-        startSession()
-      }
+  func startButtonClick() {
+    if running {
+      // stop process
+      stopSession()
+    } else {
+      // start process
+      startSession()
     }
-    
-    return HStack {
-      Button(action: startButtonClick) {
-        Image(systemName: "play.fill")
-          .font(.largeTitle)
-      }
-    }
-    .padding()
   }
-  
 }
 
 extension ExperimentalView {
@@ -270,12 +241,61 @@ extension ExperimentalView {
   }
 }
 
+struct StartView: View {
+  
+  @Binding var showAmplitude: Bool
+  
+  // the engine that store the stack to check
+  @ObservedObject var engine: ExperimentalEngine
+  
+  // use an array to store, construct the respiratory rate from amplitudes
+  @ObservedObject var storage: DataStorage
+  
+  var startButtonClick: () -> Void
+  
+  var body: some View {
+    VStack {
+      TextField("Candidate Name", text: $storage.candidateName)
+        .padding(.all)
+        .clipShape(.rect(cornerRadius: 10))
+      Picker("Level", selection: $engine.stack.level) {
+        ForEach(Level.allCases, id: \.self) { level in
+          Text(level.name)
+        }
+      }
+      .pickerStyle(.radioGroup)
+      .horizontalRadioGroupLayout()
+      .frame(maxWidth: .infinity)
+      .padding(.leading)
+    }
+    .padding(20)
+    
+    Text("Each Level will be 2 minutes (180 seconds)")
+    Text("Press left arrow button for \"Yes\"")
+    Text("and right arrow button for \"No\".")
+    
+    Spacer()
+    
+    Picker("Show amplitude", selection: $showAmplitude) {
+      Text("Yes").tag(true)
+      Text("No").tag(false)
+    }
+    .pickerStyle(.radioGroup)
+    .horizontalRadioGroupLayout()
+    
+    Button(action: startButtonClick) {
+      Image(systemName: "play.fill")
+        .font(.largeTitle)
+    }
+  }
+}
+
 #Preview {
   
   @StateObject var tobii = TobiiTracker()
   @StateObject var breathObserver = BreathObsever()
   
-  return ExperimentalView(images: [], levelTime: 180, showDebbug: false)
+  return ExperimentalView()
     .frame(minWidth: 500)
     .environmentObject(tobii)
     .environmentObject(breathObserver)

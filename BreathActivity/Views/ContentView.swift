@@ -39,7 +39,7 @@ struct ContentView: View {
     } detail: {
       switch selectedView ?? 0 {
       case 0:
-        ExperimentalView(images: [], levelTime: 180, showDebbug: false)
+        ExperimentalView()
           .environmentObject(tobii)
           .environmentObject(observer)
       case 1:
@@ -54,6 +54,13 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
-    ContentView()
+    
+    @StateObject var tobii = TobiiTracker()
+    @StateObject var breathObserver = BreathObsever()
+    
+    return ContentView()
+      .frame(minWidth: 500)
+      .environmentObject(tobii)
+      .environmentObject(breathObserver)
   }
 }
