@@ -21,7 +21,6 @@ internal class DataStorage: ObservableObject {
   var collectedData: [CollectedData] = []
   
   public func reset() {
-    candidateName = ""
     level = ""
     collectedData = []
   }
@@ -99,12 +98,28 @@ struct ExperimentalView: View {
           debugView
         }
       } else {
-        HStack {
+        VStack {
           TextField("Candidate", text: $storage.candidateName)
             .padding(.all)
             .clipShape(.rect(cornerRadius: 10))
+          Picker("Level", selection: $engine.stack.level) {
+            ForEach(Level.allCases, id: \.self) { level in
+              Text(level.name)
+            }
+          }
+          .pickerStyle(.radioGroup)
+          .horizontalRadioGroupLayout()
+          .frame(maxWidth: .infinity)
+          .padding(.leading)
         }
+        .padding(20)
+        
+        Text("Each Level will be 2 minutes (180 seconds)")
+        Text("Press left arrow button for \"Yes\"")
+        Text("and right arrow button for \"No\".")
+        
         Spacer()
+        
         startView
       }
     }
@@ -162,7 +177,7 @@ struct ExperimentalView: View {
         let collected = CollectedData(
           amplitude: amplitude,
           pupilSize: data,
-          currentLevel: level.rawValue
+          currentLevel: level.name
         )
         storage.collectedData.append(collected)
       }

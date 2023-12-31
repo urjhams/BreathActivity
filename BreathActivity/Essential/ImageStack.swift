@@ -1,23 +1,27 @@
 import Foundation
 
-public enum Level: String {
-  case easy
-  case normal
-  case hard
+public enum Level: Int, CaseIterable  {
+  case easy = 2
+  case normal = 3
+  case hard = 4
   
   var steps: Int {
+    rawValue
+  }
+  
+  var name: String {
     switch self {
     case .easy:
-      2
+      return "easy"
     case .normal:
-      3
+      return "normal"
     case .hard:
-      4
+      return "hard"
     }
   }
 }
 
-public struct ImageStack {
+public class ImageStack: ObservableObject {
   
   public enum StackError: Error {
     case notAtCap
@@ -25,13 +29,13 @@ public struct ImageStack {
   }
   
   private var images: [String] = []
-  public let level: Level
+  @Published var level: Level
   
   init(level: Level) {
     self.level = level
   }
   
-  mutating func add(_ image: String) {
+  func add(_ image: String) {
     images.append(image)
     
     // Check if the stack size exceeds the specified level's steps
