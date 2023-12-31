@@ -108,6 +108,28 @@ struct ExperimentalView: View {
         startView
       }
     }
+    .onAppear {
+      NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
+        switch event.keyCode {
+        case 53:  // escape
+          // perform the stop action
+          stopSession()
+        case 123: // left arrow
+          if self.running {
+            // TODO: active the "Yes" selected state
+            print("pressed left")
+          }
+        case 124: // right arrow
+          if self.running {
+            // TODO: active the "No" selected state
+            print("pressed right")
+          }
+        default:
+          break
+        }
+        return event
+      }
+    }
     .onReceive(tobii.avgPupilDiameter) { tobiiData in
       switch tobiiData {
       case .message(let content):
@@ -175,25 +197,26 @@ extension ExperimentalView {
   }
   
   private var startView: some View {
-    HStack {
-      Button {
-        if running {
-          // stop process
-          stopSession()
-        } else {
-          // start process
-          startSession()
-        }
-      } label: {
+    
+    func startButtonClick() {
+      if running {
+        // stop process
+        stopSession()
+      } else {
+        // start process
+        startSession()
+      }
+    }
+    
+    return HStack {
+      Button(action: startButtonClick) {
         Image(systemName: "play.fill")
           .font(.largeTitle)
-          .foregroundStyle(.mint)
       }
-      // TODO: use this to assign the yes no button
-      .keyboardShortcut(.return, modifiers: [])
     }
     .padding()
   }
+  
 }
 
 extension ExperimentalView {
