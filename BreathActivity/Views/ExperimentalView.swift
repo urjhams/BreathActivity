@@ -64,9 +64,7 @@ struct ExperimentalView: View {
   let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
   
   @State var level: Level = .easy
-    
-  @FocusState private var focused: Bool
-  
+      
   @State var running = false
   
   var currentImage: String? = nil
@@ -109,20 +107,6 @@ struct ExperimentalView: View {
         Spacer()
         startView
       }
-    }
-    // focus state have a border so we apply the focus and keypress receiver
-    // on a spacer
-    .focusable()
-    .focused($focused)
-    .onAppear {
-      focused = true
-    }
-    .onDisappear {
-      focused = false
-    }
-    .onKeyPress(.space) {
-      print("pressed space")
-      return .handled
     }
     .onReceive(tobii.avgPupilDiameter) { tobiiData in
       switch tobiiData {
@@ -205,6 +189,8 @@ extension ExperimentalView {
           .font(.largeTitle)
           .foregroundStyle(.mint)
       }
+      // TODO: use this to assign the yes no button
+      .keyboardShortcut(.return, modifiers: [])
     }
     .padding()
   }
