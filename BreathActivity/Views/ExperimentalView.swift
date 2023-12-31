@@ -15,8 +15,16 @@ internal struct CollectedData {
   let currentLevel: String
 }
 
-internal class DataStorage {
+internal class DataStorage: ObservableObject {
+  @Published var candidateName: String = ""
+  var level: String = ""
   var collectedData: [CollectedData] = []
+  
+  public func reset() {
+    candidateName = ""
+    level = ""
+    collectedData = []
+  }
 }
 
 // TODO: do the simple stack to keep n latest image (name)
@@ -27,7 +35,11 @@ struct ExperimentalView: View {
   
   let images: [String]
   
-  var stack = ImageStack(level: .easy)
+  var stack = ImageStack(level: .easy) {
+    didSet {
+      storage.level = stack.level.rawValue
+    }
+  }
     
   @State var levelTime: Int
   
@@ -51,7 +63,7 @@ struct ExperimentalView: View {
   @State var debugContent: String = ""
   
   // use an array to store, construct the respiratory rate from amplitudes
-  let storage = DataStorage()
+  @StateObject var storage = DataStorage()
   
   /// Tobii tracker object that read the python script
   @EnvironmentObject var tobii: TobiiTracker
@@ -71,6 +83,11 @@ struct ExperimentalView: View {
           debugView
         }
       } else {
+        HStack {
+          TextField("Candidate", text: $storage.candidateName)
+            .padding(.all)
+            .clipShape(.rect(cornerRadius: 10))
+        }
         Spacer()
         startView
       }
@@ -208,6 +225,8 @@ extension ExperimentalView {
     
     // stop the session
     
+    // reset the storage
+    storage.reset()
   }
 }
 

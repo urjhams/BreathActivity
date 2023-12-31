@@ -19,7 +19,7 @@ public enum Level: String {
 
 public struct ImageStack {
   private var images: [String] = []
-  private let level: Level
+  public let level: Level
   
   init(level: Level) {
     self.level = level
