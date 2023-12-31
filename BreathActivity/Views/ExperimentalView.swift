@@ -28,7 +28,7 @@ struct ExperimentalView: View {
   let images: [String]
   
   var stack: ImageStack
-  
+    
   @State var levelTime: Int
   
   let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -45,6 +45,8 @@ struct ExperimentalView: View {
   
   private let offSet: CGFloat = 3
   
+  @State var showDebbug: Bool
+  
   /// debug text
   @State var debugContent: String = ""
   
@@ -59,33 +61,33 @@ struct ExperimentalView: View {
   
   var body: some View {
     VStack {
-      // focus state have a border so we apply the focus and keypress receiver
-      // on a spacer
-      Spacer()
-        .focusable()
-        .focused($focused)
-        .onAppear {
-          focused = true
+      
+      if running {
+        if let currentImage {
+          Image(currentImage)
         }
-        .onDisappear {
-          focused = false
+        if showDebbug {
+          Spacer()
+          debugView
         }
-        .onKeyPress(.space) {
-          print("pressed space")
-          return .handled
-        }
-      
-      if running, let imageName = currentImage {
-        Image(imageName)
-      }
-      
-      debugView
-      
-      Spacer()
-      
-      if !running {
+      } else {
+        Spacer()
         startView
       }
+    }
+    // focus state have a border so we apply the focus and keypress receiver
+    // on a spacer
+    .focusable()
+    .focused($focused)
+    .onAppear {
+      focused = true
+    }
+    .onDisappear {
+      focused = false
+    }
+    .onKeyPress(.space) {
+      print("pressed space")
+      return .handled
     }
     .onReceive(tobii.avgPupilDiameter) { tobiiData in
       switch tobiiData {
@@ -187,7 +189,7 @@ extension ExperimentalView {
   @StateObject var tobii = TobiiTracker()
   @StateObject var breathObserver = BreathObsever()
   
-  return ExperimentalView(images: [], stack: .init(level: .easy), levelTime: 180)
+  return ExperimentalView(images: [], stack: .init(level: .easy), levelTime: 180, showDebbug: false)
     .frame(minWidth: 500)
     .environmentObject(tobii)
     .environmentObject(breathObserver)
