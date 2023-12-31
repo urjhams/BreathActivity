@@ -27,7 +27,7 @@ struct ExperimentalView: View {
   
   let images: [String]
   
-  var stack: ImageStack
+  var stack = ImageStack(level: .easy)
     
   @State var levelTime: Int
   
@@ -160,19 +160,10 @@ extension ExperimentalView {
       Button {
         if running {
           // stop process
-          tobii.stopReadPupilDiameter()
-          observer.stopAnalyzing()
-          running = false
+          stopSession()
         } else {
           // start process
-          do {
-            try observer.startAnalyzing()
-            tobii.startReadPupilDiameter()
-            amplitudes = []
-            running = true
-          } catch {
-            running = false
-          }
+          startSession()
         }
       } label: {
         Image(systemName: "play.fill")
@@ -184,12 +175,48 @@ extension ExperimentalView {
   }
 }
 
+extension ExperimentalView {
+  private func startSession() {
+    // start analyze process
+    do {
+      try observer.startAnalyzing()
+      tobii.startReadPupilDiameter()
+      amplitudes = []
+      running = true
+    } catch {
+      running = false
+      return
+    }
+    
+    // show the first few images (less than the number of target/ stack capacity)
+    
+    // show a random image and the yes no buttons, do the check when recieve answer
+    
+    // record the correction
+    
+    // when the remaining time is 0
+    // if the current level is not "hard", stop the session, store the data
+    
+    // else reset it and increase level and start a new session
+  }
+  
+  private func stopSession() {
+    // stop analyze process
+    tobii.stopReadPupilDiameter()
+    observer.stopAnalyzing()
+    running = false
+    
+    // stop the session
+    
+  }
+}
+
 #Preview {
   
   @StateObject var tobii = TobiiTracker()
   @StateObject var breathObserver = BreathObsever()
   
-  return ExperimentalView(images: [], stack: .init(level: .easy), levelTime: 180, showDebbug: false)
+  return ExperimentalView(images: [], levelTime: 180, showDebbug: false)
     .frame(minWidth: 500)
     .environmentObject(tobii)
     .environmentObject(breathObserver)
