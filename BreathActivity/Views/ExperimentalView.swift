@@ -54,9 +54,6 @@ internal class ExperimentalEngine: ObservableObject {
 struct ExperimentalView: View {
   
   let images: [String]
-  
-  // the engine that store the stack to check
-  @StateObject var engine = ExperimentalEngine()
     
   @State var levelTime: Int
   
@@ -65,17 +62,9 @@ struct ExperimentalView: View {
   @State var level: Level = .easy
       
   @State var running = false
-  
-  var currentImage: String? = nil
-  
-  @State var amplitudes = [Float]()
-  
-  private let offSet: CGFloat = 3
-  
-  @State var showDebbug: Bool
-  
-  /// debug text
-  @State var debugContent: String = ""
+    
+  // the engine that store the stack to check
+  @StateObject var engine = ExperimentalEngine()
   
   // use an array to store, construct the respiratory rate from amplitudes
   @StateObject var storage = DataStorage()
@@ -86,11 +75,20 @@ struct ExperimentalView: View {
   /// breath observer
   @EnvironmentObject var observer: BreathObsever
   
+  /// debug text
+  @State var debugContent: String = ""
+  
+  @State var amplitudes = [Float]()
+  
+  private let offSet: CGFloat = 3
+  
+  @State var showDebbug: Bool
+  
   var body: some View {
     VStack {
       
       if running {
-        if let currentImage {
+        if let currentImage = engine.current {
           Image(currentImage)
         }
         if showDebbug {
@@ -99,7 +97,7 @@ struct ExperimentalView: View {
         }
       } else {
         VStack {
-          TextField("Candidate", text: $storage.candidateName)
+          TextField("Candidate Name", text: $storage.candidateName)
             .padding(.all)
             .clipShape(.rect(cornerRadius: 10))
           Picker("Level", selection: $engine.stack.level) {
