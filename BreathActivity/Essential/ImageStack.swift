@@ -18,6 +18,12 @@ public enum Level: String {
 }
 
 public struct ImageStack {
+  
+  public enum StackError: Error {
+    case notAtCap
+    case noPeakNorBottom
+  }
+  
   private var images: [String] = []
   public let level: Level
   
@@ -35,7 +41,17 @@ public struct ImageStack {
   }
   
   func peek() -> String? {
-    images.last
+    guard atCapacity else {
+      return nil
+    }
+    return images.last
+  }
+  
+  func bottom() -> String? {
+    guard atCapacity else {
+      return nil
+    }
+    return images.first
   }
   
   var isEmpty: Bool {
@@ -52,19 +68,5 @@ public struct ImageStack {
   /// then those images will show in few secs instead of start to show yes or no to compare target
   var atCapacity: Bool {
     images.count == level.steps
-  }
-  
-  // check the current image is matched with the target image or not
-  // current image is the last image, which added latest into the stack
-  // target image is the first image in the bottom of the stack
-  public func match() -> Bool {
-    guard !images.isEmpty,
-          let first = images.first,
-          let last = images.last,
-          images.count == level.steps
-    else {
-      return false
-    }
-    return first == last
   }
 }

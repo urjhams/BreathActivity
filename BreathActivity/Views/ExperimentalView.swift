@@ -27,6 +27,27 @@ internal class DataStorage: ObservableObject {
   }
 }
 
+internal class ExperimentalEngine: ObservableObject {
+  @Published var stack = ImageStack(level: .easy)
+  
+  var current: String? {
+    stack.peek()
+  }
+  
+  // check the current image is matched with the target image or not
+  // current image is the last image, which added latest into the stack
+  // target image is the first image in the bottom of the stack
+  func matched() throws -> Bool {
+    
+    guard let peak = stack.peek(), let bottom = stack.bottom() else {
+      throw ImageStack.StackError.noPeakNorBottom
+    }
+    
+    return peak == bottom
+  }
+
+}
+
 // TODO: do the simple stack to keep n latest image (name)
 // The size of the stack will be equal to the step (n)
 // then we just need to check the top of the stack to match with the bottom
@@ -35,11 +56,8 @@ struct ExperimentalView: View {
   
   let images: [String]
   
-  var stack = ImageStack(level: .easy) {
-    didSet {
-      storage.level = stack.level.rawValue
-    }
-  }
+  // the engine that store the stack to check
+  @StateObject var engine = ExperimentalEngine()
     
   @State var levelTime: Int
   
