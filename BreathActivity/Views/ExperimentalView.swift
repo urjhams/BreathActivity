@@ -239,13 +239,13 @@ extension ExperimentalView {
       stopSession()
     } else {
       // start process
-      startSession()
+      startSession(engine.stack.level)
     }
   }
 }
 
 extension ExperimentalView {
-  private func startSession() {
+  private func startSession(_ level: Level) {
     // start analyze process
     do {
       try observer.startAnalyzing()
@@ -263,10 +263,7 @@ extension ExperimentalView {
     
     // record the correction
     
-    // when the remaining time is 0
-    // if the current level is not "hard", stop the session, store the data
-    
-    // else reset it and increase level and start a new session
+    // when the remaining time is 0, stop the session, store the data
   }
   
   private func stopSession() {
