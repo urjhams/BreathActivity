@@ -27,7 +27,16 @@ internal class DataStorage: ObservableObject {
   }
 }
 
-internal class ExperimentalEngine: ObservableObject {
+public class ExperimentalEngine: ObservableObject {
+  
+  public enum State {
+    case starting
+    case started
+    case stopped
+  }
+  
+  @Published var state: State = .stopped
+  
   @Published var stack = ImageStack(level: .easy)
   
   let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -65,6 +74,15 @@ internal class ExperimentalEngine: ObservableObject {
   func reset() {
     levelTime = 180
     stack.setEmpty()
+    state = .stopped
+  }
+  
+  func addImage() {
+    guard let image = images.randomElement() else {
+      return
+    }
+    
+    stack.add(image)
   }
 
 }
@@ -246,6 +264,8 @@ extension ExperimentalView {
     
     // start the session
     running = true
+    
+    engine.state = .starting
     
     // show the first few images (less than the number of target/ stack capacity)
     
