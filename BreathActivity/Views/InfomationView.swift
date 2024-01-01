@@ -9,10 +9,11 @@ import SwiftUI
 
 struct InfomationView: View {
     var body: some View {
-        Text("Setting View")
+        Text("Information View")
     }
 }
 
 #Preview {
   InfomationView()
+    .frame(minWidth: 500, minHeight: 400)
 }

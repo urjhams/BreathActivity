@@ -8,6 +8,7 @@
 import SwiftUI
 import Combine
 import BreathObsever
+import GameController
 
 internal struct CollectedData {
   let amplitude: Float
@@ -105,25 +106,25 @@ struct ExperimentalView: View {
       }
     }
     .onAppear {
+      // key pressed
       NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
-        switch event.keyCode {
-        case 53:  // escape
-          // perform the stop action
-          stopSession()
-        case 123: // left arrow
-          if self.running {
-            // TODO: active the "Yes" selected state
-            print("pressed left")
-          }
-        case 124: // right arrow
-          if self.running {
-            // TODO: active the "No" selected state
-            print("pressed right")
-          }
-        default:
-          break
-        }
+        self.setupKeyPress(from: event)
         return event
+      }
+      
+      // xbox controller key pressed
+      NotificationCenter.default.addObserver(
+        forName: .GCControllerDidConnect,
+        object: nil,
+        queue: nil
+      ) { notification in
+        if let controller = notification.object as? GCController {
+          self.setupController(controller)
+        }
+      }
+      
+      for controller in GCController.controllers() {
+        self.setupController(controller)
       }
     }
     .onReceive(tobii.avgPupilDiameter) { tobiiData in
@@ -164,6 +165,46 @@ struct ExperimentalView: View {
       }
     }
     .padding()
+  }
+}
+
+extension ExperimentalView {
+  private func setupKeyPress(from event: NSEvent) {
+    switch event.keyCode {
+    case 53:  // escape
+              // perform the stop action
+      stopSession()
+    case 123: // left arrow
+      if self.running {
+        // TODO: active the "Yes" selected state
+        print("pressed left")
+      }
+    case 124: // right arrow
+      if self.running {
+        // TODO: active the "No" selected state
+        print("pressed right")
+      }
+    default:
+      break
+    }
+  }
+  
+  private func setupController(_ controller: GCController) {
+    controller.extendedGamepad?.buttonA.valueChangedHandler = {  _, _, pressed in
+      guard pressed, running else {
+        return
+      }
+      // TODO: active the "Yes" selected state
+       print("pressed Yes (A)")
+    }
+    
+    controller.extendedGamepad?.buttonB.valueChangedHandler = { _, _, pressed in
+      guard pressed, running else {
+        return
+      }
+      // TODO: active the "No" selected state
+       print("pressed No (B)")
+    }
   }
 }
 

@@ -19,7 +19,7 @@ struct BreathActivityApp: App {
   var body: some Scene {
     WindowGroup {
       ContentView()
-        .frame(minWidth: 1000, minHeight: 800)
+        .frame(minWidth: 800, minHeight: 600)
         .environmentObject(tobii)
         .environmentObject(breathObserver)
     }
