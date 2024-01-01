@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 public enum Level: Int, CaseIterable  {
   case easy = 2
@@ -28,7 +29,7 @@ public class ImageStack: ObservableObject {
     case noPeakNorBottom
   }
   
-  private var images: [String] = []
+  private var images: [ImageResource] = []
   
   @Published var level: Level
   
@@ -36,7 +37,7 @@ public class ImageStack: ObservableObject {
     self.level = level
   }
   
-  func add(_ image: String) {
+  func add(_ image: ImageResource) {
     images.append(image)
     
     // Check if the stack size exceeds the specified level's steps
@@ -45,14 +46,14 @@ public class ImageStack: ObservableObject {
     }
   }
   
-  func peek() -> String? {
+  func peek() -> ImageResource? {
     guard atCapacity else {
       return nil
     }
     return images.last
   }
   
-  func bottom() -> String? {
+  func bottom() -> ImageResource? {
     guard atCapacity else {
       return nil
     }

@@ -33,8 +33,20 @@ internal class ExperimentalEngine: ObservableObject {
   let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
   
   @Published var levelTime: Int = 180
+  
+  // TODO: maybe add 2 more set of images
+  let images: [ImageResource] = [
+    .animalfaceCheetah,
+    .animalfaceDuck,
+    .animalfaceNiwatori,
+    .animalfacePanda,
+    .animalfaceTora,
+    .animalfaceUma,
+    .animalfaceUsagi,
+    .animalfaceZou
+  ]
     
-  var current: String? {
+  var current: ImageResource? {
     stack.peek()
   }
   
@@ -62,8 +74,6 @@ internal class ExperimentalEngine: ObservableObject {
 // then we just need to check the top of the stack to match with the bottom
 // when the user select "yes"
 struct ExperimentalView: View {
-  
-  let images: [String] = []
           
   @State var running = false
     

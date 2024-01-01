@@ -27,6 +27,8 @@ struct GameView: View {
   var body: some View {
     if let currentImage = engine.current {
       Image(currentImage)
+    } else {
+      Color(.clear)
     }
     if showAmplitude {
       Spacer()
@@ -62,7 +64,7 @@ extension GameView {
 }
 
 #Preview {
-  @State var showAmplitude: Bool = true
+  @State var showAmplitude: Bool = false
   @State var amplitudes = [Float]()
   @State var tobiiInfoText: String = "tobii info"
   @StateObject var engine = ExperimentalEngine()
