@@ -8,7 +8,6 @@
 import SwiftUI
 import Combine
 import BreathObsever
-import GameController
 
 internal struct CollectedData {
   let amplitude: Float
@@ -109,22 +108,19 @@ struct ExperimentalView: View {
   
   @State var showAmplitude: Bool = false
   
-  /// debug text
-  @State var tobiiInfoText: String = ""
-  
-  @State var amplitudes = [Float]()
-  
   var body: some View {
     VStack {
       
       if running {
         GameView(
-          tobiiInfoText: $tobiiInfoText,
-          amplitudes: $amplitudes,
-          showAmplitude: $showAmplitude,
+          running: $running,
+          showAmplitude: $showAmplitude, 
+          stopSessionFunction: stopSession,
           engine: engine,
           storage: storage
         )
+        .environmentObject(tobii)
+        .environmentObject(observer)
       } else {
         StartView(
           showAmplitude: $showAmplitude,
@@ -134,41 +130,6 @@ struct ExperimentalView: View {
         )
       }
     }
-    .onAppear {
-      // key pressed
-      NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
-        self.setupKeyPress(from: event)
-        return event
-      }
-      
-      // xbox controller key pressed
-      NotificationCenter.default.addObserver(
-        forName: .GCControllerDidConnect,
-        object: nil,
-        queue: nil
-      ) { notification in
-        if let controller = notification.object as? GCController {
-          self.setupController(controller)
-        }
-      }
-      
-      for controller in GCController.controllers() {
-        self.setupController(controller)
-      }
-    }
-    .onReceive(tobii.avgPupilDiameter) { tobiiData in
-      switch tobiiData {
-      case .message(let content):
-        self.tobiiInfoText = content
-      default:
-        break
-      }
-    }
-    .onReceive(observer.amplitudeSubject) { value in
-      // scale up with 1000 because the data is something like 0,007.
-      // So we would like it to start from 1 to around 80
-      amplitudes.append(value * 1000)
-    }
     .onReceive(
       observer.amplitudeSubject.withLatestFrom(tobii.avgPupilDiameter)
     ) { (amplitude, tobiiData) in
@@ -176,11 +137,6 @@ struct ExperimentalView: View {
       guard case .data(let data) = tobiiData else {
         return
       }
-      
-      // scale up with 1000 because the data is something like 0,007.
-      // So we would like it to start from 1 to around 80
-      // add amplutudes value to draw
-      amplitudes.append(amplitude * 1000)
       
       Task { @MainActor in
         print("\(amplitude) - \(data) - \( engine.stack.level.rawValue)")
@@ -194,46 +150,6 @@ struct ExperimentalView: View {
       }
     }
     .padding()
-  }
-}
-
-extension ExperimentalView {
-  private func setupKeyPress(from event: NSEvent) {
-    switch event.keyCode {
-    case 53:  // escape
-      // perform the stop action
-      stopSession()
-    case 123: // left arrow
-      if self.running {
-        // TODO: active the "Yes" selected state
-        print("pressed left")
-      }
-    case 124: // right arrow
-      if self.running {
-        // TODO: active the "No" selected state
-        print("pressed right")
-      }
-    default:
-      break
-    }
-  }
-  
-  private func setupController(_ controller: GCController) {
-    controller.extendedGamepad?.buttonA.valueChangedHandler = {  _, _, pressed in
-      guard pressed, running else {
-        return
-      }
-      // TODO: active the "Yes" selected state
-       print("pressed Yes (A)")
-    }
-    
-    controller.extendedGamepad?.buttonB.valueChangedHandler = { _, _, pressed in
-      guard pressed, running else {
-        return
-      }
-      // TODO: active the "No" selected state
-       print("pressed No (B)")
-    }
   }
 }
 
@@ -256,7 +172,6 @@ extension ExperimentalView {
     do {
       try observer.startAnalyzing()
       tobii.startReadPupilDiameter()
-      amplitudes = []
     } catch {
       running = false
       return

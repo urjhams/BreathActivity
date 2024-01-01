@@ -6,17 +6,23 @@
 //
 
 import SwiftUI
+import GameController
+import BreathObsever
 
 struct GameView: View {
+  
+  @Binding var running: Bool
   
   private let offSet: CGFloat = 3
   
   /// debug text
-  @Binding var tobiiInfoText: String
+  @State var tobiiInfoText: String = ""
   
-  @Binding var amplitudes: [Float]
+  @State var amplitudes = [Float]()
   
   @Binding var showAmplitude: Bool
+  
+  var stopSessionFunction: () -> ()
   
   // the engine that store the stack to check
   @ObservedObject var engine: ExperimentalEngine
@@ -24,15 +30,95 @@ struct GameView: View {
   // use an array to store, construct the respiratory rate from amplitudes
   @ObservedObject var storage: DataStorage
   
+  /// Tobii tracker object that read the python script
+  @EnvironmentObject var tobii: TobiiTracker
+  
+  /// breath observer
+  @EnvironmentObject var observer: BreathObsever
+  
   var body: some View {
-    if let currentImage = engine.current {
-      Image(currentImage)
-    } else {
-      Color(.clear)
+    VStack {
+      if let currentImage = engine.current {
+        Image(currentImage)
+      } else {
+        Color(.clear)
+      }
+      if showAmplitude {
+        Spacer()
+        debugView
+      }
     }
-    if showAmplitude {
-      Spacer()
-      debugView
+    .onAppear {
+      // key pressed
+      NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
+        self.setupKeyPress(from: event)
+        return event
+      }
+      
+      // xbox controller key pressed
+      NotificationCenter.default.addObserver(
+        forName: .GCControllerDidConnect,
+        object: nil,
+        queue: nil
+      ) { notification in
+        if let controller = notification.object as? GCController {
+          self.setupController(controller)
+        }
+      }
+      
+      for controller in GCController.controllers() {
+        self.setupController(controller)
+      }
+    }
+  }
+}
+
+extension GameView {
+  private func setupKeyPress(from event: NSEvent) {
+    switch event.keyCode {
+    case 53:  // escape
+              // perform the stop action
+      stopSessionFunction()
+    case 123: // left arrow
+      if self.running {
+        // TODO: active the "Yes" selected state
+        print("pressed left")
+      }
+    case 124: // right arrow
+      if self.running {
+        // TODO: active the "No" selected state
+        print("pressed right")
+      }
+    default:
+      break
+    }
+  }
+  
+  private func setupController(_ controller: GCController) {
+    controller.extendedGamepad?.buttonA.valueChangedHandler = {  _, _, pressed in
+      guard pressed, running else {
+        return
+      }
+      
+      switch engine.state {
+      case .starting:
+        // TODO: active the "Next Image" selected state
+        print("pressed Yes (A)")
+      case .started:
+        // TODO: active the "Yes" selected state
+        print("pressed Yes (A)")
+      case .stopped:
+        break
+      }
+      
+    }
+    
+    controller.extendedGamepad?.buttonB.valueChangedHandler = { _, _, pressed in
+      guard pressed, running else {
+        return
+      }
+      // TODO: active the "No" selected state
+      print("pressed No (B)")
     }
   }
 }
@@ -47,6 +133,20 @@ extension GameView {
         .frame(height: 80 * offSet)
         .scenePadding([.leading, .trailing])
         .padding()
+    }
+    .onReceive(tobii.avgPupilDiameter) { tobiiData in
+      switch tobiiData {
+      case .message(let content):
+        self.tobiiInfoText = content
+      default:
+        break
+      }
+    }
+    .onReceive(observer.amplitudeSubject) { value in
+      // scale up with 1000 because the data is something like 0,007.
+      // So we would like it to start from 1 to around 80
+      // add amplutudes value to draw
+      amplitudes.append(value * 1000)
     }
   }
   
@@ -64,16 +164,15 @@ extension GameView {
 }
 
 #Preview {
+  @State var running: Bool = true
   @State var showAmplitude: Bool = false
-  @State var amplitudes = [Float]()
-  @State var tobiiInfoText: String = "tobii info"
   @StateObject var engine = ExperimentalEngine()
   @StateObject var storage = DataStorage()
   
   return GameView(
-    tobiiInfoText: $tobiiInfoText,
-    amplitudes: $amplitudes,
+    running: $running,
     showAmplitude: $showAmplitude,
+    stopSessionFunction: {},
     engine: engine,
     storage: storage
   )
