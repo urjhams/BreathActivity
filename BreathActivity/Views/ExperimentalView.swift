@@ -30,6 +30,10 @@ internal class DataStorage: ObservableObject {
 internal class ExperimentalEngine: ObservableObject {
   @Published var stack = ImageStack(level: .easy)
   
+  let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+  
+  @Published var levelTime: Int = 180
+    
   var current: String? {
     stack.peek()
   }
@@ -45,6 +49,11 @@ internal class ExperimentalEngine: ObservableObject {
     
     return peak == bottom
   }
+  
+  func reset() {
+    levelTime = 180
+    stack.setEmpty()
+  }
 
 }
 
@@ -55,13 +64,7 @@ internal class ExperimentalEngine: ObservableObject {
 struct ExperimentalView: View {
   
   let images: [String] = []
-    
-  @State var levelTime: Int = 180
-  
-  let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-  
-  @State var level: Level = .easy
-      
+          
   @State var running = false
     
   // the engine that store the stack to check
@@ -83,19 +86,17 @@ struct ExperimentalView: View {
   
   @State var amplitudes = [Float]()
   
-  private let offSet: CGFloat = 3
-  
   var body: some View {
     VStack {
       
       if running {
-        if let currentImage = engine.current {
-          Image(currentImage)
-        }
-        if showAmplitude {
-          Spacer()
-          debugView
-        }
+        GameView(
+          tobiiInfoText: $tobiiInfoText,
+          amplitudes: $amplitudes,
+          showAmplitude: $showAmplitude,
+          engine: engine,
+          storage: storage
+        )
       } else {
         StartView(
           showAmplitude: $showAmplitude,
@@ -154,12 +155,12 @@ struct ExperimentalView: View {
       amplitudes.append(amplitude * 1000)
       
       Task { @MainActor in
-        print("\(amplitude) - \(data) - \(level.rawValue)")
+        print("\(amplitude) - \(data) - \( engine.stack.level.rawValue)")
         // store the data into the storage
         let collected = CollectedData(
           amplitude: amplitude,
           pupilSize: data,
-          currentLevel: level.name
+          currentLevel: engine.stack.level.name
         )
         storage.collectedData.append(collected)
       }
@@ -172,7 +173,7 @@ extension ExperimentalView {
   private func setupKeyPress(from event: NSEvent) {
     switch event.keyCode {
     case 53:  // escape
-              // perform the stop action
+      // perform the stop action
       stopSession()
     case 123: // left arrow
       if self.running {
@@ -210,29 +211,6 @@ extension ExperimentalView {
 
 extension ExperimentalView {
   
-  private var debugView: some View {
-    VStack {
-      Text(tobiiInfoText)
-      
-      amplitudeView
-        .frame(height: 80 * offSet)
-        .scenePadding([.leading, .trailing])
-        .padding()
-    }
-  }
-  
-  private var amplitudeView: some View {
-    ScrollView(.vertical) {
-      HStack(spacing: 1) {
-        ForEach(amplitudes, id: \.self) { amplitude in
-          RoundedRectangle(cornerRadius: 2)
-            .frame(width: offSet, height: CGFloat(amplitude) * offSet)
-            .foregroundColor(.white)
-        }
-      }
-    }
-  }
-  
   func startButtonClick() {
     if running {
       // stop process
@@ -251,11 +229,13 @@ extension ExperimentalView {
       try observer.startAnalyzing()
       tobii.startReadPupilDiameter()
       amplitudes = []
-      running = true
     } catch {
       running = false
       return
     }
+    
+    // start the session
+    running = true
     
     // show the first few images (less than the number of target/ stack capacity)
     
@@ -270,12 +250,15 @@ extension ExperimentalView {
     // stop analyze process
     tobii.stopReadPupilDiameter()
     observer.stopAnalyzing()
-    running = false
     
     // stop the session
+    running = false
     
     // reset the storage
     storage.reset()
+    
+    // reset engine
+    engine.reset()
   }
 }
 

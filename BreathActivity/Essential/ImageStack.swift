@@ -29,6 +29,7 @@ public class ImageStack: ObservableObject {
   }
   
   private var images: [String] = []
+  
   @Published var level: Level
   
   init(level: Level) {
@@ -72,5 +73,9 @@ public class ImageStack: ObservableObject {
   /// then those images will show in few secs instead of start to show yes or no to compare target
   var atCapacity: Bool {
     images.count == level.steps
+  }
+  
+  func setEmpty() {
+    images = []
   }
 }
