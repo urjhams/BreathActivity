@@ -22,6 +22,10 @@ struct GameView: View {
   
   @Binding var showAmplitude: Bool
   
+  @State var timeLeftContent = "Time left"
+  
+  @State var description = "description"
+  
   var stopSessionFunction: () -> ()
   
   // the engine that store the stack to check
@@ -38,16 +42,36 @@ struct GameView: View {
   
   var body: some View {
     VStack {
+      Text(timeLeftContent)
       if let currentImage = engine.current {
         Image(currentImage)
       } else {
         Color(.clear)
+      }
+      Text(description)
+      switch engine.state {
+      case .starting:
+        Button("Next") {
+          
+        }
+      case .started:
+        HStack {
+          Button("Yes") {
+            
+          }
+          Button("No") {
+            
+          }
+        }
+      case .stopped:
+        Spacer()
       }
       if showAmplitude {
         Spacer()
         debugView
       }
     }
+    .padding()
     .onAppear {
       // key pressed
       NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
@@ -95,7 +119,7 @@ extension GameView {
   }
   
   private func setupController(_ controller: GCController) {
-    controller.extendedGamepad?.buttonA.valueChangedHandler = {  _, _, pressed in
+    controller.extendedGamepad?.buttonA.valueChangedHandler = { _, _, pressed in
       guard pressed, running else {
         return
       }
