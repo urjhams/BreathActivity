@@ -26,9 +26,36 @@ struct GameView: View {
   
   @State private var description = "description"
   
-  @State private var nextClicked = false
-  @State private var yesClicked = false
-  @State private var noClicked = false
+  @State private var nextClicked = false {
+    didSet {
+      if nextClicked {
+        // submit command
+        
+        // wait for 0.5 seconds then switch back to false
+        
+      }
+    }
+  }
+  @State private var yesClicked = false {
+    didSet {
+      if yesClicked {
+        // submit command
+        
+        // wait for 0.5 seconds then switch back to false
+        
+      }
+    }
+  }
+  @State private var noClicked = false {
+    didSet {
+      if noClicked {
+        // submit command
+        
+        // wait for 0.5 seconds then switch back to false
+        
+      }
+    }
+  }
   
   var stopSessionFunction: () -> ()
   
@@ -56,16 +83,22 @@ struct GameView: View {
       switch engine.state {
       case .starting:
         Button("Next") {
-          
+          nextClicked = true
         }
+        .backgroundStyle(nextClicked ? .blue : .white)
+        .animation(.easeInOut, value: nextClicked)
       case .started:
         HStack {
           Button("Yes") {
-            
+            yesClicked = true
           }
+          .backgroundStyle(yesClicked ? .blue : .white)
+          .animation(.easeInOut, value: yesClicked)
           Button("No") {
-            
+            noClicked = true
           }
+          .backgroundStyle(noClicked ? .blue : .white)
+          .animation(.easeInOut, value: noClicked)
         }
       case .stopped:
         Spacer()
@@ -109,13 +142,11 @@ extension GameView {
       stopSessionFunction()
     case 123: // left arrow
       if self.running {
-        // TODO: active the "Yes" selected state
-        print("pressed left")
+        yesClicked = true
       }
     case 124: // right arrow
       if self.running {
-        // TODO: active the "No" selected state
-        print("pressed right")
+        noClicked = true
       }
     default:
       break
@@ -130,11 +161,11 @@ extension GameView {
       
       switch engine.state {
       case .starting:
-        // TODO: active the "Next Image" selected state
-        print("pressed Yes (A)")
+        // active the "Next Image" selected state
+        nextClicked = true
       case .started:
-        // TODO: active the "Yes" selected state
-        print("pressed Yes (A)")
+        // active the "Yes" selected state
+        yesClicked = true
       case .stopped:
         break
       }
@@ -145,8 +176,13 @@ extension GameView {
       guard pressed, running else {
         return
       }
-      // TODO: active the "No" selected state
+      guard case .starting = engine.state else {
+        return
+      }
+      
+      // active the "No" selected state
       print("pressed No (B)")
+      noClicked = true
     }
   }
 }
