@@ -7,7 +7,7 @@ public enum Level: Int, CaseIterable  {
   case hard = 4
   
   var steps: Int {
-    rawValue
+    rawValue + 1
   }
   
   var name: String {

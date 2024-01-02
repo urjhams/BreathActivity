@@ -97,6 +97,10 @@ public class ExperimentalEngine: ObservableObject {
     }
     
     addImage()
+    
+    if stack.atCapacity {
+      state = .running
+    }
   }
   
   /// When click yes, check does it match the target image
@@ -205,14 +209,6 @@ extension ExperimentalView {
     running = true
     
     engine.state = .start
-    
-    // show the first few images (less than the number of target/ stack capacity)
-    
-    // show a random image and the yes no buttons, do the check when recieve answer
-    
-    // record the correction
-    
-    // when the remaining time is 0, stop the session, store the data
   }
   
   private func stopSession() {

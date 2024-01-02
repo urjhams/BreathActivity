@@ -27,15 +27,17 @@ struct GameView: View {
   @State private var nextClicked = false {
     didSet {
       if nextClicked {
-        // submit command
-        engine.goNext()
         // wait for 0.5 seconds then switch back to false
         withAnimation(.easeInOut(duration: 0.5)) {
           nextClicked = false
         }
+        
+        // submit command
+        engine.goNext()
       }
     }
   }
+  
   @State private var yesClicked = false {
     didSet {
       if yesClicked {
@@ -45,17 +47,24 @@ struct GameView: View {
         
         if let result {
           // blink the background
+          
           // play audio
-          // go next image
+          
+          // record the result
+          
         }
         
         // wait for 0.5 seconds then switch back to false
         withAnimation(.easeInOut(duration: 0.5)) {
           yesClicked = false
         }
+        
+        // go next image
+        engine.addImage()
       }
     }
   }
+  
   @State private var noClicked = false {
     didSet {
       if noClicked {
@@ -63,14 +72,20 @@ struct GameView: View {
         let result = try? engine.answerNoCheck()
         if let result {
           //blink the background
+          
           // play audio
-          // go next image
+          
+          //record the result
+          
         }
         
         // wait for 0.5 seconds then switch back to false
         withAnimation(.easeInOut(duration: 0.5)) {
           noClicked = false
         }
+        
+        // go next image
+        engine.addImage()
       }
     }
   }
@@ -100,6 +115,9 @@ struct GameView: View {
         }
       if let currentImage = engine.current {
         Image(currentImage)
+          .resizable()
+          .aspectRatio(contentMode: .fit)
+          .frame(width: 400, height: 400)
       } else {
         Color(.clear)
       }
@@ -200,7 +218,7 @@ extension GameView {
       guard pressed, running else {
         return
       }
-      guard case .start = engine.state else {
+      guard case .running = engine.state else {
         return
       }
       
