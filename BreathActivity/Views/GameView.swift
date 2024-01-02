@@ -81,13 +81,13 @@ struct GameView: View {
       }
       Text(description)
       switch engine.state {
-      case .starting:
+      case .start:
         Button("Next") {
           nextClicked = true
         }
         .backgroundStyle(nextClicked ? .blue : .white)
         .animation(.easeInOut, value: nextClicked)
-      case .started:
+      case .running:
         HStack {
           Button("Yes") {
             yesClicked = true
@@ -100,7 +100,7 @@ struct GameView: View {
           .backgroundStyle(noClicked ? .blue : .white)
           .animation(.easeInOut, value: noClicked)
         }
-      case .stopped:
+      case .stop:
         Spacer()
       }
       if showAmplitude {
@@ -160,13 +160,13 @@ extension GameView {
       }
       
       switch engine.state {
-      case .starting:
+      case .start:
         // active the "Next Image" selected state
         nextClicked = true
-      case .started:
+      case .running:
         // active the "Yes" selected state
         yesClicked = true
-      case .stopped:
+      case .stop:
         break
       }
       
@@ -176,7 +176,7 @@ extension GameView {
       guard pressed, running else {
         return
       }
-      guard case .starting = engine.state else {
+      guard case .start = engine.state else {
         return
       }
       

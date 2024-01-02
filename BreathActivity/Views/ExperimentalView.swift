@@ -28,12 +28,12 @@ internal class DataStorage: ObservableObject {
 public class ExperimentalEngine: ObservableObject {
   
   public enum State {
-    case starting
-    case started
-    case stopped
+    case start
+    case running
+    case stop
   }
   
-  @Published var state: State = .stopped
+  @Published var state: State = .stop
   
   @Published var stack = ImageStack(level: .easy)
   
@@ -72,7 +72,7 @@ public class ExperimentalEngine: ObservableObject {
   func reset() {
     levelTime = 180
     stack.setEmpty()
-    state = .stopped
+    state = .stop
   }
   
   func addImage() {
@@ -197,7 +197,7 @@ extension ExperimentalView {
     // start the session
     running = true
     
-    engine.state = .starting
+    engine.state = .start
     
     // show the first few images (less than the number of target/ stack capacity)
     
@@ -219,7 +219,7 @@ extension ExperimentalView {
     // reset the storage
     storage.reset()
     
-    engine.state = .stopped
+    engine.state = .stop
     
     // reset engine
     engine.reset()
