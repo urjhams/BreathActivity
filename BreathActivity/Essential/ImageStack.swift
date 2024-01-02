@@ -47,16 +47,10 @@ public class ImageStack: ObservableObject {
   }
   
   func peek() -> ImageResource? {
-    guard atCapacity else {
-      return nil
-    }
     return images.last
   }
   
   func bottom() -> ImageResource? {
-    guard atCapacity else {
-      return nil
-    }
     return images.first
   }
   

@@ -21,18 +21,18 @@ struct GameView: View {
   @State private var tobiiInfoText: String = ""
   
   @State private var amplitudes = [Float]()
-  
-  @State private var timeLeftContent = "Time left"
-  
+    
   @State private var description = "description"
   
   @State private var nextClicked = false {
     didSet {
       if nextClicked {
         // submit command
-        
+        engine.goNext()
         // wait for 0.5 seconds then switch back to false
-        
+        withAnimation(.easeInOut(duration: 0.5)) {
+          nextClicked = false
+        }
       }
     }
   }
@@ -41,8 +41,18 @@ struct GameView: View {
       if yesClicked {
         // submit command
         
-        // wait for 0.5 seconds then switch back to false
+        let result = try? engine.answerYesCheck()
         
+        if let result {
+          // blink the background
+          // play audio
+          // go next image
+        }
+        
+        // wait for 0.5 seconds then switch back to false
+        withAnimation(.easeInOut(duration: 0.5)) {
+          yesClicked = false
+        }
       }
     }
   }
@@ -50,9 +60,17 @@ struct GameView: View {
     didSet {
       if noClicked {
         // submit command
+        let result = try? engine.answerNoCheck()
+        if let result {
+          //blink the background
+          // play audio
+          // go next image
+        }
         
         // wait for 0.5 seconds then switch back to false
-        
+        withAnimation(.easeInOut(duration: 0.5)) {
+          noClicked = false
+        }
       }
     }
   }
@@ -73,7 +91,13 @@ struct GameView: View {
   
   var body: some View {
     VStack {
-      Text(timeLeftContent)
+      Text("Time left: \(engine.levelTime)s")
+        .onReceive(engine.timer) { _ in
+          guard case .running = engine.state else {
+            return
+          }
+          engine.levelTime -= 1
+        }
       if let currentImage = engine.current {
         Image(currentImage)
       } else {
@@ -181,7 +205,6 @@ extension GameView {
       }
       
       // active the "No" selected state
-      print("pressed No (B)")
       noClicked = true
     }
   }

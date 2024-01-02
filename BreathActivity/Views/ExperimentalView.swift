@@ -33,7 +33,14 @@ public class ExperimentalEngine: ObservableObject {
     case stop
   }
   
-  @Published var state: State = .stop
+  @Published var state: State = .stop {
+    didSet {
+      if case .start = state {
+        // initial image
+        goNext()
+      }
+    }
+  }
   
   @Published var stack = ImageStack(level: .easy)
   
