@@ -13,18 +13,22 @@ struct GameView: View {
   
   @Binding var running: Bool
   
+  @Binding var showAmplitude: Bool
+  
   private let offSet: CGFloat = 3
   
   /// debug text
-  @State var tobiiInfoText: String = ""
+  @State private var tobiiInfoText: String = ""
   
-  @State var amplitudes = [Float]()
+  @State private var amplitudes = [Float]()
   
-  @Binding var showAmplitude: Bool
+  @State private var timeLeftContent = "Time left"
   
-  @State var timeLeftContent = "Time left"
+  @State private var description = "description"
   
-  @State var description = "description"
+  @State private var nextClicked = false
+  @State private var yesClicked = false
+  @State private var noClicked = false
   
   var stopSessionFunction: () -> ()
   

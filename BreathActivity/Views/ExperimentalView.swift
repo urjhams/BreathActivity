@@ -83,13 +83,28 @@ public class ExperimentalEngine: ObservableObject {
     
     stack.add(image)
   }
+  
+  /// add image when not in at capacity
+  func goNext() {
+    guard !stack.atCapacity else {
+      return
+    }
+    
+    addImage()
+  }
+  
+  /// When click yes, check does it match the target image
+  func answerYesCheck() throws -> Bool {
+    try matched()
+  }
+  
+  /// When click  no, check does it NOT match the target image
+  func answerNoCheck() throws -> Bool {
+    try !matched()
+  }
 
 }
 
-// TODO: do the simple stack to keep n latest image (name)
-// The size of the stack will be equal to the step (n)
-// then we just need to check the top of the stack to match with the bottom
-// when the user select "yes"
 struct ExperimentalView: View {
           
   @State var running = false
@@ -201,6 +216,8 @@ extension ExperimentalView {
     
     // reset the storage
     storage.reset()
+    
+    engine.state = .stopped
     
     // reset engine
     engine.reset()
