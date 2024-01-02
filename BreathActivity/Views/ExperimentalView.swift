@@ -12,7 +12,6 @@ import BreathObsever
 internal struct CollectedData {
   let amplitude: Float
   let pupilSize: Float
-  let currentLevel: String
 }
 
 internal class DataStorage: ObservableObject {
@@ -158,8 +157,7 @@ struct ExperimentalView: View {
         // store the data into the storage
         let collected = CollectedData(
           amplitude: amplitude,
-          pupilSize: data,
-          currentLevel: engine.stack.level.name
+          pupilSize: data
         )
         storage.collectedData.append(collected)
       }
@@ -183,6 +181,10 @@ extension ExperimentalView {
 
 extension ExperimentalView {
   private func startSession(_ level: Level) {
+    // set level name for storage
+    storage.level = engine.stack.level.name
+    print("level: \(storage.level)")
+    
     // start analyze process
     do {
       try observer.startAnalyzing()
