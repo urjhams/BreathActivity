@@ -14,8 +14,8 @@ internal struct CollectedData {
   let pupilSize: Float
 }
 
-internal class DataStorage: ObservableObject {
-  @Published var candidateName: String = ""
+@Observable internal class DataStorage {
+  var candidateName: String = ""
   var level: String = ""
   var collectedData: [CollectedData] = []
   
@@ -25,7 +25,7 @@ internal class DataStorage: ObservableObject {
   }
 }
 
-public class ExperimentalEngine: ObservableObject {
+@Observable public class ExperimentalEngine {
   
   public enum State {
     case start
@@ -33,7 +33,7 @@ public class ExperimentalEngine: ObservableObject {
     case stop
   }
   
-  @Published var state: State = .stop {
+  var state: State = .stop {
     didSet {
       if case .start = state {
         // initial image
@@ -42,11 +42,11 @@ public class ExperimentalEngine: ObservableObject {
     }
   }
   
-  @Published var stack = ImageStack(level: .easy)
+  var stack = ImageStack(level: .easy)
   
   let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
   
-  @Published var levelTime: Int = 180
+  var levelTime: Int = 180
   
   // TODO: maybe add 2 more set of images
   let images: [ImageResource] = [
@@ -120,10 +120,10 @@ struct ExperimentalView: View {
   @State var running = false
     
   // the engine that store the stack to check
-  @StateObject var engine = ExperimentalEngine()
+  @Bindable var engine = ExperimentalEngine()
   
   // use an array to store, construct the respiratory rate from amplitudes
-  @StateObject var storage = DataStorage()
+  @Bindable var storage = DataStorage()
   
   /// Tobii tracker object that read the python script
   @EnvironmentObject var tobii: TobiiTracker

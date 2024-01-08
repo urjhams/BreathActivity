@@ -12,10 +12,10 @@ struct StartView: View {
   @Binding var showAmplitude: Bool
   
   // the engine that store the stack to check
-  @ObservedObject var engine: ExperimentalEngine
+  @Bindable var engine: ExperimentalEngine
   
   // use an array to store, construct the respiratory rate from amplitudes
-  @ObservedObject var storage: DataStorage
+  @Bindable var storage: DataStorage
   
   var startButtonClick: () -> Void
   
@@ -59,8 +59,8 @@ struct StartView: View {
 #Preview {
   
   @State var showAmplitude: Bool = false
-  @StateObject var engine = ExperimentalEngine()
-  @StateObject var storage = DataStorage()
+  @Bindable var engine = ExperimentalEngine()
+  @Bindable var storage = DataStorage()
   
   return StartView(
     showAmplitude: $showAmplitude,

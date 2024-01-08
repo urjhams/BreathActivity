@@ -93,10 +93,10 @@ struct GameView: View {
   var stopSessionFunction: () -> ()
   
   // the engine that store the stack to check
-  @ObservedObject var engine: ExperimentalEngine
+  @Bindable var engine: ExperimentalEngine
   
   // use an array to store, construct the respiratory rate from amplitudes
-  @ObservedObject var storage: DataStorage
+  @Bindable var storage: DataStorage
   
   /// Tobii tracker object that read the python script
   @EnvironmentObject var tobii: TobiiTracker
@@ -271,8 +271,8 @@ extension GameView {
 #Preview {
   @State var running: Bool = true
   @State var showAmplitude: Bool = false
-  @StateObject var engine = ExperimentalEngine()
-  @StateObject var storage = DataStorage()
+  @Bindable var engine = ExperimentalEngine()
+  @Bindable var storage = DataStorage()
   
   return GameView(
     running: $running,

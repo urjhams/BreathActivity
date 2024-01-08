@@ -22,7 +22,7 @@ public enum Level: Int, CaseIterable  {
   }
 }
 
-public class ImageStack: ObservableObject {
+@Observable public class ImageStack {
   
   public enum StackError: Error {
     case notAtCap
@@ -31,7 +31,7 @@ public class ImageStack: ObservableObject {
   
   private var images: [ImageResource] = []
   
-  @Published var level: Level
+  var level: Level
   
   init(level: Level) {
     self.level = level
