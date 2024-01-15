@@ -10,6 +10,7 @@
 		4F11AAD52B0984F700C4F210 /* TobiiTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */; };
 		4F11AAD92B09939D00C4F210 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F11AAD82B09939D00C4F210 /* Extensions.swift */; };
 		4F2458042B27B2C100602B15 /* InfomationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F2458032B27B2C100602B15 /* InfomationView.swift */; };
+		4F51A6AA2B55E79200ED212A /* ExperimentalEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F51A6A92B55E79200ED212A /* ExperimentalEngine.swift */; };
 		4F5CE1952B436DA900945B37 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5CE1942B436DA900945B37 /* StartView.swift */; };
 		4F5CE1972B4377ED00945B37 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5CE1962B4377ED00945B37 /* GameView.swift */; };
 		4F5DAA902B03F9DE00A64D25 /* ExperimentalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5DAA8F2B03F9DE00A64D25 /* ExperimentalView.swift */; };
@@ -47,6 +48,7 @@
 		4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TobiiTracker.swift; sourceTree = "<group>"; };
 		4F11AAD82B09939D00C4F210 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		4F2458032B27B2C100602B15 /* InfomationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfomationView.swift; sourceTree = "<group>"; };
+		4F51A6A92B55E79200ED212A /* ExperimentalEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentalEngine.swift; sourceTree = "<group>"; };
 		4F5CE1942B436DA900945B37 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
 		4F5CE1962B4377ED00945B37 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		4F5DAA8F2B03F9DE00A64D25 /* ExperimentalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentalView.swift; sourceTree = "<group>"; };
@@ -103,6 +105,14 @@
 			path = Essential;
 			sourceTree = "<group>";
 		};
+		4F51A6AB2B55E79D00ED212A /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				4F51A6A92B55E79200ED212A /* ExperimentalEngine.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		4F5DAA8C2B03F57100A64D25 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -139,6 +149,7 @@
 		4FE0C3852B02A8EF00C82853 /* BreathActivity */ = {
 			isa = PBXGroup;
 			children = (
+				4F51A6AB2B55E79D00ED212A /* Model */,
 				4F11AADA2B0993B500C4F210 /* Essential */,
 				4F5DAA8C2B03F57100A64D25 /* Views */,
 				4FE0C3B22B02A9E300C82853 /* Python */,
@@ -321,6 +332,7 @@
 				4F5CE1972B4377ED00945B37 /* GameView.swift in Sources */,
 				4F2458042B27B2C100602B15 /* InfomationView.swift in Sources */,
 				4F5DAA902B03F9DE00A64D25 /* ExperimentalView.swift in Sources */,
+				4F51A6AA2B55E79200ED212A /* ExperimentalEngine.swift in Sources */,
 				4FE0C3872B02A8EF00C82853 /* BreathActivityApp.swift in Sources */,
 				4FFC9F172B28C82C00E70731 /* ImageStack.swift in Sources */,
 			);
