@@ -38,9 +38,9 @@ struct GameView: View {
     }
   }
   
-  @State private var yesClicked = false {
+  @State private var spaceClicked = false {
     didSet {
-      if yesClicked {
+      if spaceClicked {
         // submit command
         
         let result = try? engine.answerYesCheck()
@@ -56,32 +56,7 @@ struct GameView: View {
         
         // wait for 0.5 seconds then switch back to false
         withAnimation(.easeInOut(duration: 0.5)) {
-          yesClicked = false
-        }
-        
-        // go next image
-        engine.addImage()
-      }
-    }
-  }
-  
-  @State private var noClicked = false {
-    didSet {
-      if noClicked {
-        // submit command
-        let result = try? engine.answerNoCheck()
-        if let result {
-          //blink the background
-          
-          // play audio
-          
-          //record the result
-          
-        }
-        
-        // wait for 0.5 seconds then switch back to false
-        withAnimation(.easeInOut(duration: 0.5)) {
-          noClicked = false
+          spaceClicked = false
         }
         
         // go next image
@@ -131,16 +106,11 @@ struct GameView: View {
         .animation(.easeInOut, value: nextClicked)
       case .running:
         HStack {
-          Button("Yes") {
-            yesClicked = true
+          Button("Space") {
+            spaceClicked = true
           }
-          .backgroundStyle(yesClicked ? .blue : .white)
-          .animation(.easeInOut, value: yesClicked)
-          Button("No") {
-            noClicked = true
-          }
-          .backgroundStyle(noClicked ? .blue : .white)
-          .animation(.easeInOut, value: noClicked)
+          .backgroundStyle(spaceClicked ? .blue : .white)
+          .animation(.easeInOut, value: spaceClicked)
         }
       case .stop:
         Spacer()
@@ -157,21 +127,6 @@ struct GameView: View {
         self.setupKeyPress(from: event)
         return event
       }
-      
-      // xbox controller key pressed
-      NotificationCenter.default.addObserver(
-        forName: .GCControllerDidConnect,
-        object: nil,
-        queue: nil
-      ) { notification in
-        if let controller = notification.object as? GCController {
-          self.setupController(controller)
-        }
-      }
-      
-      for controller in GCController.controllers() {
-        self.setupController(controller)
-      }
     }
   }
 }
@@ -182,48 +137,12 @@ extension GameView {
     case 53:  // escape
               // perform the stop action
       stopSessionFunction()
-    case 123: // left arrow
+    case 49: // space
       if self.running {
-        yesClicked = true
-      }
-    case 124: // right arrow
-      if self.running {
-        noClicked = true
+        spaceClicked = true
       }
     default:
       break
-    }
-  }
-  
-  private func setupController(_ controller: GCController) {
-    controller.extendedGamepad?.buttonA.valueChangedHandler = { _, _, pressed in
-      guard pressed, running else {
-        return
-      }
-      
-      switch engine.state {
-      case .start:
-        // active the "Next Image" selected state
-        nextClicked = true
-      case .running:
-        // active the "Yes" selected state
-        yesClicked = true
-      case .stop:
-        break
-      }
-      
-    }
-    
-    controller.extendedGamepad?.buttonB.valueChangedHandler = { _, _, pressed in
-      guard pressed, running else {
-        return
-      }
-      guard case .running = engine.state else {
-        return
-      }
-      
-      // active the "No" selected state
-      noClicked = true
     }
   }
 }

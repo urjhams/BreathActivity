@@ -107,11 +107,6 @@ internal struct CollectedData {
   func answerYesCheck() throws -> Bool {
     try matched()
   }
-  
-  /// When click  no, check does it NOT match the target image
-  func answerNoCheck() throws -> Bool {
-    try !matched()
-  }
 
 }
 
