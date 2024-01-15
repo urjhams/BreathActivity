@@ -82,7 +82,7 @@ struct GameView: View {
   var body: some View {
     VStack {
       Text("Time left: \(engine.levelTime)s")
-        .onReceive(engine.timer) { _ in
+        .onReceive(engine.sessionTimer) { _ in
           guard case .running = engine.state else {
             return
           }

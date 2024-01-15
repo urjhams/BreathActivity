@@ -44,7 +44,24 @@ internal struct CollectedData {
   
   var stack = ImageStack(level: .easy)
   
-  let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+  let sessionTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+  
+  var analyzeTimer = Timer()  // this timer will publish every milisecond
+  
+  var analyzeTime: Float = 5 {
+    didSet {
+      if analyzeTime == 0 {
+        if !stack.atCapacity {
+          // keep fufill the stack
+          goNext()
+        } else {
+          // TODO: count as cannot answer
+          // go to next Image
+          goNext()
+        }
+      }
+    }
+  }
   
   var levelTime: Int = 180
   
