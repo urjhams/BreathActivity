@@ -20,7 +20,7 @@ struct ExperimentalView: View {
   @Bindable var storage = DataStorage()
   
   /// Tobii tracker object that read the python script
-  @EnvironmentObject var tobii: TobiiTracker
+  @Environment(\.tobiiTracker) var tobii
   
   /// breath observer
   @EnvironmentObject var observer: BreathObsever
@@ -38,7 +38,6 @@ struct ExperimentalView: View {
           engine: engine,
           storage: storage
         )
-        .environmentObject(tobii)
         .environmentObject(observer)
       } else {
         StartView(
@@ -125,11 +124,9 @@ extension ExperimentalView {
 
 #Preview {
   
-  @StateObject var tobii = TobiiTracker()
   @StateObject var breathObserver = BreathObsever()
   
   return ExperimentalView()
     .frame(minWidth: 500)
-    .environmentObject(tobii)
     .environmentObject(breathObserver)
 }

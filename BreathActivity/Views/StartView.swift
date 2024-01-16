@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct StartView: View {
-  
+      
   @Binding var showAmplitude: Bool
   
   // the engine that store the stack to check

@@ -10,9 +10,6 @@ import SwiftUI
 
 struct ContentView: View {
   
-  /// Tobii tracker object that read the python script
-  @EnvironmentObject var tobii: TobiiTracker
-  
   /// breath observer
   @EnvironmentObject var observer: BreathObsever
   
@@ -40,7 +37,6 @@ struct ContentView: View {
       switch selectedView ?? 0 {
       case 0:
         ExperimentalView()
-          .environmentObject(tobii)
           .environmentObject(observer)
       case 1:
         InfomationView()
@@ -55,12 +51,10 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
     
-    @StateObject var tobii = TobiiTracker()
     @StateObject var breathObserver = BreathObsever()
     
     return ContentView()
       .frame(minWidth: 500)
-      .environmentObject(tobii)
       .environmentObject(breathObserver)
   }
 }

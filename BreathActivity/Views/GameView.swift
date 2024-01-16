@@ -68,7 +68,7 @@ struct GameView: View {
   @Bindable var storage: DataStorage
   
   /// Tobii tracker object that read the python script
-  @EnvironmentObject var tobii: TobiiTracker
+  @Environment(\.tobiiTracker) var tobii
   
   /// breath observer
   @EnvironmentObject var observer: BreathObsever
