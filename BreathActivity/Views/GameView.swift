@@ -76,6 +76,17 @@ struct GameView: View {
   /// breath observer
   @EnvironmentObject var observer: BreathObsever
   
+  var promtText: String {
+    switch engine.state {
+    case .running:
+      "Does this image matches the first of the last \(engine.stack.level.rawValue) images were shown?"
+    case .start:
+      "Remember this Image"
+    case .stop:
+      "stop state (this screen should not appear in this state)"
+    }
+  }
+  
   var body: some View {
     ZStack {
       VStack {
@@ -110,18 +121,12 @@ struct GameView: View {
         } else {
           Color(.clear)
         }
-        Text({
-          switch engine.state {
-          case .running:
-            "running"
-          case .start:
-            "start"
-          case .stop:
-            "stop"
-          }
-        }())
+        Text(promtText)
+        if case .running = engine.state {
+          Text("Press space if they are matched")
+        }
+        Spacer()
         if showAmplitude {
-          Spacer()
           debugView
         }
         // work-around view to disable the "funk" error sound when click on keyboard on macOS
@@ -133,8 +138,8 @@ struct GameView: View {
     .background(screenBackground)
     .onReceive(engine.responseEvent) { event in
       Task {
-        // match when pressing space: green
-        // match by not select the un-matched image: blue
+        // correct when pressing space: green
+        // correct by not select the un-matched image: blue
         // any kind of incorrect: red
         switch event {
         case .correct(let selected):
