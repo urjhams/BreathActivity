@@ -37,8 +37,7 @@ struct MakeKeyPressSilentView: NSViewRepresentable {
     return view
   }
   
-  func updateNSView(_ nsView: NSView, context: Context) {
-  }
+  func updateNSView(_ nsView: NSView, context: Context) { }
   
 }
 
