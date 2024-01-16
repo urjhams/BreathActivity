@@ -133,13 +133,17 @@ struct GameView: View {
     .background(screenBackground)
     .onReceive(engine.responseEvent) { event in
       Task {
+        // match when pressing space: green
+        // match by not select the un-matched image: blue
+        // any kind of incorrect: red
         switch event {
-        case .correct:
+        case .correct(let selected):
+          let color: Color = selected ? .green : .blue
           if isSoundEnable {
             playSound(.correct)
           }
           withAnimation(.easeInOut(duration: 0.2)) {
-            screenBackground = .green
+            screenBackground = color
           }
           try? await Task.sleep(nanoseconds: 300_000_000)
           withAnimation(.easeInOut(duration: 0.2)) {

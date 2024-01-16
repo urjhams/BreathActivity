@@ -14,9 +14,12 @@ internal struct CollectedData {
   let pupilSize: Float
 }
 
-public enum Response: String {
-  case correct
-  case incorrect
+public enum Response {
+  // selected means the answer is correctd when the user pressed space on matched image
+  // not selected means the answer is corrected to ignore the un-matched image
+  
+  case correct(selected: Bool)
+  case incorrect(selected: Bool)
 }
 
 @Observable internal class DataStorage {
@@ -61,8 +64,10 @@ public enum Response: String {
           // keep fufill the stack
           goNext()
         } else {
-          // count as cannot answer
-          responseEvent.send(.incorrect)
+          // when the limited time passed, check:
+          // if it is matched but the user didn't press space,
+          // which mean they missed it so we counted as the wrong answer
+          responseEvent.send(matched() ? .incorrect(selected: false) : .correct(selected: false))
           // go to next Image
           goNext()
         }
@@ -101,10 +106,10 @@ public enum Response: String {
   // check the current image is matched with the target image or not
   // current image is the last image, which added latest into the stack
   // target image is the first image in the bottom of the stack
-  func matched() throws -> Bool {
+  func matched() -> Bool {
     
     guard let peak = stack.peek(), let bottom = stack.bottom() else {
-      throw ImageStack.StackError.noPeakNorBottom
+      return false
     }
     
     return peak == bottom
@@ -141,11 +146,9 @@ public enum Response: String {
   /// When click yes, check does it match the target image
   @discardableResult
   func answerYesCheck() -> Double {
+    // define the reaction time because the goNext will reset the analyze time
     let reactionTime = Self.limitReactionTime - analyzeTime
-    guard let matched = try? matched() else {
-      return reactionTime
-    }
-    responseEvent.send(matched ? .correct : .incorrect)
+    responseEvent.send(matched() ? .correct(selected: true) : .incorrect(selected: true))
     goNext()
     return reactionTime
   }
