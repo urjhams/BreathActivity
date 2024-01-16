@@ -37,7 +37,6 @@ struct ContentView: View {
       switch selectedView ?? 0 {
       case 0:
         ExperimentalView()
-          .environmentObject(observer)
       case 1:
         InfomationView()
       default:

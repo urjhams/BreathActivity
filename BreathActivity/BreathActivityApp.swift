@@ -34,8 +34,8 @@ struct BreathActivityApp: App {
     WindowGroup {
       ContentView()
         .frame(minWidth: 800, minHeight: 600)
-        .environmentObject(breathObserver)
     }
+    .environmentObject(breathObserver)
     .windowStyle(.hiddenTitleBar)
   }
 }
