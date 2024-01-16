@@ -105,7 +105,6 @@ struct GameView: View {
             engine.reduceAnalyzeTime()
           }
         if let currentImage = engine.current {
-          Spacer()
           HStack {
             Spacer()
             Image(currentImage)
@@ -117,7 +116,7 @@ struct GameView: View {
               .transition(.scale.animation(.easeInOut))
             Spacer()
           }
-          Spacer()
+          .frame(maxHeight: .infinity, alignment: .center)
         } else {
           Color(.clear)
         }
