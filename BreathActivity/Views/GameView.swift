@@ -44,6 +44,8 @@ struct MakeKeyPressSilentView: NSViewRepresentable {
 
 struct GameView: View {
   
+  @Binding var isSoundEnable: Bool
+  
   @State var screenBackground: Color = .background
   
   @Binding var running: Bool
@@ -226,10 +228,12 @@ extension GameView {
 #Preview {
   @State var running: Bool = true
   @State var showAmplitude: Bool = false
+  @State var sound = false
   @Bindable var engine = ExperimentalEngine()
   @Bindable var storage = DataStorage()
   
   return GameView(
+    isSoundEnable: $sound,
     running: $running,
     showAmplitude: $showAmplitude,
     stopSessionFunction: {},
