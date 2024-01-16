@@ -9,6 +9,39 @@ import SwiftUI
 import GameController
 import BreathObsever
 
+struct KeyEventHandling: NSViewRepresentable {
+  
+  class KeyView: NSView {
+    func isManagedByThisView(_ event: NSEvent) -> Bool {
+      return true
+    }
+    
+    override var acceptsFirstResponder: Bool { true }
+    override func keyDown(with event: NSEvent) {
+      if isManagedByThisView(event) {
+        print("pressed \(event.keyCode)")
+      } else {
+        // in `super.keyDown(with: event)`,
+        // the event goes up through the responder chain 
+        // and if no other responders process it, causes beep sound.
+        super.keyDown(with: event)
+      }
+    }
+  }
+  
+  func makeNSView(context: Context) -> NSView {
+    let view = KeyView()
+    DispatchQueue.main.async { // wait till next event cycle
+      view.window?.makeFirstResponder(view)
+    }
+    return view
+  }
+  
+  func updateNSView(_ nsView: NSView, context: Context) {
+  }
+  
+}
+
 struct GameView: View {
   
   @State var screenBackground: Color = .background
@@ -88,6 +121,9 @@ struct GameView: View {
           Spacer()
           debugView
         }
+        // work-around view to disable the "funk" error sound when click on keyboard on macOS
+        KeyEventHandling()
+          .frame(height: 0)
       }
       .padding()
     }
