@@ -53,6 +53,7 @@ struct StartView: View {
       Image(systemName: "play.fill")
         .font(.largeTitle)
     }
+    .padding()
   }
 }
 

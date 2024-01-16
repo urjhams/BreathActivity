@@ -11,6 +11,8 @@ import BreathObsever
 
 struct GameView: View {
   
+  @State var screenBackground: Color = .background
+    
   @Binding var running: Bool
   
   @Binding var showAmplitude: Bool
@@ -38,32 +40,32 @@ struct GameView: View {
     }
   }
   
-  @State private var spaceClicked = false {
-    didSet {
-      if spaceClicked {
-        // submit command
-        
-        let result = try? engine.answerYesCheck()
-        
-        if let result {
-          // blink the background
-          
-          // play audio
-          
-          // record the result
-          
-        }
-        
-        // wait for 0.5 seconds then switch back to false
-        withAnimation(.easeInOut(duration: 0.5)) {
-          spaceClicked = false
-        }
-        
-        // go next image
-        engine.addImage()
-      }
-    }
-  }
+//  @State private var spaceClicked = false {
+//    didSet {
+//      if spaceClicked {
+//        // submit command
+//        
+//        let result = try? engine.answerYesCheck()
+//        
+//        if let result {
+//          // blink the background
+//          
+//          // play audio
+//          
+//          // record the result
+//          
+//        }
+//        
+//        // wait for 0.5 seconds then switch back to false
+//        withAnimation(.easeInOut(duration: 0.5)) {
+//          spaceClicked = false
+//        }
+//        
+//        // go next image
+//        engine.addImage()
+//      }
+//    }
+//  }
   
   var stopSessionFunction: () -> ()
   
@@ -80,49 +82,77 @@ struct GameView: View {
   @EnvironmentObject var observer: BreathObsever
   
   var body: some View {
-    VStack {
-      Text("Time left: \(engine.levelTime)s")
-        .onReceive(engine.sessionTimer) { _ in
-          guard case .running = engine.state else {
-            return
+    ZStack {
+      VStack {
+        Text("Time left: \(engine.levelTime)s")
+          .onReceive(engine.sessionTimer) { _ in
+            guard case .running = engine.state else {
+              return
+            }
+            engine.levelTime -= 1
           }
-          engine.levelTime -= 1
-        }
-      if let currentImage = engine.current {
-        Image(currentImage)
-          .resizable()
-          .aspectRatio(contentMode: .fit)
-          .frame(width: 400, height: 400)
-      } else {
-        Color(.clear)
-      }
-      Text(description)
-      switch engine.state {
-      case .start:
-        Button("Next") {
-          nextClicked = true
-        }
-        .backgroundStyle(nextClicked ? .blue : .white)
-        .animation(.easeInOut, value: nextClicked)
-      case .running:
-        HStack {
-          Button("Space") {
-            spaceClicked = true
+          .padding()
+          .onReceive(engine.analyzeTimer) { _ in
+            guard [.running, .start].contains(engine.state) else {
+              return
+            }
+            engine.analyzeTime -= ExperimentalEngine.mili
           }
-          .backgroundStyle(spaceClicked ? .blue : .white)
-          .animation(.easeInOut, value: spaceClicked)
+        if let currentImage = engine.current {
+          Spacer()
+          HStack {
+            Spacer()
+            Image(currentImage)
+              .resizable()
+              .aspectRatio(contentMode: .fit)
+              .frame(width: 400, height: 400)
+              .background(.clear)
+            Spacer()
+          }
+          Spacer()
+        } else {
+          Color(.clear)
         }
-      case .stop:
-        Spacer()
+        Text({
+          switch engine.state {
+          case .running:
+            "running"
+          case .start:
+            "start"
+          case .stop:
+            "stop"
+          }
+        }())
+        if showAmplitude {
+          Spacer()
+          debugView
+        }
       }
-      if showAmplitude {
-        Spacer()
-        debugView
+      .padding()
+    }
+    .background(screenBackground)
+    .onReceive(engine.responseEvent) { event in
+      Task {
+        switch event {
+        case .correct:
+          withAnimation(.easeInOut(duration: 0.2)) {
+            screenBackground = .green
+          }
+          try? await Task.sleep(nanoseconds: 1_000_000_000)
+          withAnimation(.easeInOut(duration: 0.2)) {
+            screenBackground = .background
+          }
+          
+        case .incorrect:
+          withAnimation(.easeInOut(duration: 0.2)) {
+            screenBackground = .red
+          }
+        }
       }
     }
-    .padding()
+    .focusable(true)
     .onAppear {
-      // key pressed
+      // key pressed notification register
       NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
         self.setupKeyPress(from: event)
         return event
@@ -138,9 +168,19 @@ extension GameView {
               // perform the stop action
       stopSessionFunction()
     case 49: // space
-      if self.running {
-        spaceClicked = true
+      Task {
+        withAnimation(.easeInOut(duration: 0.2)) {
+          screenBackground = .green
+        }
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        withAnimation(.easeInOut(duration: 0.2)) {
+          screenBackground = .background
+        }
       }
+//      guard self.running else {
+//        return
+//      }
+//      engine.answerYesCheck()
     default:
       break
     }

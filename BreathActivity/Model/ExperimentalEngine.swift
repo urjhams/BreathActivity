@@ -6,10 +6,16 @@
 //
 
 import SwiftUI
+import Combine
 
 internal struct CollectedData {
   let amplitude: Float
   let pupilSize: Float
+}
+
+public enum Response: String {
+  case correct
+  case incorrect
 }
 
 @Observable internal class DataStorage {
@@ -25,7 +31,9 @@ internal struct CollectedData {
 
 @Observable public class ExperimentalEngine {
   
-  public enum State {
+  public enum State: String, Equatable, Identifiable {
+    public var id: State { self }
+    
     case start
     case running
     case stop
@@ -33,10 +41,7 @@ internal struct CollectedData {
   
   var state: State = .stop {
     didSet {
-      if case .start = state {
-        // initial image
-        goNext()
-      }
+      print("\(state.rawValue)")
     }
   }
   
@@ -44,24 +49,31 @@ internal struct CollectedData {
   
   let sessionTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
   
-  var analyzeTimer = Timer()  // this timer will publish every milisecond
+  static let mili = 0.01
+  // this timer will publish every 10 milisecond
+  var analyzeTimer = Timer.publish(every: mili, on: .main, in: .default).autoconnect()
   
-  var analyzeTime: Float = 5 {
+  var analyzeTime: Double = 5 {
     didSet {
-      if analyzeTime == 0 {
+      if analyzeTime <= 0 {
         if !stack.atCapacity {
           // keep fufill the stack
           goNext()
         } else {
-          // TODO: count as cannot answer
+          // count as cannot answer
+          responseEvent.send(.incorrect)
           // go to next Image
           goNext()
         }
+        // reset the time
+        analyzeTime = 5
       }
     }
   }
   
   var levelTime: Int = 180
+  
+  public var responseEvent = PassthroughSubject<Response, Never>()
   
   // TODO: maybe add 2 more set of images
   let images: [ImageResource] = [
@@ -119,8 +131,11 @@ internal struct CollectedData {
   }
   
   /// When click yes, check does it match the target image
-  func answerYesCheck() throws -> Bool {
-    try matched()
+  func answerYesCheck() {
+    guard let matched = try? matched() else {
+      return
+    }
+    responseEvent.send(matched ? .correct : .incorrect)
   }
   
 }

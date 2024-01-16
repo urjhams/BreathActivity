@@ -33,7 +33,7 @@ struct ExperimentalView: View {
       if running {
         GameView(
           running: $running,
-          showAmplitude: $showAmplitude, 
+          showAmplitude: $showAmplitude,
           stopSessionFunction: stopSession,
           engine: engine,
           storage: storage
@@ -67,7 +67,6 @@ struct ExperimentalView: View {
         storage.collectedData.append(collected)
       }
     }
-    .padding()
   }
 }
 
@@ -103,6 +102,7 @@ extension ExperimentalView {
     running = true
     
     engine.state = .start
+    engine.addImage()
   }
   
   private func stopSession() {
