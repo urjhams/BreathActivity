@@ -23,6 +23,9 @@ struct StartView: View {
   
   var body: some View {
     VStack {
+      Text("N-back Task")
+        .font(.largeTitle)
+        .fontWeight(.heavy)
       TextField("Candidate Name", text: $storage.candidateName)
         .padding(.all)
         .clipShape(.rect(cornerRadius: 10))
