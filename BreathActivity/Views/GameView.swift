@@ -12,7 +12,7 @@ import BreathObsever
 struct GameView: View {
   
   @State var screenBackground: Color = .background
-    
+  
   @Binding var running: Bool
   
   @Binding var showAmplitude: Bool
@@ -39,33 +39,6 @@ struct GameView: View {
       }
     }
   }
-  
-//  @State private var spaceClicked = false {
-//    didSet {
-//      if spaceClicked {
-//        // submit command
-//        
-//        let result = try? engine.answerYesCheck()
-//        
-//        if let result {
-//          // blink the background
-//          
-//          // play audio
-//          
-//          // record the result
-//          
-//        }
-//        
-//        // wait for 0.5 seconds then switch back to false
-//        withAnimation(.easeInOut(duration: 0.5)) {
-//          spaceClicked = false
-//        }
-//        
-//        // go next image
-//        engine.addImage()
-//      }
-//    }
-//  }
   
   var stopSessionFunction: () -> ()
   
@@ -147,10 +120,13 @@ struct GameView: View {
           withAnimation(.easeInOut(duration: 0.2)) {
             screenBackground = .red
           }
+          try? await Task.sleep(nanoseconds: 1_000_000_000)
+          withAnimation(.easeInOut(duration: 0.2)) {
+            screenBackground = .background
+          }
         }
       }
     }
-    .focusable(true)
     .onAppear {
       // key pressed notification register
       NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
@@ -168,19 +144,12 @@ extension GameView {
               // perform the stop action
       stopSessionFunction()
     case 49: // space
-      Task {
-        withAnimation(.easeInOut(duration: 0.2)) {
-          screenBackground = .green
-        }
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
-        withAnimation(.easeInOut(duration: 0.2)) {
-          screenBackground = .background
-        }
+      guard self.running else {
+        return
       }
-//      guard self.running else {
-//        return
-//      }
-//      engine.answerYesCheck()
+      if case .running = engine.state {
+        engine.answerYesCheck()
+      }
     default:
       break
     }
