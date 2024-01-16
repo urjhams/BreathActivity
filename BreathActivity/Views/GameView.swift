@@ -138,11 +138,11 @@ struct GameView: View {
           if isSoundEnable {
             playSound(.correct)
           }
-          withAnimation(.easeInOut(duration: 0.15)) {
+          withAnimation(.easeInOut(duration: 0.2)) {
             screenBackground = .green
           }
-          try? await Task.sleep(nanoseconds: 250_000_000)
-          withAnimation(.easeInOut(duration: 0.15)) {
+          try? await Task.sleep(nanoseconds: 300_000_000)
+          withAnimation(.easeInOut(duration: 0.2)) {
             screenBackground = .background
           }
           
@@ -150,11 +150,11 @@ struct GameView: View {
           if isSoundEnable {
             playSound(.incorrect)
           }
-          withAnimation(.easeInOut(duration: 0.15)) {
+          withAnimation(.easeInOut(duration: 0.2)) {
             screenBackground = .red
           }
-          try? await Task.sleep(nanoseconds: 250_000_000)
-          withAnimation(.easeInOut(duration: 0.15)) {
+          try? await Task.sleep(nanoseconds: 300_000_000)
+          withAnimation(.easeInOut(duration: 0.2)) {
             screenBackground = .background
           }
         }
