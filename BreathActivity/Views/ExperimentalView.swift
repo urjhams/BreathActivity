@@ -90,7 +90,6 @@ extension ExperimentalView {
   private func startSession(_ level: Level) {
     // set level name for storage
     storage.level = engine.stack.level.name
-    print("level: \(storage.level)")
     
     // start analyze process
     do {

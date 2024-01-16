@@ -8,6 +8,7 @@
 import SwiftUI
 import GameController
 import BreathObsever
+import AVFAudio
 
 struct MakeKeyPressSilentView: NSViewRepresentable {
   
@@ -135,6 +136,9 @@ struct GameView: View {
       Task {
         switch event {
         case .correct:
+          if isSoundEnable {
+            playSound(.correct)
+          }
           withAnimation(.easeInOut(duration: 0.2)) {
             screenBackground = .green
           }
@@ -144,6 +148,9 @@ struct GameView: View {
           }
           
         case .incorrect:
+          if isSoundEnable {
+            playSound(.incorrect)
+          }
           withAnimation(.easeInOut(duration: 0.2)) {
             screenBackground = .red
           }
@@ -165,6 +172,26 @@ struct GameView: View {
 }
 
 extension GameView {
+  private enum AudioCase {
+    case correct
+    case incorrect
+  }
+  
+  private func playSound(_ kind: AudioCase) {
+    let audio = switch kind {
+    case .correct:
+      NSDataAsset(name: "correct")?.data
+    case .incorrect:
+      NSDataAsset(name: "failure")?.data
+    }
+    
+    guard let audio else {
+      return
+    }
+    engine.audioPlayer = try? AVAudioPlayer(data: audio)
+    engine.audioPlayer?.play()
+  }
+  
   private func setupKeyPress(from event: NSEvent) {
     switch event.keyCode {
     case 53:  // escape

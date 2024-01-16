@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import AVFAudio
 
 internal struct CollectedData {
   let amplitude: Float
@@ -30,6 +31,8 @@ public enum Response: String {
 }
 
 @Observable public class ExperimentalEngine {
+  
+  var audioPlayer: AVAudioPlayer?
   
   public enum State: String, Equatable, Identifiable {
     public var id: State { self }
