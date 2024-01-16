@@ -132,18 +132,17 @@ struct GameView: View {
     }
     .background(screenBackground)
     .onReceive(engine.responseEvent) { event in
-      print("event: \(event.rawValue)")
       Task {
         switch event {
         case .correct:
           if isSoundEnable {
             playSound(.correct)
           }
-          withAnimation(.easeInOut(duration: 0.2)) {
+          withAnimation(.easeInOut(duration: 0.15)) {
             screenBackground = .green
           }
-          try? await Task.sleep(nanoseconds: 1_000_000_000)
-          withAnimation(.easeInOut(duration: 0.2)) {
+          try? await Task.sleep(nanoseconds: 250_000_000)
+          withAnimation(.easeInOut(duration: 0.15)) {
             screenBackground = .background
           }
           
@@ -151,11 +150,11 @@ struct GameView: View {
           if isSoundEnable {
             playSound(.incorrect)
           }
-          withAnimation(.easeInOut(duration: 0.2)) {
+          withAnimation(.easeInOut(duration: 0.15)) {
             screenBackground = .red
           }
-          try? await Task.sleep(nanoseconds: 1_000_000_000)
-          withAnimation(.easeInOut(duration: 0.2)) {
+          try? await Task.sleep(nanoseconds: 250_000_000)
+          withAnimation(.easeInOut(duration: 0.15)) {
             screenBackground = .background
           }
         }
