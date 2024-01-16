@@ -66,6 +66,8 @@ struct GameView: View {
               .aspectRatio(contentMode: .fit)
               .frame(width: 400, height: 400)
               .background(.clear)
+              .id(engine.currentImageId)
+              .transition(.scale.animation(.easeInOut))
             Spacer()
           }
           Spacer()

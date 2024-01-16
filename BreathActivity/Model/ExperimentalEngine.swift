@@ -91,6 +91,10 @@ public enum Response: String {
     stack.peek()
   }
   
+  /// This workaround make sure each time an image is push to the stack, it emits an unique Id so the transition
+  /// for the image view based on Id will always fire up even the same image is pushed
+  var currentImageId = UUID()
+  
   // check the current image is matched with the target image or not
   // current image is the last image, which added latest into the stack
   // target image is the first image in the bottom of the stack
@@ -115,6 +119,7 @@ public enum Response: String {
     }
     
     stack.add(image)
+    currentImageId = UUID()
   }
   
   /// add image when not in at capacity
