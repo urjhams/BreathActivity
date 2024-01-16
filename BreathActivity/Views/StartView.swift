@@ -41,9 +41,9 @@ struct StartView: View {
     }
     .padding(20)
     
+    Text("For \(engine.stack.level.name) mode, you will have to memorize \(engine.stack.level.rawValue) steps back")
+    
     Text("Each Level will be 3 minutes (180 seconds)")
-    Text("Press left arrow button for \"Yes\"")
-    Text("and right arrow button for \"No\".")
     
     Spacer()
     
