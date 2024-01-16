@@ -39,11 +39,7 @@ public enum Response: String {
     case stop
   }
   
-  var state: State = .stop {
-    didSet {
-      print("\(state.rawValue)")
-    }
-  }
+  var state: State = .stop
   
   var stack = ImageStack(level: .easy)
   
@@ -53,7 +49,9 @@ public enum Response: String {
   // this timer will publish every 10 milisecond
   var analyzeTimer = Timer.publish(every: mili, on: .main, in: .default).autoconnect()
   
-  var analyzeTime: Double = 5 {
+  private static let limitReactionTime: Double = 5
+  
+  private var analyzeTime: Double = limitReactionTime {
     didSet {
       if analyzeTime <= 0 {
         if !stack.atCapacity {
@@ -65,13 +63,15 @@ public enum Response: String {
           // go to next Image
           goNext()
         }
-        // reset the time
-        analyzeTime = 5
       }
     }
   }
   
-  var levelTime: Int = 180
+  private var levelTime: Int = 180
+  
+  var timeLeft: Int {
+    levelTime
+  }
   
   public var responseEvent = PassthroughSubject<Response, Never>()
   
@@ -109,7 +109,7 @@ public enum Response: String {
     state = .stop
   }
   
-  func addImage() {
+  private func addImage() {
     guard let image = images.randomElement() else {
       return
     }
@@ -119,23 +119,35 @@ public enum Response: String {
   
   /// add image when not in at capacity
   func goNext() {
-    guard !stack.atCapacity else {
-      return
-    }
     
     addImage()
     
-    if stack.atCapacity {
+    if stack.atCapacity, case .start = state {
       state = .running
     }
+    
+    // be sure to reset the analyze timer each time we switch the image
+    analyzeTime = Self.limitReactionTime
   }
   
   /// When click yes, check does it match the target image
-  func answerYesCheck() {
+  @discardableResult
+  func answerYesCheck() -> Double {
+    let reactionTime = Self.limitReactionTime - analyzeTime
     guard let matched = try? matched() else {
-      return
+      return reactionTime
     }
     responseEvent.send(matched ? .correct : .incorrect)
+    goNext()
+    return reactionTime
+  }
+  
+  func reduceTime() {
+    levelTime -= 1
+  }
+  
+  func reduceAnalyzeTime() {
+    analyzeTime -= Self.mili
   }
   
 }

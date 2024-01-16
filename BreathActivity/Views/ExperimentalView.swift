@@ -102,7 +102,7 @@ extension ExperimentalView {
     running = true
     
     engine.state = .start
-    engine.addImage()
+    engine.goNext()
   }
   
   private func stopSession() {

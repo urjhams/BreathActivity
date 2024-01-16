@@ -26,20 +26,6 @@ struct GameView: View {
     
   @State private var description = "description"
   
-  @State private var nextClicked = false {
-    didSet {
-      if nextClicked {
-        // wait for 0.5 seconds then switch back to false
-        withAnimation(.easeInOut(duration: 0.5)) {
-          nextClicked = false
-        }
-        
-        // submit command
-        engine.goNext()
-      }
-    }
-  }
-  
   var stopSessionFunction: () -> ()
   
   // the engine that store the stack to check
@@ -57,19 +43,19 @@ struct GameView: View {
   var body: some View {
     ZStack {
       VStack {
-        Text("Time left: \(engine.levelTime)s")
+        Text("Time left: \(engine.timeLeft)s")
           .onReceive(engine.sessionTimer) { _ in
             guard case .running = engine.state else {
               return
             }
-            engine.levelTime -= 1
+            engine.reduceTime()
           }
           .padding()
           .onReceive(engine.analyzeTimer) { _ in
             guard [.running, .start].contains(engine.state) else {
               return
             }
-            engine.analyzeTime -= ExperimentalEngine.mili
+            engine.reduceAnalyzeTime()
           }
         if let currentImage = engine.current {
           Spacer()
@@ -105,6 +91,7 @@ struct GameView: View {
     }
     .background(screenBackground)
     .onReceive(engine.responseEvent) { event in
+      print("event: \(event.rawValue)")
       Task {
         switch event {
         case .correct:
@@ -148,7 +135,9 @@ extension GameView {
         return
       }
       if case .running = engine.state {
-        engine.answerYesCheck()
+        let reactionTime = engine.answerYesCheck()
+        // TODO: might to use this with the storage
+        print("reaction time: \(reactionTime)")
       }
     default:
       break
