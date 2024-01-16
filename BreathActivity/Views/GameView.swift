@@ -9,7 +9,7 @@ import SwiftUI
 import GameController
 import BreathObsever
 
-struct KeyEventHandling: NSViewRepresentable {
+struct MakeKeyPressSilentView: NSViewRepresentable {
   
   class KeyView: NSView {
     func isManagedByThisView(_ event: NSEvent) -> Bool {
@@ -122,7 +122,7 @@ struct GameView: View {
           debugView
         }
         // work-around view to disable the "funk" error sound when click on keyboard on macOS
-        KeyEventHandling()
+        MakeKeyPressSilentView()
           .frame(height: 0)
       }
       .padding()
