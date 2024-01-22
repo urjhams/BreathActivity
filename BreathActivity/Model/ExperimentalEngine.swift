@@ -22,10 +22,6 @@ public enum Response {
   case incorrect(selected: Bool)
 }
 
-// TODO: make a threshold (around 3 or 5 for maximum?) of minimum step before the matched image will be shown back
-// store a bool to indicate that must show matched as false
-// store one value of unmatched count, raise it up every time a new image show, if it reach 3 (or 5?), the next image show will be the match (the variable above will be true), and reset after we show the match (just in goNext function with condition as the bool variable, if it true, show the matched and turn that value back to false, reset the unmatched count)
-
 @Observable internal class DataStorage {
   var candidateName: String = ""
   var level: String = ""
@@ -39,7 +35,7 @@ public enum Response {
 
 @Observable public class ExperimentalEngine {
   
-  let maximumUnmatched = 5
+  var maximumUnmatched = 5
   
   var unmatchedCount = 0
   
@@ -91,7 +87,6 @@ public enum Response {
   
   public var responseEvent = PassthroughSubject<Response, Never>()
   
-  // TODO: maybe add 2 more set of images
   let images: [ImageResource] = [
     .animalfaceCheetah,
     .animalfaceDuck,
@@ -142,16 +137,10 @@ public enum Response {
       }
     }
     
-    let image = if unmatchedCount == maximumUnmatched {
-      // guarantee to add the matched image
-      stack.bottom()
-    } else {
-      randomImage()
-    }
-    
-    guard let image else {
-      return
-    }
+    // guarantee to add the matched image to the next bottom
+    // if we reach the maximum unmatched cases
+    // otherwise just add a random image
+    let image = if unmatchedCount >= maximumUnmatched { stack.nextBottom } else { randomImage() }
     
     stack.add(image)
     

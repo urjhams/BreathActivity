@@ -21,6 +21,12 @@ struct StartView: View {
   // use an array to store, construct the respiratory rate from amplitudes
   @Bindable var storage: DataStorage
   
+  var promtText: String {
+    let level = engine.stack.level.name
+    let steps = engine.stack.level.rawValue
+    return "For \(level) mode, you will have to memorize \(steps) steps back"
+  }
+  
   var startButtonClick: () -> Void
   
   var body: some View {
@@ -56,7 +62,7 @@ struct StartView: View {
     }
     .padding(20)
     
-    Text("For \(engine.stack.level.name) mode, you will have to memorize \(engine.stack.level.rawValue) steps back")
+    Text(promtText)
       .font(.title2)
     
     Text("Each Level will be 3 minutes (180 seconds)")
