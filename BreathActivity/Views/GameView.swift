@@ -105,6 +105,7 @@ struct GameView: View {
             }
             engine.reduceAnalyzeTime()
           }
+          .opacity(enableLabel ? 1 : 0)
         if let currentImage = engine.current {
           HStack {
             Spacer()
@@ -122,8 +123,10 @@ struct GameView: View {
           Color(.clear)
         }
         Text(promtText)
+          .opacity(enableLabel ? 1 : 0)
         if case .running = engine.state {
           Text("Press space if they are matched")
+            .opacity(enableLabel ? 1 : 0)
         }
         Spacer()
         if showAmplitude {
