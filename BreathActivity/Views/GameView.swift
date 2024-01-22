@@ -24,8 +24,7 @@ struct MakeKeyPressSilentView: NSViewRepresentable {
         // in `super.keyDown(with: event)`,
         // the event goes up through the responder chain
         // and if no other responders process it, causes beep sound.
-        super.keyDown(with: event)
-        return
+        return super.keyDown(with: event)
       }
       // print("pressed \(event.keyCode)")
     }
@@ -44,6 +43,8 @@ struct MakeKeyPressSilentView: NSViewRepresentable {
 }
 
 struct GameView: View {
+  
+  @Binding var enableLabel: Bool
   
   @Binding var isSoundEnable: Bool
   
@@ -260,6 +261,7 @@ extension GameView {
 }
 
 #Preview {
+  @State var label: Bool = true
   @State var running: Bool = true
   @State var showAmplitude: Bool = false
   @State var sound = false
@@ -267,6 +269,7 @@ extension GameView {
   @Bindable var storage = DataStorage()
   
   return GameView(
+    enableLabel: $label,
     isSoundEnable: $sound,
     running: $running,
     showAmplitude: $showAmplitude,

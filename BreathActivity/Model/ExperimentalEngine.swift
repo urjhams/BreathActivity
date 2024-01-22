@@ -22,6 +22,10 @@ public enum Response {
   case incorrect(selected: Bool)
 }
 
+// TODO: make a threshold (around 3 or 5 for maximum?) of minimum step before the matched image will be shown back
+// store a bool to indicate that must show matched as false
+// store one value of unmatched count, raise it up every time a new image show, if it reach 3 (or 5?), the next image show will be the match (the variable above will be true), and reset after we show the match (just in goNext function with condition as the bool variable, if it true, show the matched and turn that value back to false, reset the unmatched count)
+
 @Observable internal class DataStorage {
   var candidateName: String = ""
   var level: String = ""
@@ -34,6 +38,10 @@ public enum Response {
 }
 
 @Observable public class ExperimentalEngine {
+  
+  let maximumUnmatched = 5
+  
+  var unmatchedCount = 0
   
   var audioPlayer: AVAudioPlayer?
   
@@ -122,11 +130,32 @@ public enum Response {
   }
   
   private func addImage() {
-    guard let image = images.randomElement() else {
+    
+    // random adding the image
+    func randomImage() -> ImageResource? {
+      if let current = stack.peek(), let index = images.firstIndex(of: current) {
+        var copy = images
+        copy.remove(at: index)
+        return copy.randomElement()
+      } else {
+        return images.randomElement()
+      }
+    }
+    
+    let image = if unmatchedCount == maximumUnmatched {
+      // guarantee to add the matched image
+      stack.bottom()
+    } else {
+      randomImage()
+    }
+    
+    guard let image else {
       return
     }
     
     stack.add(image)
+    
+    // generate the id for animation no matter if the same image appear
     currentImageId = UUID()
   }
   
@@ -135,8 +164,16 @@ public enum Response {
     
     addImage()
     
-    if stack.atCapacity, case .start = state {
-      state = .running
+    if stack.atCapacity {
+      switch state {
+      case .start:
+        // switch the state to running
+        state = .running
+      case .running:
+        unmatchedCount = matched() ? 0 : unmatchedCount + 1
+      case .stop:
+        break
+      }
     }
     
     // be sure to reset the analyze timer each time we switch the image

@@ -9,6 +9,8 @@ import SwiftUI
 
 struct StartView: View {
   
+  @Binding var enableLabel: Bool
+  
   @Binding var isSoundEnable: Bool
       
   @Binding var showAmplitude: Bool
@@ -32,6 +34,16 @@ struct StartView: View {
       
       Toggle("Enable response sound", isOn: $isSoundEnable)
       
+      // TODO: make the trial screen
+      
+      // TODO: save data into a json file
+      
+      // TODO: create a graph view for the data
+      
+      // TODO: make the instruction screen
+      
+      Toggle("Enable Label in Game", isOn: $enableLabel)
+      
       Picker("Level", selection: $engine.stack.level) {
         ForEach(Level.allCases, id: \.self) { level in
           Text(level.name)
@@ -45,8 +57,10 @@ struct StartView: View {
     .padding(20)
     
     Text("For \(engine.stack.level.name) mode, you will have to memorize \(engine.stack.level.rawValue) steps back")
+      .font(.title2)
     
     Text("Each Level will be 3 minutes (180 seconds)")
+      .font(.title2)
     
     Spacer()
     
@@ -66,13 +80,14 @@ struct StartView: View {
 }
 
 #Preview {
-  
+  @State var label: Bool = true
   @State var showAmplitude: Bool = false
   @State var sound = false
   @Bindable var engine = ExperimentalEngine()
   @Bindable var storage = DataStorage()
   
   return StartView(
+    enableLabel: $label, 
     isSoundEnable: $sound,
     showAmplitude: $showAmplitude,
     engine: engine,
