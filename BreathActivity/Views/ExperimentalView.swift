@@ -52,7 +52,8 @@ struct ExperimentalView: View {
           showAmplitude: $showAmplitude,
           engine: engine,
           storage: storage,
-          startButtonClick: startButtonClick
+          startButtonClick: startButtonClick, 
+          trialButtonClick: trialButtonClick
         )
       }
     }
@@ -86,6 +87,14 @@ extension ExperimentalView {
     } else {
       // start process
       startSession(engine.stack.level)
+    }
+  }
+  
+  func trialButtonClick() {
+    if running {
+      stopSession()
+    } else {
+      
     }
   }
 }

@@ -29,6 +29,8 @@ struct StartView: View {
   
   var startButtonClick: () -> Void
   
+  var trialButtonClick: () -> Void
+  
   var body: some View {
     VStack {
       Text("N-back Task")
@@ -77,9 +79,22 @@ struct StartView: View {
     .pickerStyle(.radioGroup)
     .horizontalRadioGroupLayout()
     
-    Button(action: startButtonClick) {
-      Image(systemName: "play.fill")
-        .font(.largeTitle)
+    HStack {
+      Button(action: startButtonClick) {
+        Image(systemName: "play.circle.fill")
+          .font(.largeTitle)
+      }
+      .controlSize(.extraLarge)
+      .buttonStyle(.borderless)
+      .padding()
+      
+      Button(action: trialButtonClick) {
+        Image(systemName: "questionmark.circle.fill")
+          .font(.largeTitle)
+      }
+      .controlSize(.extraLarge)
+      .buttonStyle(.borderless)
+      .padding()
     }
     .padding()
   }
@@ -98,6 +113,7 @@ struct StartView: View {
     showAmplitude: $showAmplitude,
     engine: engine,
     storage: storage,
-    startButtonClick: {}
+    startButtonClick: {},
+    trialButtonClick: {}
   )
 }

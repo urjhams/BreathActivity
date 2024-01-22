@@ -148,7 +148,7 @@ public enum Response {
     currentImageId = UUID()
   }
   
-  /// add image when not in at capacity
+  /// add next image to the stack
   func goNext() {
     
     addImage()
