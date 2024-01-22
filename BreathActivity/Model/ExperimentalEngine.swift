@@ -35,8 +35,6 @@ public enum Response {
 
 @Observable public class ExperimentalEngine {
   
-  var trialMode = false
-  
   var maximumUnmatched = 5
   
   var unmatchedCount = 0
@@ -81,6 +79,15 @@ public enum Response {
     }
   }
   
+  var trialMode = false {
+    didSet {
+      levelTime = trialMode ? trialLimit : experimentalLimit
+    }
+  }
+  
+  private let trialLimit: Int = 60
+  private let experimentalLimit: Int = 300
+  
   private var levelTime: Int = 180
   
   var timeLeft: Int {
@@ -121,7 +128,7 @@ public enum Response {
   }
   
   func reset() {
-    levelTime = 180
+    trialMode = false
     stack.setEmpty()
     state = .stop
   }
@@ -129,7 +136,7 @@ public enum Response {
   private func addImage() {
     
     // random adding the image
-    func randomImage() -> ImageResource? {
+    var randomImage: ImageResource? {
       if let current = stack.peek(), let index = images.firstIndex(of: current) {
         var copy = images
         copy.remove(at: index)
@@ -142,7 +149,7 @@ public enum Response {
     // guarantee to add the matched image to the next bottom
     // if we reach the maximum unmatched cases
     // otherwise just add a random image
-    let image = if unmatchedCount >= maximumUnmatched { stack.nextBottom } else { randomImage() }
+    let image = if unmatchedCount >= maximumUnmatched { stack.nextBottom } else { randomImage }
     
     stack.add(image)
     

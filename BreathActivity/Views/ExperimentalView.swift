@@ -101,6 +101,7 @@ extension ExperimentalView {
 extension ExperimentalView {
   
   private func startTrialSession() {
+    // turn on the trial model
     engine.trialMode = true
     labelEnable = true
     engine.stack.level = .easy
@@ -133,8 +134,6 @@ extension ExperimentalView {
   }
   
   private func stopSession() {
-    // turn off trial mode if needed and disable the label
-    engine.trialMode = false
     labelEnable = false
     
     // stop analyze process
