@@ -47,7 +47,6 @@ struct ExperimentalView: View {
         .environmentObject(observer)
       } else {
         StartView(
-          enableLabel: $labelEnable,
           isSoundEnable: $gameSoundEnable,
           showAmplitude: $showAmplitude,
           engine: engine,
@@ -86,7 +85,7 @@ extension ExperimentalView {
       stopSession()
     } else {
       // start process
-      startSession(engine.stack.level)
+      startSession()
     }
   }
   
@@ -94,13 +93,26 @@ extension ExperimentalView {
     if running {
       stopSession()
     } else {
-      
+      startTrialSession()
     }
   }
 }
 
 extension ExperimentalView {
-  private func startSession(_ level: Level) {
+  
+  private func startTrialSession() {
+    engine.trialMode = true
+    labelEnable = true
+    engine.stack.level = .easy
+    
+    // start the session
+    running = true
+    
+    engine.state = .start
+    engine.goNext()
+  }
+  
+  private func startSession() {
     // set level name for storage
     storage.level = engine.stack.level.name
     
@@ -121,6 +133,10 @@ extension ExperimentalView {
   }
   
   private func stopSession() {
+    // turn off trial mode if needed and disable the label
+    engine.trialMode = false
+    labelEnable = false
+    
     // stop analyze process
     tobii.stopReadPupilDiameter()
     observer.stopAnalyzing()

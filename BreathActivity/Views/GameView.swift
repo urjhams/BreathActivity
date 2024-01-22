@@ -45,6 +45,14 @@ struct MakeKeyPressSilentView: NSViewRepresentable {
 struct GameView: View {
   
   @Binding var enableLabel: Bool
+  private var opacity: Double {
+    switch engine.state {
+    case .start:
+      return 1
+    default:
+      return enableLabel ? 1 : 0
+    }
+  }
   
   @Binding var isSoundEnable: Bool
   
@@ -105,7 +113,7 @@ struct GameView: View {
             }
             engine.reduceAnalyzeTime()
           }
-          .opacity(enableLabel ? 1 : 0)
+          .opacity(engine.trialMode ? 1 : 0)
         if let currentImage = engine.current {
           HStack {
             Spacer()
@@ -123,10 +131,10 @@ struct GameView: View {
           Color(.clear)
         }
         Text(promtText)
-          .opacity(enableLabel ? 1 : 0)
+          .opacity(opacity)
         if case .running = engine.state {
           Text("Press space if they are matched")
-            .opacity(enableLabel ? 1 : 0)
+            .opacity(opacity)
         }
         Spacer()
         if showAmplitude {

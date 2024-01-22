@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct StartView: View {
-  
-  @Binding var enableLabel: Bool
-  
+    
   @Binding var isSoundEnable: Bool
       
   @Binding var showAmplitude: Bool
@@ -41,17 +39,13 @@ struct StartView: View {
         .clipShape(.rect(cornerRadius: 10))
       
       Toggle("Enable response sound", isOn: $isSoundEnable)
-      
-      // TODO: make the trial screen
-      
+            
       // TODO: save data into a json file
       
       // TODO: create a graph view for the data
       
       // TODO: make the instruction screen
-      
-      Toggle("Enable Label in Game", isOn: $enableLabel)
-      
+            
       Picker("Level", selection: $engine.stack.level) {
         ForEach(Level.allCases, id: \.self) { level in
           Text(level.name)
@@ -108,7 +102,6 @@ struct StartView: View {
   @Bindable var storage = DataStorage()
   
   return StartView(
-    enableLabel: $label, 
     isSoundEnable: $sound,
     showAmplitude: $showAmplitude,
     engine: engine,

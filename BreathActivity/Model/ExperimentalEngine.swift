@@ -35,6 +35,8 @@ public enum Response {
 
 @Observable public class ExperimentalEngine {
   
+  var trialMode = false
+  
   var maximumUnmatched = 5
   
   var unmatchedCount = 0
