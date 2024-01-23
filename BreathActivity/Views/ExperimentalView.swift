@@ -82,7 +82,7 @@ extension ExperimentalView {
   func startButtonClick() {
     if running {
       // stop process
-      stopSession(byEndOfTime: false)
+      stopSession(endOfTime: false)
     } else {
       // start process
       startSession()
@@ -91,7 +91,7 @@ extension ExperimentalView {
   
   func trialButtonClick() {
     if running {
-      stopSession(byEndOfTime: false)
+      stopSession(endOfTime: false)
     } else {
       startTrialSession()
     }
@@ -137,9 +137,9 @@ extension ExperimentalView {
     engine.goNext()
   }
   
-  private func stopSession(byEndOfTime: Bool) {
+  private func stopSession(endOfTime: Bool) {
     
-    if byEndOfTime, !engine.trialMode {
+    if endOfTime, !engine.trialMode {
       IOManager.tryToWrite(storage)
     }
     
