@@ -65,7 +65,7 @@ struct ExperimentalView: View {
       }
       
       Task { @MainActor in
-        print("\(amplitude) - \(data) - \( engine.stack.level.rawValue)")
+        print("\(amplitude) - \(data)")
         // store the data into the storage
         let collected = CollectedData(
           amplitude: amplitude,
@@ -82,7 +82,7 @@ extension ExperimentalView {
   func startButtonClick() {
     if running {
       // stop process
-      stopSession()
+      stopSession(byEndOfTime: false)
     } else {
       // start process
       startSession()
@@ -91,7 +91,7 @@ extension ExperimentalView {
   
   func trialButtonClick() {
     if running {
-      stopSession()
+      stopSession(byEndOfTime: false)
     } else {
       startTrialSession()
     }
@@ -133,7 +133,12 @@ extension ExperimentalView {
     engine.goNext()
   }
   
-  private func stopSession() {
+  private func stopSession(byEndOfTime: Bool) {
+    
+    if byEndOfTime {
+      // TODO: collect the data from storage here
+    }
+    
     labelEnable = false
     
     // stop analyze process

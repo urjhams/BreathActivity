@@ -14,22 +14,42 @@ internal struct CollectedData {
   let pupilSize: Float
 }
 
-public enum Response {
-  // selected means the answer is correctd when the user pressed space on matched image
-  // not selected means the answer is corrected to ignore the un-matched image
+public struct Response {
+  public enum ReactionType {
+    case passive(waitedTime: Double)
+    case direct(reactionTime: Double)
+    
+    var time: Double {
+      switch self {
+      case .passive(let waitedTime):
+        return waitedTime
+      case .direct(let reactionTime):
+        return reactionTime
+      }
+    }
+  }
+  public enum ResponseType {
+    // selected means the answer is correctd when the user pressed space on matched image
+    // not selected means the answer is corrected to ignore the un-matched image
+    
+    case correct(selected: Bool)
+    case incorrect(selected: Bool)
+  }
   
-  case correct(selected: Bool)
-  case incorrect(selected: Bool)
+  var type: ResponseType
+  var reaction: ReactionType
 }
 
 @Observable internal class DataStorage {
   var candidateName: String = ""
   var level: String = ""
   var collectedData: [CollectedData] = []
+  var responses: [Response] = []
   
   public func reset() {
     level = ""
     collectedData = []
+    responses = []
   }
 }
 
@@ -71,7 +91,16 @@ public enum Response {
           // when the limited time passed, check:
           // if it is matched but the user didn't press space,
           // which mean they missed it so we counted as the wrong answer
-          responseEvent.send(matched() ? .incorrect(selected: false) : .correct(selected: false))
+          
+          let response: Response.ResponseType =
+            matched() ?  .incorrect(selected: false) : .correct(selected: false)
+          
+          let reactionType: Response.ReactionType = 
+            .passive(waitedTime: Self.limitReactionTime)
+          
+          let result = Response(type: response, reaction: reactionType)
+          
+          responseEvent.send(result)
           // go to next Image
           goNext()
         }
@@ -179,13 +208,23 @@ public enum Response {
   }
   
   /// When click yes, check does it match the target image
-  @discardableResult
-  func answerYesCheck() -> Double {
+  func answerYesCheck() {
     // define the reaction time because the goNext will reset the analyze time
     let reactionTime = Self.limitReactionTime - analyzeTime
-    responseEvent.send(matched() ? .correct(selected: true) : .incorrect(selected: true))
+    
+    let response: Response.ResponseType =
+      matched() ? .correct(selected: true) : .incorrect(selected: true)
+    
+    let reactionType: Response.ReactionType =
+      reactionTime == Self.limitReactionTime ?
+      .passive(waitedTime: reactionTime) :
+      .direct(reactionTime: reactionTime)
+    
+    let result = Response(type: response, reaction: reactionType)
+    
+    responseEvent.send(result)
+    
     goNext()
-    return reactionTime
   }
   
   func reduceTime() {

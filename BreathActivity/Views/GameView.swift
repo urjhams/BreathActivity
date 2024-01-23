@@ -71,7 +71,7 @@ struct GameView: View {
     
   @State private var description = "description"
   
-  var stopSessionFunction: () -> ()
+  var stopSessionFunction: (Bool) -> ()
   
   // the engine that store the stack to check
   @Bindable var engine: ExperimentalEngine
@@ -107,7 +107,7 @@ struct GameView: View {
             engine.reduceTime()
             // stop the session when end of time
             if engine.timeLeft == 0 {
-              stopSessionFunction()
+              stopSessionFunction(true)
             }
           }
           .padding()
@@ -151,12 +151,12 @@ struct GameView: View {
       .padding()
     }
     .background(screenBackground)
-    .onReceive(engine.responseEvent) { event in
+    .onReceive(engine.responseEvent) { response in
       Task {
         // correct when pressing space: green
         // correct by not select the un-matched image: blue
         // any kind of incorrect: red
-        switch event {
+        switch response.type {
         case .correct(let selected):
           let color: Color = selected ? .green : .blue
           if isSoundEnable {
@@ -182,9 +182,13 @@ struct GameView: View {
             screenBackground = .background
           }
         }
+        let reactionTime = response.reaction.time
+        storage.responses.append(response)
       }
     }
     .onAppear {
+      // set level for storage
+      storage.level = engine.stack.level.name
       // key pressed notification register
       NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
         self.setupKeyPress(from: event)
@@ -219,15 +223,13 @@ extension GameView {
     switch event.keyCode {
     case 53:  // escape
               // perform the stop action
-      stopSessionFunction()
+      stopSessionFunction(false)
     case 49: // space
       guard self.running else {
         return
       }
       if case .running = engine.state {
-        let reactionTime = engine.answerYesCheck()
-        // TODO: might to use this with the storage
-        print("reaction time: \(reactionTime)")
+        engine.answerYesCheck()
       }
     default:
       break
@@ -288,7 +290,7 @@ extension GameView {
     isSoundEnable: $sound,
     running: $running,
     showAmplitude: $showAmplitude,
-    stopSessionFunction: {},
+    stopSessionFunction: {_ in },
     engine: engine,
     storage: storage
   )
