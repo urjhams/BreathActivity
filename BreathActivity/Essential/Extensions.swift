@@ -1,6 +1,14 @@
 import SwiftUI
 import Combine
 
+extension Encodable {
+  /// Converting object to postable JSON
+  func toJSON(_ encoder: JSONEncoder = JSONEncoder()) throws -> String {
+    let data = try encoder.encode(self)
+    return String(decoding: data, as: UTF8.self)
+  }
+}
+
 extension Collection {
   /// Returns the element at the specified index if it is within bounds, otherwise nil.
   subscript (safe index: Index) -> Element? {
