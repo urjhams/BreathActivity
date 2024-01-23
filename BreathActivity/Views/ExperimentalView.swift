@@ -139,7 +139,7 @@ extension ExperimentalView {
   
   private func stopSession(byEndOfTime: Bool) {
     
-    if byEndOfTime {
+    if byEndOfTime, !engine.trialMode {
       tryToWrite(storage)
     }
     
