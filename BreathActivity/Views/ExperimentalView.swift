@@ -140,11 +140,7 @@ extension ExperimentalView {
   private func stopSession(byEndOfTime: Bool) {
     
     if byEndOfTime {
-      // TODO: collect the data from storage here
-      if let dictionary = storage.dictionary,
-         let json = dictionary.jsonStringRepresentaiton {
-        print("response: \(json)")
-      }
+      tryToWrite(storage)
     }
     
     labelEnable = false
@@ -166,35 +162,28 @@ extension ExperimentalView {
   }
 }
 
-extension Encodable {
-  
-  var dictionary: [String: Any]? {
-    guard let data = try? JSONEncoder().encode(self) else {
-      return nil
-    }
-    return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))
-      .flatMap { $0 as? [String: Any] }
-  }
-  
-}
-
-extension Dictionary {
-  var jsonStringRepresentaiton: String? {
-    guard let theJSONData = try? JSONSerialization.data(withJSONObject: self,
-                                                        options: [.prettyPrinted]) else {
-      return nil
-    }
+extension ExperimentalView {
+  func tryToWrite(_ storage: DataStorage) {
+    let fileName = "\(storage.candidateName) - \(storage.level)"
+    let fileUrl = try? FileManager
+      .default
+      .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+      .appendingPathComponent(fileName, conformingTo: .json)
     
-    return String(data: theJSONData, encoding: .ascii)
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+    
+    if let fileUrl {
+      try? encoder.encode(storage).write(to: fileUrl)
+    }
   }
 }
 
 extension Encodable {
   /// Converting object to postable JSON
-  func toJSON(_ encoder: JSONEncoder = JSONEncoder()) throws -> NSString {
+  func toJSON(_ encoder: JSONEncoder = JSONEncoder()) throws -> String {
     let data = try encoder.encode(self)
-    let result = String(decoding: data, as: UTF8.self)
-    return NSString(string: result)
+    return String(decoding: data, as: UTF8.self)
   }
 }
 
