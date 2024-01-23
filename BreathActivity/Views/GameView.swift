@@ -105,6 +105,10 @@ struct GameView: View {
               return
             }
             engine.reduceTime()
+            // stop the session when end of time
+            if engine.timeLeft == 0 {
+              stopSessionFunction()
+            }
           }
           .padding()
           .onReceive(engine.analyzeTimer) { _ in
