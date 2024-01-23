@@ -182,7 +182,6 @@ struct GameView: View {
             screenBackground = .background
           }
         }
-        let reactionTime = response.reaction.time
         storage.responses.append(response)
       }
     }
@@ -216,6 +215,7 @@ extension GameView {
       return
     }
     engine.audioPlayer = try? AVAudioPlayer(data: audio)
+    engine.audioPlayer?.volume = 0.02  // set the volume as low as possible
     engine.audioPlayer?.play()
   }
   
