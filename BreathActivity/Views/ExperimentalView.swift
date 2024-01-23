@@ -104,6 +104,7 @@ extension ExperimentalView {
     // turn on the trial model
     engine.trialMode = true
     labelEnable = true
+    // manually set easy level for trial mode
     engine.stack.level = .easy
     
     // start the session
@@ -114,6 +115,9 @@ extension ExperimentalView {
   }
   
   private func startSession() {
+    // turn off the trial model
+    engine.trialMode = false
+    
     // set level name for storage
     storage.level = engine.stack.level.name
     
@@ -137,6 +141,10 @@ extension ExperimentalView {
     
     if byEndOfTime {
       // TODO: collect the data from storage here
+      if let dictionary = storage.dictionary,
+         let json = dictionary.jsonStringRepresentaiton {
+        print("response: \(json)")
+      }
     }
     
     labelEnable = false
@@ -155,6 +163,38 @@ extension ExperimentalView {
     
     // reset engine
     engine.reset()
+  }
+}
+
+extension Encodable {
+  
+  var dictionary: [String: Any]? {
+    guard let data = try? JSONEncoder().encode(self) else {
+      return nil
+    }
+    return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments))
+      .flatMap { $0 as? [String: Any] }
+  }
+  
+}
+
+extension Dictionary {
+  var jsonStringRepresentaiton: String? {
+    guard let theJSONData = try? JSONSerialization.data(withJSONObject: self,
+                                                        options: [.prettyPrinted]) else {
+      return nil
+    }
+    
+    return String(data: theJSONData, encoding: .ascii)
+  }
+}
+
+extension Encodable {
+  /// Converting object to postable JSON
+  func toJSON(_ encoder: JSONEncoder = JSONEncoder()) throws -> NSString {
+    let data = try encoder.encode(self)
+    let result = String(decoding: data, as: UTF8.self)
+    return NSString(string: result)
   }
 }
 

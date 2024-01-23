@@ -9,13 +9,13 @@ import SwiftUI
 import Combine
 import AVFAudio
 
-internal struct CollectedData {
+internal struct CollectedData: Codable {
   let amplitude: Float
   let pupilSize: Float
 }
 
-public struct Response {
-  public enum ReactionType {
+public struct Response: Codable {
+  public enum ReactionType: Codable {
     case passive(waitedTime: Double)
     case direct(reactionTime: Double)
     
@@ -28,7 +28,7 @@ public struct Response {
       }
     }
   }
-  public enum ResponseType {
+  public enum ResponseType: Codable {
     // selected means the answer is correctd when the user pressed space on matched image
     // not selected means the answer is corrected to ignore the un-matched image
     
@@ -40,7 +40,7 @@ public struct Response {
   var reaction: ReactionType
 }
 
-@Observable internal class DataStorage {
+@Observable internal class DataStorage: Codable {
   var candidateName: String = ""
   var level: String = ""
   var collectedData: [CollectedData] = []
@@ -115,7 +115,7 @@ public struct Response {
   }
   
   private let trialLimit: Int = 60
-  private let experimentalLimit: Int = 300
+  private let experimentalLimit: Int = 20//300
   
   private var levelTime: Int = 180
   
@@ -229,6 +229,7 @@ public struct Response {
   
   func reduceTime() {
     levelTime -= 1
+    print("time left : \(levelTime)")
   }
   
   func reduceAnalyzeTime() {
