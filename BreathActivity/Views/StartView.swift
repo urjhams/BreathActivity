@@ -40,7 +40,6 @@ struct StartView: View {
       
       Toggle("Enable response sound", isOn: $isSoundEnable)
             
-      // TODO: save data into a json file
       
       // TODO: create a graph view for the data
       
