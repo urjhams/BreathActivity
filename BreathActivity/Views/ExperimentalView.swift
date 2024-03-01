@@ -10,9 +10,7 @@ import Combine
 import BreathObsever
 
 struct ExperimentalView: View {
-  
-  @State var gameSoundEnable = true
-  
+    
   @State var labelEnable = false
           
   @State var running = false
@@ -37,7 +35,6 @@ struct ExperimentalView: View {
       if running {
         GameView(
           enableLabel: $labelEnable,
-          isSoundEnable: $gameSoundEnable,
           running: $running,
           showAmplitude: $showAmplitude,
           stopSessionFunction: stopSession,
@@ -47,7 +44,6 @@ struct ExperimentalView: View {
         .environmentObject(observer)
       } else {
         StartView(
-          isSoundEnable: $gameSoundEnable,
           showAmplitude: $showAmplitude,
           engine: engine,
           storage: storage,

@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct StartView: View {
-    
-  @Binding var isSoundEnable: Bool
-      
+          
   @Binding var showAmplitude: Bool
   
   // the engine that store the stack to check
@@ -37,13 +35,6 @@ struct StartView: View {
       TextField("Candidate Name", text: $storage.candidateName)
         .padding(.all)
         .clipShape(.rect(cornerRadius: 10))
-      
-      Toggle("Enable response sound", isOn: $isSoundEnable)
-            
-      
-      // TODO: create a graph view for the data
-      
-      // TODO: make the instruction screen
             
       Picker("Level", selection: $engine.stack.level) {
         ForEach(Level.allCases, id: \.self) { level in
@@ -96,12 +87,10 @@ struct StartView: View {
 #Preview {
   @State var label: Bool = true
   @State var showAmplitude: Bool = false
-  @State var sound = false
   @Bindable var engine = ExperimentalEngine()
   @Bindable var storage = DataStorage()
   
   return StartView(
-    isSoundEnable: $sound,
     showAmplitude: $showAmplitude,
     engine: engine,
     storage: storage,

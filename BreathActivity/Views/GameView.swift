@@ -53,9 +53,7 @@ struct GameView: View {
       return enableLabel ? 1 : 0
     }
   }
-  
-  @Binding var isSoundEnable: Bool
-  
+    
   @State var screenBackground: Color = .background
   
   @Binding var running: Bool
@@ -159,9 +157,6 @@ struct GameView: View {
         switch response.type {
         case .correct(let selected):
           let color: Color = selected ? .green : .blue
-          if isSoundEnable {
-            playSound(.correct)
-          }
           withAnimation(.easeInOut(duration: 0.2)) {
             screenBackground = color
           }
@@ -171,9 +166,6 @@ struct GameView: View {
           }
           
         case .incorrect:
-          if isSoundEnable {
-            playSound(.incorrect)
-          }
           withAnimation(.easeInOut(duration: 0.2)) {
             screenBackground = .red
           }
@@ -201,22 +193,6 @@ extension GameView {
   private enum AudioCase {
     case correct
     case incorrect
-  }
-  
-  private func playSound(_ kind: AudioCase) {
-    let audio = switch kind {
-    case .correct:
-      NSDataAsset(name: "correct")?.data
-    case .incorrect:
-      NSDataAsset(name: "failure")?.data
-    }
-    
-    guard let audio else {
-      return
-    }
-    engine.audioPlayer = try? AVAudioPlayer(data: audio)
-    engine.audioPlayer?.volume = 0.02  // set the volume as low as possible
-    engine.audioPlayer?.play()
   }
   
   private func setupKeyPress(from event: NSEvent) {
@@ -287,7 +263,6 @@ extension GameView {
   
   return GameView(
     enableLabel: $label,
-    isSoundEnable: $sound,
     running: $running,
     showAmplitude: $showAmplitude,
     stopSessionFunction: {_ in },
