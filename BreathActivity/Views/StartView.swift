@@ -23,18 +23,19 @@ struct StartView: View {
       Text("N-back Task")
         .font(.largeTitle)
         .fontWeight(.heavy)
-      TextField("Candidate Name", text: $storage.candidateName)
+      TextField("Your Name", text: $storage.candidateName)
         .padding(.all)
         .clipShape(.rect(cornerRadius: 10))
     }
     .padding(20)
     
-    Text("Each Level will be 3 minutes (180 seconds)")
+    Text("Welcome to my Experiment. \nI really appraciate you for participating 🤗")
       .font(.title2)
+      .multilineTextAlignment(.center)
     
     Spacer()
     
-    Picker("Show amplitude", selection: $showAmplitude) {
+    Picker("Show amplitude (for debugging purpose)", selection: $showAmplitude) {
       Text("Yes").tag(true)
       Text("No").tag(false)
     }

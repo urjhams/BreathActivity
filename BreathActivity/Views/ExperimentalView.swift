@@ -60,8 +60,10 @@ struct ExperimentalView: View {
         )
         .environmentObject(observer)
       case .instruction(let level):
+        // TODO: create instruction view
         Spacer()
       case .trial(let level):
+        // TODO: create trial view seperate with game view
         Spacer()
       }
     }
