@@ -96,6 +96,21 @@ struct ExperimentalView: View {
 extension ExperimentalView {
   
   func startButtonClick() {
+    
+    guard case .start = state else {
+      return
+    }
+    
+    // TODO: start the breath observer session
+    
+    // TODO: generate the level order sequence array
+    
+    // TODO: change the state to running with the first element of the array
+    
+    // TODO: remove the first element of the array
+    
+    // TODO: in the end of each level, remember to remove the first element of the array, and set the state. If it is empty, set back to start, or we create an end state with the end view to show a text about the result.
+    
 //    if running {
 //      // stop process
 //      stopSession(endOfTime: false)
