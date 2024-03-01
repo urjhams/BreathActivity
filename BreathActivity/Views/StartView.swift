@@ -23,9 +23,14 @@ struct StartView: View {
       Text("N-back Task")
         .font(.largeTitle)
         .fontWeight(.heavy)
-      TextField("Your Name", text: $storage.candidateName)
-        .padding(.all)
-        .clipShape(.rect(cornerRadius: 10))
+      HStack {
+        Spacer()
+        TextField("Your Name", text: $storage.candidateName)
+          .frame(minWidth: 150, maxWidth: 300)
+          .padding(.all)
+          .clipShape(.rect(cornerRadius: 10))
+        Spacer()
+      }
     }
     .padding(20)
     
