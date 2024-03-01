@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		4F11AAD52B0984F700C4F210 /* TobiiTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */; };
 		4F11AAD92B09939D00C4F210 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F11AAD82B09939D00C4F210 /* Extensions.swift */; };
-		4F2458042B27B2C100602B15 /* InfomationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F2458032B27B2C100602B15 /* InfomationView.swift */; };
-		4F43902F2B6066DF00247198 /* GraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F43902E2B6066DF00247198 /* GraphView.swift */; };
 		4F4390312B60672800247198 /* IOManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4390302B60672800247198 /* IOManager.swift */; };
 		4F51A6AA2B55E79200ED212A /* ExperimentalEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F51A6A92B55E79200ED212A /* ExperimentalEngine.swift */; };
 		4F5CE1952B436DA900945B37 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5CE1942B436DA900945B37 /* StartView.swift */; };
@@ -25,7 +23,6 @@
 		4FE0C3B62B02A9E300C82853 /* Python in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C3B22B02A9E300C82853 /* Python */; };
 		4FE0C3B72B02A9E300C82853 /* SupportingFiles in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C3B32B02A9E300C82853 /* SupportingFiles */; };
 		4FE0C3BE2B02AB6500C82853 /* BreathObsever in Frameworks */ = {isa = PBXBuildFile; productRef = 4FE0C3BD2B02AB6500C82853 /* BreathObsever */; };
-		4FE0C3C52B02AF6D00C82853 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3C42B02AF6D00C82853 /* ContentView.swift */; };
 		4FFC9F172B28C82C00E70731 /* ImageStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FFC9F162B28C82C00E70731 /* ImageStack.swift */; };
 /* End PBXBuildFile section */
 
@@ -49,8 +46,6 @@
 /* Begin PBXFileReference section */
 		4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TobiiTracker.swift; sourceTree = "<group>"; };
 		4F11AAD82B09939D00C4F210 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		4F2458032B27B2C100602B15 /* InfomationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfomationView.swift; sourceTree = "<group>"; };
-		4F43902E2B6066DF00247198 /* GraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphView.swift; sourceTree = "<group>"; };
 		4F4390302B60672800247198 /* IOManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOManager.swift; sourceTree = "<group>"; };
 		4F51A6A92B55E79200ED212A /* ExperimentalEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentalEngine.swift; sourceTree = "<group>"; };
 		4F5CE1942B436DA900945B37 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
@@ -69,7 +64,6 @@
 		4FE0C3B22B02A9E300C82853 /* Python */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Python; sourceTree = "<group>"; };
 		4FE0C3B32B02A9E300C82853 /* SupportingFiles */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SupportingFiles; sourceTree = "<group>"; };
 		4FE0C3C32B02AF4100C82853 /* BreathObsever */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = BreathObsever; path = ../BreathObsever; sourceTree = "<group>"; };
-		4FE0C3C42B02AF6D00C82853 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		4FFC9F162B28C82C00E70731 /* ImageStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageStack.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -103,30 +97,27 @@
 			isa = PBXGroup;
 			children = (
 				4F11AAD82B09939D00C4F210 /* Extensions.swift */,
-				4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */,
-				4FFC9F162B28C82C00E70731 /* ImageStack.swift */,
 				4F4390302B60672800247198 /* IOManager.swift */,
 			);
 			path = Essential;
 			sourceTree = "<group>";
 		};
-		4F51A6AB2B55E79D00ED212A /* Model */ = {
+		4F51A6AB2B55E79D00ED212A /* Engine & Model */ = {
 			isa = PBXGroup;
 			children = (
+				4FFC9F162B28C82C00E70731 /* ImageStack.swift */,
+				4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */,
 				4F51A6A92B55E79200ED212A /* ExperimentalEngine.swift */,
 			);
-			path = Model;
+			path = "Engine & Model";
 			sourceTree = "<group>";
 		};
 		4F5DAA8C2B03F57100A64D25 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				4FE0C3C42B02AF6D00C82853 /* ContentView.swift */,
 				4F5DAA8F2B03F9DE00A64D25 /* ExperimentalView.swift */,
-				4F2458032B27B2C100602B15 /* InfomationView.swift */,
 				4F5CE1942B436DA900945B37 /* StartView.swift */,
 				4F5CE1962B4377ED00945B37 /* GameView.swift */,
-				4F43902E2B6066DF00247198 /* GraphView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -155,7 +146,7 @@
 		4FE0C3852B02A8EF00C82853 /* BreathActivity */ = {
 			isa = PBXGroup;
 			children = (
-				4F51A6AB2B55E79D00ED212A /* Model */,
+				4F51A6AB2B55E79D00ED212A /* Engine & Model */,
 				4F11AADA2B0993B500C4F210 /* Essential */,
 				4F5DAA8C2B03F57100A64D25 /* Views */,
 				4FE0C3B22B02A9E300C82853 /* Python */,
@@ -334,11 +325,8 @@
 				4F11AAD92B09939D00C4F210 /* Extensions.swift in Sources */,
 				4F4390312B60672800247198 /* IOManager.swift in Sources */,
 				4F11AAD52B0984F700C4F210 /* TobiiTracker.swift in Sources */,
-				4FE0C3C52B02AF6D00C82853 /* ContentView.swift in Sources */,
-				4F43902F2B6066DF00247198 /* GraphView.swift in Sources */,
 				4F5CE1952B436DA900945B37 /* StartView.swift in Sources */,
 				4F5CE1972B4377ED00945B37 /* GameView.swift in Sources */,
-				4F2458042B27B2C100602B15 /* InfomationView.swift in Sources */,
 				4F5DAA902B03F9DE00A64D25 /* ExperimentalView.swift in Sources */,
 				4F51A6AA2B55E79200ED212A /* ExperimentalEngine.swift in Sources */,
 				4FE0C3872B02A8EF00C82853 /* BreathActivityApp.swift in Sources */,

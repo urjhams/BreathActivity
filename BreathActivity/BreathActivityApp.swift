@@ -32,7 +32,7 @@ struct BreathActivityApp: App {
     
   var body: some Scene {
     WindowGroup {
-      ContentView()
+      ExperimentalView()
         .frame(minWidth: 800, minHeight: 600)
     }
     .environmentObject(breathObserver)
