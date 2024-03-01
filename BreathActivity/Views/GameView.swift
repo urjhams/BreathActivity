@@ -44,7 +44,10 @@ struct MakeKeyPressSilentView: NSViewRepresentable {
 
 struct GameView: View {
   
+  @Binding var state: ExperimentalState
+  
   @Binding var enableLabel: Bool
+  
   private var opacity: Double {
     switch engine.state {
     case .start:
@@ -68,9 +71,7 @@ struct GameView: View {
   @State private var amplitudes = [Float]()
     
   @State private var description = "description"
-  
-  var stopSessionFunction: (Bool) -> ()
-  
+    
   // the engine that store the stack to check
   @Bindable var engine: ExperimentalEngine
   
@@ -105,7 +106,9 @@ struct GameView: View {
             engine.reduceTime()
             // stop the session when end of time
             if engine.timeLeft == 0 {
-              stopSessionFunction(true)
+              //TODO: stop session function
+              // TODO: make the order as array, so after finish one level, remove the first element, and set level as the first one left
+              state = .instruction(level: .easy)
             }
           }
           .padding()
@@ -199,7 +202,7 @@ extension GameView {
     switch event.keyCode {
     case 53:  // escape
               // perform the stop action
-      stopSessionFunction(false)
+      state = .start
     case 49: // space
       guard self.running else {
         return
@@ -258,14 +261,15 @@ extension GameView {
   @State var running: Bool = true
   @State var showAmplitude: Bool = false
   @State var sound = false
-  @Bindable var engine = ExperimentalEngine()
+  @State var state: ExperimentalState = .running(level: .easy)
+  @Bindable var engine = ExperimentalEngine(level: .easy)
   @Bindable var storage = DataStorage()
   
   return GameView(
+    state: $state,
     enableLabel: $label,
     running: $running,
     showAmplitude: $showAmplitude,
-    stopSessionFunction: {_ in },
     engine: engine,
     storage: storage
   )

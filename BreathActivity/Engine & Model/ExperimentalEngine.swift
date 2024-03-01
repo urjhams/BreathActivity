@@ -71,7 +71,14 @@ public struct Response: Codable {
   
   var state: State = .stop
   
-  var stack = ImageStack(level: .easy)
+  let level: Level
+  
+  let stack: ImageStack
+  
+  init(level: Level) {
+    self.level = level
+    stack = ImageStack(level: level)
+  }
   
   let sessionTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
   
