@@ -54,6 +54,7 @@ struct ExperimentalView: View {
         .environmentObject(observer)
       case .instruction(let level):
         // TODO: create instruction view
+        InstructionView(nBack: level.nBack, state: $state)
         Spacer()
       case .trial(let level):
         // TODO: create trial view seperate with game view

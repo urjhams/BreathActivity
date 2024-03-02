@@ -2,11 +2,15 @@ import Foundation
 import SwiftUI
 
 public enum Level: Int, CaseIterable  {
-  case easy = 2
-  case normal = 3
-  case hard = 4
+  case easy = 1
+  case normal = 2
+  case hard = 3
   
-  var steps: Int {
+  var nBack: Int {
+    rawValue
+  }
+  
+  var stackCapacity: Int {
     rawValue + 1
   }
   
@@ -44,7 +48,7 @@ public enum Level: Int, CaseIterable  {
     images.append(image)
     
     // Check if the stack size exceeds the specified level's steps
-    while images.count > level.steps {
+    while images.count > level.stackCapacity {
       images.removeFirst()
     }
   }
@@ -75,7 +79,7 @@ public enum Level: Int, CaseIterable  {
   /// This is used for let say we have 3 steps, so first and 2nd images we check this to be false
   /// then those images will show in few secs instead of start to show yes or no to compare target
   var atCapacity: Bool {
-    images.count == level.steps
+    images.count == level.stackCapacity
   }
   
   func setEmpty() {

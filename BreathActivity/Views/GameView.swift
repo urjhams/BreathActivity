@@ -111,9 +111,7 @@ struct GameView: View {
         engine.reduceTime()
         // stop the session when end of time
         if engine.timeLeft == 0 {
-          //TODO: stop session function
-          // TODO: make the order as array, so after finish one level, remove the first element, and set level as the first one left
-          state = .instruction(level: .easy)
+          endSession()
         }
       }
       .padding()
@@ -185,11 +183,16 @@ extension GameView {
   }
   
   private func endSession() {
+    
     engine.running = false
+    tobii.stopReadPupilDiameter()
+    observer.stopAnalyzing()
+    
     // move to the next stage if possible
     levelSequences.removeFirst()
     if let nextLevel = levelSequences.first {
-      // TODO: save data
+      // save data of this session
+      IOManager.tryToWrite(storage)
       
       // go to the next stage
       state = .instruction(level: nextLevel)
