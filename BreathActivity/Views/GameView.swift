@@ -47,15 +47,6 @@ struct GameView: View {
   @Binding var state: ExperimentalState
   
   @Binding var enableLabel: Bool
-  
-  private var opacity: Double {
-    switch engine.state {
-    case .start:
-      return 1
-    default:
-      return enableLabel ? 1 : 0
-    }
-  }
     
   @State var screenBackground: Color = .background
   
@@ -105,10 +96,6 @@ struct GameView: View {
         } else {
           Color(.clear)
         }
-        if case .running = engine.state {
-          Text("Press space if they are matched")
-            .opacity(opacity)
-        }
         Spacer()
         if showAmplitude {
           debugView
@@ -118,7 +105,7 @@ struct GameView: View {
           .frame(height: 0)
       }
       .onReceive(engine.sessionTimer) { _ in
-        guard case .running = engine.state else {
+        guard engine.running else {
           return
         }
         engine.reduceTime()
@@ -175,7 +162,7 @@ struct GameView: View {
       }
       
       // TODO: start a session with level, remove the engine state.
-      running = true
+      engine.running = true
     }
   }
 }
@@ -192,12 +179,10 @@ extension GameView {
               // perform the stop action
       state = .start
     case 49: // space
-      guard self.running else {
+      guard engine.running else {
         return
       }
-      if case .running = engine.state {
-        engine.answerYesCheck()
-      }
+      engine.answerYesCheck()
     default:
       break
     }

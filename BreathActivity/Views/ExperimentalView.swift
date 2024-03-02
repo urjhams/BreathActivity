@@ -21,16 +21,11 @@ struct ExperimentalView: View {
   @State var labelEnable = false
   
   @State var state: ExperimentalState = .start
-              
-  // TODO: we don't need to bind engine anymore, create the engine whenever we present a GameView instead to defind which level it is
-  // the engine that store the stack to check
-//  @Bindable var engine = ExperimentalEngine()
   
   @State var levelSequences: [Level] = []
   
-  // use an array to store, construct the respiratory rate from amplitudes
+  //TODO: use an array to store, construct the respiratory rate from amplitudes
   @Bindable var storage = DataStorage()
-  
   
   /// breath observer
   @EnvironmentObject var observer: BreathObsever

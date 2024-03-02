@@ -61,15 +61,7 @@ public struct Response: Codable {
   
   var audioPlayer: AVAudioPlayer?
   
-  public enum State: String, Equatable, Identifiable {
-    public var id: State { self }
-    
-    case start
-    case running
-    case stop
-  }
-  
-  var state: State = .stop
+  var running = false
   
   let level: Level
   
@@ -159,7 +151,7 @@ public struct Response: Codable {
   
   func reset() {
     stack.setEmpty()
-    state = .stop
+    running = false
   }
   
   private func addImage() {
@@ -191,16 +183,8 @@ public struct Response: Codable {
     
     addImage()
     
-    if stack.atCapacity {
-      switch state {
-      case .start:
-        // switch the state to running
-        state = .running
-      case .running:
-        unmatchedCount = matched() ? 0 : unmatchedCount + 1
-      case .stop:
-        break
-      }
+    if stack.atCapacity, running {
+      unmatchedCount = matched() ? 0 : unmatchedCount + 1
     }
     
     // be sure to reset the analyze timer each time we switch the image
