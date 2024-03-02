@@ -153,16 +153,50 @@ struct GameView: View {
       
     }
     .onAppear {
-      // set level for storage
-      storage.level = engine.stack.level.name
       // key pressed notification register
       NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
         self.setupKeyPress(from: event)
         return event
       }
       
-      // TODO: start a session with level, remove the engine state.
-      engine.running = true
+      // set level for storage
+      storage.level = engine.stack.level.name
+      
+      // start the session
+      startSession()
+    }
+  }
+}
+
+extension GameView {
+  private func startSession() {
+    do {
+      try observer.startAnalyzing()
+      tobii.startReadPupilDiameter()
+    } catch {
+      running = false
+      return
+    }
+    
+    // start the session
+    engine.running = true
+    
+    engine.goNext()
+  }
+  
+  private func endSession() {
+    engine.running = false
+    // move to the next stage if possible
+    levelSequences.removeFirst()
+    if let nextLevel = levelSequences.first {
+      // TODO: save data
+      
+      // go to the next stage
+      state = .instruction(level: nextLevel)
+      
+    } else {
+      // go back to start screen because the sequences now is empty
+      state = .start
     }
   }
 }
