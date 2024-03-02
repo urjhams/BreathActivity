@@ -13,32 +13,40 @@ struct InstructionView: View {
   
   @Binding var state: ExperimentalState
   
-  private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-  
-  @State var time = 10
-  
   var body: some View {
-    switch nBack {
-    case 1:
-      Text("Press Space if the image matchs with the previous image")
-    default:
-      Text("Press Space if the image matchs with the \(nBack) previous images")
-    }
-    
-    Text("Start in \(time)s")
-      .onReceive(timer) { _ in
-        guard time > 0 else {
-          return
-        }
-        time -= 1
-        
-        if time == 0 {
-          guard case .instruction(let level) = state else {
-            return
-          }
-          state = .running(level: level)
-        }
+    VStack {
+      switch nBack {
+      case 1:
+        Text("Press Space if the image matchs with the previous image")
+      default:
+        Text("Press Space if the image matchs with the \(nBack) previous images")
       }
+      Text("Press Space to start")
+      MakeKeyPressSilentView()
+        .frame(height: 0)
+    }
+    .onAppear {
+      NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
+        self.setupKeyPress(from: event)
+        return event
+      }
+    }
+  }
+}
+
+extension InstructionView {
+  private func setupKeyPress(from event: NSEvent) {
+    switch event.keyCode {
+    case 49: // space
+      guard case .instruction(let level) = state else {
+        return
+      }
+      
+      state = .running(level: level)
+      
+    default:
+      break
+    }
   }
 }
 

@@ -198,13 +198,17 @@ extension GameView {
     // move to the next stage if possible
     levelSequences.removeFirst()
     if let nextLevel = levelSequences.first {
-      // save data of this session
-      IOManager.tryToWrite(storage)
+      // TODO: set the data of current session and append into storage
+      
+      // TODO: Reconstruct the storage so it now stores metadata and the array that store 3 stages randomly that contain the level of each stage and its data
       
       // go to the next stage
       state = .instruction(level: nextLevel)
       
     } else {
+      // save data of the all sessions
+      IOManager.tryToWrite(storage)
+      
       // go back to start screen because the sequences now is empty
       state = .start
     }
@@ -223,6 +227,10 @@ extension GameView {
               // perform the stop action
       // erase the level sequence
       levelSequences = []
+      
+      // shut down the observers
+      tobii.stopReadPupilDiameter()
+      observer.stopAnalyzing()
       
       // go back to start page
       state = .start

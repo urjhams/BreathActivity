@@ -53,9 +53,8 @@ struct ExperimentalView: View {
         )
         .environmentObject(observer)
       case .instruction(let level):
-        // TODO: create instruction view
+        // instruction view
         InstructionView(nBack: level.nBack, state: $state)
-        Spacer()
       case .trial(let level):
         // TODO: create trial view seperate with game view
         Spacer()
@@ -97,24 +96,11 @@ extension ExperimentalView {
     
     // generate the level order sequence array
     levelSequences = [.easy, .normal, .hard].shuffled()
-    
+        
     if let first = levelSequences.first {
       // change the state to running with the first element of the array
       state = .instruction(level: first)
     }
-    
-    // TODO: start the breath observer session when the game view appear
-
-    
-    // TODO: in the end of each level, remember to remove the first element of the array, and set the state. If it is empty, set back to start, or we create an end state with the end view to show a text about the result.
-    
-//    if running {
-//      // stop process
-//      stopSession(endOfTime: false)
-//    } else {
-//      // start process
-//      startSession()
-//    }
   }
   
   func trialButtonClick() {
