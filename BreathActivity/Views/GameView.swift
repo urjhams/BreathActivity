@@ -59,7 +59,7 @@ struct GameView: View {
     
   @State var screenBackground: Color = .background
   
-  @Binding var running: Bool
+  @State var running = false
   
   @Binding var showAmplitude: Bool
   
@@ -71,9 +71,11 @@ struct GameView: View {
   @State private var amplitudes = [Float]()
     
   @State private var description = "description"
+  
+  @Binding var levelSequences: [Level]
     
   // the engine that store the stack to check
-  @Bindable var engine: ExperimentalEngine
+  @State var engine: ExperimentalEngine
   
   // use an array to store, construct the respiratory rate from amplitudes
   @Bindable var storage: DataStorage
@@ -84,41 +86,9 @@ struct GameView: View {
   /// breath observer
   @EnvironmentObject var observer: BreathObsever
   
-  var promtText: String {
-    switch engine.state {
-    case .running:
-      "Does this image matches the first of the last \(engine.stack.level.rawValue) images were shown?"
-    case .start:
-      "Remember this Image"
-    case .stop:
-      "stop state (this screen should not appear in this state)"
-    }
-  }
-  
   var body: some View {
     ZStack {
       VStack {
-        Text("Time left: \(engine.timeLeft)s")
-          .onReceive(engine.sessionTimer) { _ in
-            guard case .running = engine.state else {
-              return
-            }
-            engine.reduceTime()
-            // stop the session when end of time
-            if engine.timeLeft == 0 {
-              //TODO: stop session function
-              // TODO: make the order as array, so after finish one level, remove the first element, and set level as the first one left
-              state = .instruction(level: .easy)
-            }
-          }
-          .padding()
-          .onReceive(engine.analyzeTimer) { _ in
-            guard [.running, .start].contains(engine.state) else {
-              return
-            }
-            engine.reduceAnalyzeTime()
-          }
-          .opacity(engine.trialMode ? 1 : 0)
         if let currentImage = engine.current {
           HStack {
             Spacer()
@@ -135,8 +105,6 @@ struct GameView: View {
         } else {
           Color(.clear)
         }
-        Text(promtText)
-          .opacity(opacity)
         if case .running = engine.state {
           Text("Press space if they are matched")
             .opacity(opacity)
@@ -148,6 +116,18 @@ struct GameView: View {
         // work-around view to disable the "funk" error sound when click on keyboard on macOS
         MakeKeyPressSilentView()
           .frame(height: 0)
+      }
+      .onReceive(engine.sessionTimer) { _ in
+        guard case .running = engine.state else {
+          return
+        }
+        engine.reduceTime()
+        // stop the session when end of time
+        if engine.timeLeft == 0 {
+          //TODO: stop session function
+          // TODO: make the order as array, so after finish one level, remove the first element, and set level as the first one left
+          state = .instruction(level: .easy)
+        }
       }
       .padding()
     }
@@ -180,6 +160,11 @@ struct GameView: View {
         storage.responses.append(response)
       }
     }
+    .onReceive(
+      tobii.avgPupilDiameter.withLatestFrom(observer.amplitudeSubject)
+    ) { tobiiData, amplitude in
+      
+    }
     .onAppear {
       // set level for storage
       storage.level = engine.stack.level.name
@@ -188,6 +173,9 @@ struct GameView: View {
         self.setupKeyPress(from: event)
         return event
       }
+      
+      // TODO: start a session with level, remove the engine state.
+      running = true
     }
   }
 }
@@ -258,20 +246,22 @@ extension GameView {
 
 #Preview {
   @State var label: Bool = true
-  @State var running: Bool = true
   @State var showAmplitude: Bool = false
   @State var sound = false
   @State var state: ExperimentalState = .running(level: .easy)
   @Bindable var engine = ExperimentalEngine(level: .easy)
   @Bindable var storage = DataStorage()
+  @StateObject var breathObserver = BreathObsever()
+  @State var sequence = [Level]()
   
   return GameView(
     state: $state,
     enableLabel: $label,
-    running: $running,
     showAmplitude: $showAmplitude,
+    levelSequences: $sequence,
     engine: engine,
     storage: storage
   )
   .frame(minWidth: 500)
+  .environmentObject(breathObserver)
 }

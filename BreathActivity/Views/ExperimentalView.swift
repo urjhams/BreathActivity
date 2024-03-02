@@ -21,18 +21,16 @@ struct ExperimentalView: View {
   @State var labelEnable = false
   
   @State var state: ExperimentalState = .start
-          
-  @State var running = false
-    
+              
   // TODO: we don't need to bind engine anymore, create the engine whenever we present a GameView instead to defind which level it is
   // the engine that store the stack to check
 //  @Bindable var engine = ExperimentalEngine()
   
+  @State var levelSequences: [Level] = []
+  
   // use an array to store, construct the respiratory rate from amplitudes
   @Bindable var storage = DataStorage()
   
-  /// Tobii tracker object that read the python script
-  @Environment(\.tobiiTracker) var tobii
   
   /// breath observer
   @EnvironmentObject var observer: BreathObsever
@@ -53,8 +51,8 @@ struct ExperimentalView: View {
         GameView(
           state: $state,
           enableLabel: $labelEnable,
-          running: $running,
           showAmplitude: $showAmplitude,
+          levelSequences: $levelSequences,
           engine: ExperimentalEngine(level: level),
           storage: storage
         )
@@ -101,13 +99,16 @@ extension ExperimentalView {
       return
     }
     
-    // TODO: start the breath observer session
+    // generate the level order sequence array
+    levelSequences = [.easy, .normal, .hard].shuffled()
     
-    // TODO: generate the level order sequence array
+    if let first = levelSequences.first {
+      // change the state to running with the first element of the array
+      state = .instruction(level: first)
+    }
     
-    // TODO: change the state to running with the first element of the array
-    
-    // TODO: remove the first element of the array
+    // TODO: start the breath observer session when the game view appear
+
     
     // TODO: in the end of each level, remember to remove the first element of the array, and set the state. If it is empty, set back to start, or we create an end state with the end view to show a text about the result.
     

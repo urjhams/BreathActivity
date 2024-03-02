@@ -115,12 +115,6 @@ public struct Response: Codable {
     }
   }
   
-  var trialMode = false {
-    didSet {
-      levelTime = trialMode ? trialLimit : experimentalLimit
-    }
-  }
-  
   private let trialLimit: Int = 60
   private let experimentalLimit: Int = 20//300
   
@@ -164,7 +158,6 @@ public struct Response: Codable {
   }
   
   func reset() {
-    trialMode = false
     stack.setEmpty()
     state = .stop
   }
