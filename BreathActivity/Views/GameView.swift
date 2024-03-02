@@ -114,19 +114,26 @@ struct GameView: View {
           endSession()
         }
       }
+      .onReceive(engine.analyzeTimer) { _ in
+        guard engine.running else {
+          return
+        }
+        engine.reduceAnalyzeTime()
+      }
       .padding()
     }
     .background(screenBackground)
     .onReceive(engine.responseEvent) { response in
       Task {
-        // correct when pressing space: green
-        // correct by not select the un-matched image: blue
-        // any kind of incorrect: red
         switch response.type {
-        case .correct(let selected):
-          let color: Color = selected ? .green : .blue
+        case .correct:
           withAnimation(.easeInOut(duration: 0.2)) {
-            screenBackground = color
+            switch response.reaction {
+            case .doNothing:
+              screenBackground = .blue
+            case .pressedSpace:
+              screenBackground = .green
+            }
           }
           try? await Task.sleep(nanoseconds: 300_000_000)
           withAnimation(.easeInOut(duration: 0.2)) {
@@ -214,9 +221,13 @@ extension GameView {
     switch event.keyCode {
     case 53:  // escape
               // perform the stop action
+      // erase the level sequence
+      levelSequences = []
+      
+      // go back to start page
       state = .start
     case 49: // space
-      guard engine.running else {
+      guard engine.running, engine.stack.atCapacity else {
         return
       }
       engine.answerYesCheck()

@@ -16,24 +16,13 @@ internal struct CollectedData: Codable {
 
 public struct Response: Codable {
   public enum ReactionType: Codable {
-    case passive(waitedTime: Double)
-    case direct(reactionTime: Double)
-    
-    var time: Double {
-      switch self {
-      case .passive(let waitedTime):
-        return waitedTime
-      case .direct(let reactionTime):
-        return reactionTime
-      }
-    }
+    case pressedSpace(reactionTime: Double)
+    case doNothing
   }
+  
   public enum ResponseType: Codable {
-    // selected means the answer is correctd when the user pressed space on matched image
-    // not selected means the answer is corrected to ignore the un-matched image
-    
-    case correct(selected: Bool)
-    case incorrect(selected: Bool)
+    case correct
+    case incorrect
   }
   
   var type: ResponseType
@@ -78,34 +67,12 @@ public struct Response: Codable {
   // this timer will publish every 10 milisecond
   var analyzeTimer = Timer.publish(every: mili, on: .main, in: .default).autoconnect()
   
-  private static let limitReactionTime: Double = 5
+  private static let limitReactionTime: Double = 3
   
-  private var analyzeTime: Double = limitReactionTime {
-    didSet {
-      if analyzeTime <= 0 {
-        if !stack.atCapacity {
-          // keep fufill the stack
-          goNext()
-        } else {
-          // when the limited time passed, check:
-          // if it is matched but the user didn't press space,
-          // which mean they missed it so we counted as the wrong answer
-          
-          let response: Response.ResponseType =
-            matched() ?  .incorrect(selected: false) : .correct(selected: false)
-          
-          let reactionType: Response.ReactionType = 
-            .passive(waitedTime: Self.limitReactionTime)
-          
-          let result = Response(type: response, reaction: reactionType)
-          
-          responseEvent.send(result)
-          // go to next Image
-          goNext()
-        }
-      }
-    }
-  }
+  /// duration of each image that be able or being show
+  public var duration = Int(limitReactionTime)
+  
+  private var analyzeTime: Double = limitReactionTime
   
   private let trialLimit: Int = 60
   private let experimentalLimit: Int = 20//300
@@ -181,7 +148,11 @@ public struct Response: Codable {
   /// add next image to the stack
   func goNext() {
     
+    // add image
     addImage()
+    
+    // reset the duration
+    duration = Int(Self.limitReactionTime)
     
     if stack.atCapacity, running {
       unmatchedCount = matched() ? 0 : unmatchedCount + 1
@@ -193,16 +164,12 @@ public struct Response: Codable {
   
   /// When click yes, check does it match the target image
   func answerYesCheck() {
-    // define the reaction time because the goNext will reset the analyze time
+    // only when user press space, we have the reaction time
     let reactionTime = Self.limitReactionTime - analyzeTime
     
-    let response: Response.ResponseType =
-      matched() ? .correct(selected: true) : .incorrect(selected: true)
+    let response: Response.ResponseType = matched() ? .correct : .incorrect
     
-    let reactionType: Response.ReactionType =
-      reactionTime == Self.limitReactionTime ?
-      .passive(waitedTime: reactionTime) :
-      .direct(reactionTime: reactionTime)
+    let reactionType: Response.ReactionType = .pressedSpace(reactionTime: reactionTime)
     
     let result = Response(type: response, reaction: reactionType)
     
@@ -211,9 +178,30 @@ public struct Response: Codable {
     goNext()
   }
   
+  /// When the user don't click anything
+  func noAnswerCheck() {
+    
+    let responseType: Response.ResponseType = matched() ? .incorrect : .correct
+    
+    let result = Response(type: responseType, reaction: .doNothing)
+    
+    responseEvent.send(result)
+    
+    goNext()
+  }
+  
   func reduceTime() {
     levelTime -= 1
-    print("time left : \(levelTime)")
+    duration -= 1
+    
+    // if duration for each image reach zero, -> the no scenario
+    if duration == 0 {
+      if stack.atCapacity {
+        noAnswerCheck()
+      } else {
+        goNext()
+      }
+    }
   }
   
   func reduceAnalyzeTime() {
