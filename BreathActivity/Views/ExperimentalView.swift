@@ -47,6 +47,7 @@ struct ExperimentalView: View {
         )
       case .running(let level):
         GameView(
+          isTrial: isTrial,
           state: $state,
           enableLabel: $labelEnable,
           showAmplitude: $showAmplitude,

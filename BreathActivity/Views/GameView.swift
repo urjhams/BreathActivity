@@ -12,6 +12,8 @@ import AVFAudio
 
 struct GameView: View {
   
+  var isTrial: Bool
+  
   @Binding var state: ExperimentalState
   
   @Binding var enableLabel: Bool
@@ -83,7 +85,7 @@ struct GameView: View {
         }
       }
       .onReceive(engine.analyzeTimer) { _ in
-        guard engine.running else {
+        guard engine.running, !isTrial else {
           return
         }
         engine.reduceAnalyzeTime()
@@ -117,13 +119,17 @@ struct GameView: View {
             screenBackground = .background
           }
         }
-        storage.responses.append(response)
+        if !isTrial {
+          storage.responses.append(response)
+        }
       }
     }
     .onReceive(
       tobii.avgPupilDiameter.withLatestFrom(observer.amplitudeSubject)
     ) { tobiiData, amplitude in
-      
+      guard !isTrial else {
+        return
+      }
     }
     .onAppear {
       // key pressed notification register
@@ -270,6 +276,7 @@ extension GameView {
   @State var sequence = [Level]()
   
   return GameView(
+    isTrial: false,
     state: $state,
     enableLabel: $label,
     showAmplitude: $showAmplitude,
