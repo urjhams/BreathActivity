@@ -14,6 +14,8 @@ struct SurveyView: View {
   
   @State var question2Selection: Int?
   
+  @State var showAlert = false
+  
   var body: some View {
     VStack(spacing: 10) {
       Text("Question 1 content")
@@ -54,6 +56,9 @@ struct SurveyView: View {
         return event
       }
     }
+    .alert(isPresented: $showAlert) {
+      Alert(title: Text("Please select the answer for the questions above"))
+    }
   }
 }
 
@@ -66,8 +71,7 @@ extension SurveyView {
       }
       
       guard question1Selection != nil, question2Selection != nil else {
-        // TODO: show an alert here
-        return
+        return showAlert = true
       }
             
       finishSurvey()

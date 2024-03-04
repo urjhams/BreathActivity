@@ -16,6 +16,11 @@ struct StartView: View {
   // use an array to store, construct the respiratory rate from amplitudes
   @Bindable var storage: DataStorage
   
+  @State var showAlert = false
+  
+  // TODO: add another information of the candidate (age, sex), also add it into the DataStorage
+  // TODO: change the response only when click space.
+  
   var startButtonClick: () -> Void
   
   var trialButtonClick: () -> Void
@@ -31,6 +36,9 @@ struct StartView: View {
           .frame(minWidth: 150, maxWidth: 300)
           .padding(.all)
           .clipShape(.rect(cornerRadius: 10))
+          .alert(isPresented: $showAlert) {
+            Alert(title: Text("Please enter your name"))
+          }
         Spacer()
       }
     }
@@ -58,7 +66,12 @@ struct StartView: View {
     .horizontalRadioGroupLayout()
     
     HStack {
-      Button(action: startButtonClick) {
+      Button(action: {
+        guard storage.candidateName != "" else {
+          return showAlert = true
+        }
+        startButtonClick()
+      }) {
         Image(systemName: "play.circle.fill")
           .font(.largeTitle)
       }
