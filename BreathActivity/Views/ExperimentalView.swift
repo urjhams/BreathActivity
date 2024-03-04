@@ -37,7 +37,6 @@ struct ExperimentalView: View {
   
   @State var state: ExperimentalState = .start
   
-  //TODO: use an array to store, construct the respiratory rate from amplitudes
   @Bindable var storage = DataStorage()
   
   @State var showAmplitude: Bool = false
