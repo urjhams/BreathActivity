@@ -30,9 +30,7 @@ struct GameView: View {
   @State private var tobiiInfoText: String = ""
   
   @State private var amplitudes = [Float]()
-    
-  @State private var description = "description"
-  
+      
   @Binding var levelSequences: [Level]
     
   // the engine that store the stack to check

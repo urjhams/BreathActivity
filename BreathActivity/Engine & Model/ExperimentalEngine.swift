@@ -62,7 +62,7 @@ import Combine
   ]
   
   var current: ImageResource? {
-    stack.peek()
+    stack.peak()
   }
   
   /// This workaround make sure each time an image is push to the stack, it emits an unique Id so the transition
@@ -74,7 +74,7 @@ import Combine
   // target image is the first image in the bottom of the stack
   func matched() -> Bool {
     
-    guard let peak = stack.peek(), let bottom = stack.bottom() else {
+    guard let peak = stack.peak(), let bottom = stack.bottom() else {
       return false
     }
     
@@ -90,7 +90,7 @@ import Combine
     
     // random adding the image
     var randomImage: ImageResource? {
-      if let current = stack.peek(), let index = images.firstIndex(of: current) {
+      if let current = stack.peak(), let index = images.firstIndex(of: current) {
         var copy = images
         copy.remove(at: index)
         return copy.randomElement()

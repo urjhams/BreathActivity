@@ -53,7 +53,7 @@ public enum Level: Int, CaseIterable  {
     }
   }
   
-  func peek() -> ImageResource? {
+  func peak() -> ImageResource? {
     return images.last
   }
   
