@@ -25,7 +25,6 @@
 		4FE0C3A32B02A8F000C82853 /* BreathActivityUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3A22B02A8F000C82853 /* BreathActivityUITests.swift */; };
 		4FE0C3A52B02A8F000C82853 /* BreathActivityUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3A42B02A8F000C82853 /* BreathActivityUITestsLaunchTests.swift */; };
 		4FE0C3B62B02A9E300C82853 /* Python in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C3B22B02A9E300C82853 /* Python */; };
-		4FE0C3B72B02A9E300C82853 /* SupportingFiles in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C3B32B02A9E300C82853 /* SupportingFiles */; };
 		4FE0C3BE2B02AB6500C82853 /* BreathObsever in Frameworks */ = {isa = PBXBuildFile; productRef = 4FE0C3BD2B02AB6500C82853 /* BreathObsever */; };
 		4FFC9F172B28C82C00E70731 /* ImageStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FFC9F162B28C82C00E70731 /* ImageStack.swift */; };
 /* End PBXBuildFile section */
@@ -70,7 +69,6 @@
 		4FE0C3A22B02A8F000C82853 /* BreathActivityUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathActivityUITests.swift; sourceTree = "<group>"; };
 		4FE0C3A42B02A8F000C82853 /* BreathActivityUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathActivityUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		4FE0C3B22B02A9E300C82853 /* Python */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Python; sourceTree = "<group>"; };
-		4FE0C3B32B02A9E300C82853 /* SupportingFiles */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SupportingFiles; sourceTree = "<group>"; };
 		4FE0C3C32B02AF4100C82853 /* BreathObsever */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = BreathObsever; path = ../BreathObsever; sourceTree = "<group>"; };
 		4FFC9F162B28C82C00E70731 /* ImageStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageStack.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -162,7 +160,6 @@
 				4F11AADA2B0993B500C4F210 /* Essential */,
 				4F5DAA8C2B03F57100A64D25 /* Views */,
 				4FE0C3B22B02A9E300C82853 /* Python */,
-				4FE0C3B32B02A9E300C82853 /* SupportingFiles */,
 				4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */,
 				4FE0C38A2B02A8F000C82853 /* Assets.xcassets */,
 				4FE0C38F2B02A8F000C82853 /* BreathActivity.entitlements */,
@@ -308,7 +305,6 @@
 			files = (
 				4FE0C3B62B02A9E300C82853 /* Python in Resources */,
 				4FE0C38E2B02A8F000C82853 /* Preview Assets.xcassets in Resources */,
-				4FE0C3B72B02A9E300C82853 /* SupportingFiles in Resources */,
 				4FE0C38B2B02A8F000C82853 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
