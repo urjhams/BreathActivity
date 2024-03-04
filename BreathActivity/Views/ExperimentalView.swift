@@ -130,76 +130,13 @@ extension ExperimentalView {
   func trialButtonClick() {
     
     isTrial = true
-//    if running {
-//      stopSession(endOfTime: false)
-//    } else {
-//      startTrialSession()
-//    }
+    // in trial, we always start from easy, normal, then hard
+    levelSequence = levelSequences[0]
+    
+    if let first = levelSequence.first {
+      state = .instruction(level: first)
+    }
   }
-}
-
-extension ExperimentalView {
-  
-//  private func startTrialSession() {
-//    // turn on the trial model
-//    engine.trialMode = true
-//    labelEnable = true
-//    // manually set easy level for trial mode
-//    engine.stack.level = .easy
-//    
-//    // start the session
-//    running = true
-//    
-//    engine.state = .start
-//    engine.goNext()
-//  }
-//  
-//  private func startSession() {
-//    // turn off the trial model
-//    engine.trialMode = false
-//    
-//    // set level name for storage
-//    storage.level = engine.stack.level.name
-//    
-//    // start analyze process
-//    do {
-//      try observer.startAnalyzing()
-//      tobii.startReadPupilDiameter()
-//    } catch {
-//      running = false
-//      return
-//    }
-//    
-//    // start the session
-//    running = true
-//    
-//    engine.state = .start
-//    engine.goNext()
-//  }
-//  
-//  private func stopSession(endOfTime: Bool) {
-//    
-//    if endOfTime, !engine.trialMode {
-//      IOManager.tryToWrite(storage)
-//    }
-//    
-//    labelEnable = false
-//    
-//    // stop analyze process
-//    tobii.stopReadPupilDiameter()
-//    observer.stopAnalyzing()
-//    
-//    // stop the session
-//    running = false
-//    
-//    // reset the storage
-//    storage.reset()
-//    
-//    engine.state = .stop
-//    
-//    // reset engine
-//    engine.reset()
-//  }
 }
 
 #Preview {
