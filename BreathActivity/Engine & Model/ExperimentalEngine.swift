@@ -49,19 +49,18 @@ import Combine
   
   public var responseEvent = PassthroughSubject<Response, Never>()
   
-  // TODO: replace this with just name, so we use Image with name
-  let images: [ImageResource] = [
-    .animalfaceCheetah,
-    .animalfaceDuck,
-    .animalfaceNiwatori,
-    .animalfacePanda,
-    .animalfaceTora,
-    .animalfaceUma,
-    .animalfaceUsagi,
-    .animalfaceZou
+  let images: [String] = [
+    "animalface_cheetah",
+    "animalface_duck",
+    "animalface_niwatori",
+    "animalface_panda",
+    "animalface_tora",
+    "animalface_uma",
+    "animalface_usagi",
+    "animalface_zou"
   ]
   
-  var current: ImageResource? {
+  var current: String? {
     stack.peak()
   }
   
@@ -89,7 +88,7 @@ import Combine
   private func addImage() {
     
     // random adding the image
-    var randomImage: ImageResource? {
+    var randomImage: String? {
       if let current = stack.peak(), let index = images.firstIndex(of: current) {
         var copy = images
         copy.remove(at: index)

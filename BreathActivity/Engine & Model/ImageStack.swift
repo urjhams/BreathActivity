@@ -33,7 +33,7 @@ public enum Level: Int, CaseIterable  {
     case noPeakNorBottom
   }
   
-  private var images: [ImageResource] = []
+  private var images: [String] = []
   
   var level: Level
   
@@ -41,11 +41,11 @@ public enum Level: Int, CaseIterable  {
     self.level = level
   }
   
-  func add(_ image: ImageResource?) {
-    guard let image else {
+  func add(_ imageName: String?) {
+    guard let imageName else {
       return
     }
-    images.append(image)
+    images.append(imageName)
     
     // Check if the stack size exceeds the specified level's steps
     while images.count > level.stackCapacity {
@@ -53,11 +53,11 @@ public enum Level: Int, CaseIterable  {
     }
   }
   
-  func peak() -> ImageResource? {
+  func peak() -> String? {
     return images.last
   }
   
-  func bottom() -> ImageResource? {
+  func bottom() -> String? {
     return images.first
   }
   
@@ -70,7 +70,7 @@ public enum Level: Int, CaseIterable  {
   }
   
   /// return the image that gonna be the bottom of the stack  if the next image is adding to the stack
-  var nextBottom: ImageResource? {
+  var nextBottom: String? {
     atCapacity ? images[safe: 1] : images.first
   }
   
