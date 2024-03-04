@@ -40,9 +40,6 @@ struct ExperimentalView: View {
   //TODO: use an array to store, construct the respiratory rate from amplitudes
   @Bindable var storage = DataStorage()
   
-  /// breath observer
-  @EnvironmentObject var observer: BreathObsever
-  
   @State var showAmplitude: Bool = false
   
   var body: some View {
@@ -65,7 +62,6 @@ struct ExperimentalView: View {
           engine: ExperimentalEngine(level: level),
           storage: storage
         )
-        .environmentObject(observer)
       case .instruction(let level):
         // instruction view
         InstructionView(
