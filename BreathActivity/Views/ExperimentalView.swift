@@ -58,7 +58,7 @@ struct ExperimentalView: View {
         .environmentObject(observer)
       case .instruction(let level):
         // instruction view
-        InstructionView(nBack: level.nBack, state: $state)
+        InstructionView(isTrial: isTrial, nBack: level.nBack, state: $state)
       case .survey(let level):
         // TODO: create survey for level
         // question: 

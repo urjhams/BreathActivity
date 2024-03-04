@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4F095FA02B95DA10001F59E9 /* MakeKeyPressSilentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F095F9F2B95DA10001F59E9 /* MakeKeyPressSilentView.swift */; };
+		4F095FA22B95DF21001F59E9 /* DataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F095FA12B95DF21001F59E9 /* DataStorage.swift */; };
 		4F11AAD52B0984F700C4F210 /* TobiiTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */; };
 		4F11AAD92B09939D00C4F210 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F11AAD82B09939D00C4F210 /* Extensions.swift */; };
 		4F4390312B60672800247198 /* IOManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4390302B60672800247198 /* IOManager.swift */; };
@@ -47,6 +48,7 @@
 
 /* Begin PBXFileReference section */
 		4F095F9F2B95DA10001F59E9 /* MakeKeyPressSilentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeKeyPressSilentView.swift; sourceTree = "<group>"; };
+		4F095FA12B95DF21001F59E9 /* DataStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStorage.swift; sourceTree = "<group>"; };
 		4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TobiiTracker.swift; sourceTree = "<group>"; };
 		4F11AAD82B09939D00C4F210 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		4F4390302B60672800247198 /* IOManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOManager.swift; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 				4FFC9F162B28C82C00E70731 /* ImageStack.swift */,
 				4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */,
 				4F51A6A92B55E79200ED212A /* ExperimentalEngine.swift */,
+				4F095FA12B95DF21001F59E9 /* DataStorage.swift */,
 			);
 			path = "Engine & Model";
 			sourceTree = "<group>";
@@ -331,6 +334,7 @@
 				4F11AAD92B09939D00C4F210 /* Extensions.swift in Sources */,
 				4F4390312B60672800247198 /* IOManager.swift in Sources */,
 				4F11AAD52B0984F700C4F210 /* TobiiTracker.swift in Sources */,
+				4F095FA22B95DF21001F59E9 /* DataStorage.swift in Sources */,
 				4F5CE1952B436DA900945B37 /* StartView.swift in Sources */,
 				4F095FA02B95DA10001F59E9 /* MakeKeyPressSilentView.swift in Sources */,
 				4F5CE1972B4377ED00945B37 /* GameView.swift in Sources */,

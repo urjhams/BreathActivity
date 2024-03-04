@@ -12,7 +12,7 @@ import AVFAudio
 
 struct GameView: View {
   
-  var isTrial: Bool
+  let isTrial: Bool
   
   @Binding var state: ExperimentalState
   
@@ -194,6 +194,7 @@ extension GameView {
       state = .instruction(level: nextLevel)
       
     } else {
+      // TODO: this writting step should be in the last Survey view
       // save data of the all sessions
       if !isTrial {
         IOManager.tryToWrite(storage)

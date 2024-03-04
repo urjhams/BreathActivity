@@ -9,6 +9,8 @@ import SwiftUI
 
 struct InstructionView: View {
   
+  let isTrial: Bool
+  
   let nBack: Int
   
   @Binding var state: ExperimentalState
@@ -54,6 +56,6 @@ extension InstructionView {
   
   @State var state: ExperimentalState = .instruction(level: .easy)
   
-  return InstructionView(nBack: 1, state: $state)
+  return InstructionView(isTrial: false, nBack: 1, state: $state)
     .frame(minWidth: 500, minHeight: 300)
 }

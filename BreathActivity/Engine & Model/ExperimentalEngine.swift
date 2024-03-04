@@ -7,49 +7,13 @@
 
 import SwiftUI
 import Combine
-import AVFAudio
-
-internal struct CollectedData: Codable {
-  let amplitude: Float
-  let pupilSize: Float
-}
-
-public struct Response: Codable {
-  public enum ReactionType: Codable {
-    case pressedSpace(reactionTime: Double)
-    case doNothing
-  }
-  
-  public enum ResponseType: Codable {
-    case correct
-    case incorrect
-  }
-  
-  var type: ResponseType
-  var reaction: ReactionType
-}
-
-@Observable internal class DataStorage: Codable {
-  var candidateName: String = ""
-  var level: String = ""
-  var collectedData: [CollectedData] = []
-  var responses: [Response] = []
-  
-  public func reset() {
-    level = ""
-    collectedData = []
-    responses = []
-  }
-}
 
 @Observable public class ExperimentalEngine {
   
   var maximumUnmatched = 5
   
   var unmatchedCount = 0
-  
-  var audioPlayer: AVAudioPlayer?
-  
+    
   var running = false
   
   let level: Level
@@ -85,6 +49,7 @@ public struct Response: Codable {
   
   public var responseEvent = PassthroughSubject<Response, Never>()
   
+  // TODO: replace this with just name, so we use Image with name
   let images: [ImageResource] = [
     .animalfaceCheetah,
     .animalfaceDuck,
