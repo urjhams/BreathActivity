@@ -75,7 +75,12 @@ struct ExperimentalView: View {
         // question: 
         // rate the difficulity of the task (0 to 5 scale)
         // how stressful is the user (0 to 5 scale)
-        SurveyView(isTrial: $isTrial, levelSequence: $levelSequence, storage: storage)
+        SurveyView(
+          isTrial: $isTrial,
+          state: $state,
+          levelSequence: $levelSequence,
+          storage: storage
+        )
       }
     }
 //    .onReceive(

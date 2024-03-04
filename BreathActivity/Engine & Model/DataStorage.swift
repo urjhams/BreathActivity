@@ -1,5 +1,6 @@
 import SwiftUI
 
+// TODO: amplitude now should be: let respiratory rate: Float? (could be nil if we collect pupil data more oftenly)
 public struct CollectedData: Codable {
   let amplitude: Float
   let pupilSize: Float

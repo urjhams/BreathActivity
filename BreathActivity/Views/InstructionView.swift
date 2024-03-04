@@ -46,6 +46,8 @@ extension InstructionView {
         return
       }
       
+      levelSequence = []
+      
       state = .running(level: level)
       
     default:

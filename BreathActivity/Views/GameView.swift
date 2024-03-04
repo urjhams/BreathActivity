@@ -173,32 +173,8 @@ extension GameView {
     
     observer.stopAnalyzing()
     
-    // move to the next stage if possible
-    levelSequence.removeFirst()
-    if let nextLevel = levelSequence.first {
-      // TODO: set the data of current session and append into storage
-      
-      // TODO: Reconstruct the storage so it now stores metadata and the array that store 3 stages randomly that contain the level of each stage and its data
-      
-      // TODO: use image with name instead of asset
-      
-      // TODO: make sure to have at least 10 matches -> need minimum not match threshold and maximum not match threshold -> rework on the condition to make random image: if it guarantee not to match, check the 1st element of the stack and make a random in an image array that does not contain the matched image name.
-      
-      // TODO: need a survey screen as well
-      
-      // go to the next stage
-      state = .instruction(level: nextLevel)
-      
-    } else {
-      // TODO: this writting step should be in the last Survey view
-      // save data of the all sessions
-//      if !isTrial {
-//        IOManager.tryToWrite(storage)
-//      }
-      
-      // go back to start screen because the sequences now is empty
-      state = .start
-    }
+    // show the survey
+    state = .survey
   }
 }
 
