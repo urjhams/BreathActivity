@@ -150,8 +150,12 @@ struct GameView: View {
 extension GameView {
   private func startSession() {
     do {
+      // in trial mode we still do the breath observer to see the amplitude view
       try observer.startAnalyzing()
-      tobii.startReadPupilDiameter()
+      
+      if !isTrial {
+        tobii.startReadPupilDiameter()
+      }
     } catch {
       running = false
       return
@@ -166,7 +170,11 @@ extension GameView {
   private func endSession() {
     
     engine.running = false
-    tobii.stopReadPupilDiameter()
+    
+    if !isTrial {
+      tobii.stopReadPupilDiameter()
+    }
+    
     observer.stopAnalyzing()
     
     // move to the next stage if possible
@@ -187,7 +195,9 @@ extension GameView {
       
     } else {
       // save data of the all sessions
-      IOManager.tryToWrite(storage)
+      if !isTrial {
+        IOManager.tryToWrite(storage)
+      }
       
       // go back to start screen because the sequences now is empty
       state = .start
