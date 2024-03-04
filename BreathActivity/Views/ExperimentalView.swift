@@ -16,15 +16,26 @@ public enum ExperimentalState {
   case survey
 }
 
+public let levelSequences: [[Level]] = [
+  [.easy, .normal, .hard],
+  [.easy, .hard, .normal],
+  [.normal, .easy, .hard],
+  [.normal, .hard, .easy],
+  [.hard, .easy, .normal],
+  [.hard, .normal, .easy]
+]
+
 struct ExperimentalView: View {
+  
+  @State var selection: Int = 0
+  
+  @State var levelSequence: [Level] = [.easy, .normal, .hard]
   
   @State var isTrial = false
     
   @State var labelEnable = false
   
   @State var state: ExperimentalState = .start
-  
-  @State var levelSequences: [Level] = []
   
   //TODO: use an array to store, construct the respiratory rate from amplitudes
   @Bindable var storage = DataStorage()
@@ -39,6 +50,7 @@ struct ExperimentalView: View {
       switch state {
       case .start:
         StartView(
+          selection: $selection,
           showAmplitude: $showAmplitude,
           storage: storage,
           startButtonClick: startButtonClick,
@@ -49,7 +61,7 @@ struct ExperimentalView: View {
           isTrial: isTrial,
           state: $state,
           showAmplitude: $showAmplitude,
-          levelSequences: $levelSequences,
+          levelSequence: $levelSequence,
           engine: ExperimentalEngine(level: level),
           storage: storage
         )
@@ -60,14 +72,14 @@ struct ExperimentalView: View {
           isTrial: isTrial,
           nBack: level.nBack,
           state: $state,
-          levelSequences: $levelSequences
+          levelSequence: $levelSequence
         )
       case .survey:
         // create survey for level
         // question: 
         // rate the difficulity of the task (0 to 5 scale)
         // how stressful is the user (0 to 5 scale)
-        SurveyView(isTrial: $isTrial, levelSequences: $levelSequences, storage: storage)
+        SurveyView(isTrial: $isTrial, levelSequence: $levelSequence, storage: storage)
       }
     }
 //    .onReceive(
@@ -106,11 +118,10 @@ extension ExperimentalView {
       return
     }
     
-    // TODO: level sequence set as the selection list instead
-    // generate the level order sequence array
-    levelSequences = [.easy, .normal, .hard].shuffled()
+    // set the level sequences
+    levelSequence = levelSequences[selection]
         
-    if let first = levelSequences.first {
+    if let first = levelSequence.first {
       // change the state to running with the first element of the array
       state = .instruction(level: first)
     }

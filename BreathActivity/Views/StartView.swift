@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct StartView: View {
+  
+  @Binding var selection: Int
           
   @Binding var showAmplitude: Bool
   
@@ -37,6 +39,14 @@ struct StartView: View {
     Text("Welcome to my Experiment. \nI really appraciate you for participating 🤗")
       .font(.title2)
       .multilineTextAlignment(.center)
+    
+    Picker("Level sequences", selection: $selection) {
+      ForEach(0...5, id: \.self) { index in
+        Text(text(for: levelSequences[index]))
+      }
+    }
+    .frame(maxWidth: 300)
+    .pickerStyle(.menu)
     
     Spacer()
     
@@ -68,12 +78,28 @@ struct StartView: View {
   }
 }
 
+extension StartView {
+  private func text(for sequence: [Level]) -> String {
+    var result = ""
+    sequence.forEach { level in
+      if result == "" {
+        result = level.name
+      } else {
+        result += " \(level.name)"
+      }
+    }
+    return result
+  }
+}
+
 #Preview {
+  @State var selection = 1
   @State var label: Bool = true
   @State var showAmplitude: Bool = false
   @Bindable var storage = DataStorage()
   
   return StartView(
+    selection: $selection,
     showAmplitude: $showAmplitude,
     storage: storage,
     startButtonClick: {},

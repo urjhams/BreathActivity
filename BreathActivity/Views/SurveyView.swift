@@ -4,7 +4,7 @@ struct SurveyView: View {
   
   @Binding var isTrial: Bool
   
-  @Binding var levelSequences: [Level]
+  @Binding var levelSequence: [Level]
   
   @Bindable var storage: DataStorage
   
@@ -18,6 +18,6 @@ struct SurveyView: View {
   @State var isTrial = false
   @State var sequence = [Level]()
   
-  return SurveyView(isTrial: $isTrial, levelSequences: $sequence, storage: storage)
+  return SurveyView(isTrial: $isTrial, levelSequence: $sequence, storage: storage)
     .frame(minWidth: 500, minHeight: 300)
 }

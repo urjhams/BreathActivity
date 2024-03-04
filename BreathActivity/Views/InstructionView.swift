@@ -15,7 +15,7 @@ struct InstructionView: View {
   
   @Binding var state: ExperimentalState
   
-  @Binding var levelSequences: [Level]
+  @Binding var levelSequence: [Level]
   
   var body: some View {
     VStack {
@@ -59,6 +59,6 @@ extension InstructionView {
   @State var state: ExperimentalState = .instruction(level: .easy)
   @State var sequence = [Level]()
   
-  return InstructionView(isTrial: false, nBack: 1, state: $state, levelSequences: $sequence)
+  return InstructionView(isTrial: false, nBack: 1, state: $state, levelSequence: $sequence)
     .frame(minWidth: 500, minHeight: 300)
 }

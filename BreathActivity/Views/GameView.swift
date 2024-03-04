@@ -29,7 +29,7 @@ struct GameView: View {
   
   @State private var amplitudes = [Float]()
       
-  @Binding var levelSequences: [Level]
+  @Binding var levelSequence: [Level]
     
   // the engine that store the stack to check
   @State var engine: ExperimentalEngine
@@ -174,8 +174,8 @@ extension GameView {
     observer.stopAnalyzing()
     
     // move to the next stage if possible
-    levelSequences.removeFirst()
-    if let nextLevel = levelSequences.first {
+    levelSequence.removeFirst()
+    if let nextLevel = levelSequence.first {
       // TODO: set the data of current session and append into storage
       
       // TODO: Reconstruct the storage so it now stores metadata and the array that store 3 stages randomly that contain the level of each stage and its data
@@ -213,7 +213,7 @@ extension GameView {
     case 53:  // escape
               // perform the stop action
       // erase the level sequence
-      levelSequences = []
+      levelSequence = []
       
       // shut down the observers
       tobii.stopReadPupilDiameter()
@@ -285,7 +285,7 @@ extension GameView {
     isTrial: false,
     state: $state,
     showAmplitude: $showAmplitude,
-    levelSequences: $sequence,
+    levelSequence: $sequence,
     engine: engine,
     storage: storage
   )
