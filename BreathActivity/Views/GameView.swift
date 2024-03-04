@@ -173,15 +173,19 @@ extension GameView {
     
     observer.stopAnalyzing()
     
+    handleCollectedData()
+    
     // show the survey
     state = .survey
   }
 }
 
 extension GameView {
-  private enum AudioCase {
-    case correct
-    case incorrect
+  
+  private func handleCollectedData() {
+    // TODO: in the breath observer, we use another passthroughSubject that store the respiratory rate data
+    // TODO: append the data of this level in the storage
+    
   }
   
   private func setupKeyPress(from event: NSEvent) {

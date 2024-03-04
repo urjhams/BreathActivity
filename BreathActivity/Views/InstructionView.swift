@@ -40,18 +40,11 @@ struct InstructionView: View {
 
 extension InstructionView {
   private func setupKeyPress(from event: NSEvent) {
-    switch event.keyCode {
-    case 49: // space
+    if case 49 = event.keyCode {  // space
       guard case .instruction(let level) = state else {
         return
       }
-      
-      levelSequence = []
-      
       state = .running(level: level)
-      
-    default:
-      break
     }
   }
 }

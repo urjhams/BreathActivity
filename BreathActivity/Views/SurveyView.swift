@@ -48,36 +48,51 @@ struct SurveyView: View {
         .frame(height: 0)
     }
     .padding()
+    .onAppear {
+      NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
+        self.setupKeyPress(from: event)
+        return event
+      }
+    }
   }
 }
 
 extension SurveyView {
+  
+  private func setupKeyPress(from event: NSEvent) {
+    if case 49 = event.keyCode {  // space
+      guard case .survey = state else {
+        return
+      }
+      
+      guard question1Selection != nil, question2Selection != nil else {
+        // TODO: show an alert here
+        return
+      }
+            
+      finishSurvey()
+    }
+  }
+  
   private func finishSurvey() {
+    
+    if !isTrial, let currentLevel = levelSequence.first {
+      // TODO: append the survey data of current level to storage
+            
+      // TODO: make sure to have at least 10 matches -> need minimum not match threshold and maximum not match threshold -> rework on the condition to make random image: if it guarantee not to match, check the 1st element of the stack and make a random in an image array that does not contain the matched image name.
+    }
     
     // remove the current level to the sequence
     levelSequence.removeFirst()
     
     // move to the next stage if possible
     if let nextLevel = levelSequence.first {
-      // TODO: set the data of current session and append into storage
-      
-      // TODO: Reconstruct the storage so it now stores metadata and the array that store 3 stages randomly that contain the level of each stage and its data
-      
-      // TODO: use image with name instead of asset
-      
-      // TODO: make sure to have at least 10 matches -> need minimum not match threshold and maximum not match threshold -> rework on the condition to make random image: if it guarantee not to match, check the 1st element of the stack and make a random in an image array that does not contain the matched image name.
-      
-      // TODO: need a survey screen as well
-      
-      
       state = .instruction(level: nextLevel)
-      
     } else {
-      // TODO: this writting step should be in the last Survey view
       // save data of the all sessions
-      //      if !isTrial {
-      //        IOManager.tryToWrite(storage)
-      //      }
+      if !isTrial {
+        IOManager.tryToWrite(storage)
+      }
       
       // go back to start screen because the sequences now is empty
       state = .start
