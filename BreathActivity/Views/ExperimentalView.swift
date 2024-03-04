@@ -12,12 +12,13 @@ import BreathObsever
 public enum ExperimentalState {
   case start
   case running(level: Level)
-  case trial(level: Level)
   case instruction(level: Level)
   case survey(level: Level)
 }
 
 struct ExperimentalView: View {
+  
+  @State var isTrial = false
     
   @State var labelEnable = false
   
@@ -35,6 +36,7 @@ struct ExperimentalView: View {
   
   var body: some View {
     VStack {
+      // TODO: define isTrial in GameView, InstructionView and Survey view
       switch state {
       case .start:
         StartView(
@@ -61,9 +63,6 @@ struct ExperimentalView: View {
         // question: 
         // rate the difficulity of the task (0 to 5 scale)
         // how stressful is the user (0 to 5 scale)
-        Spacer()
-      case .trial(let level):
-        // TODO: create trial view seperate with game view
         Spacer()
       }
     }
@@ -97,10 +96,13 @@ extension ExperimentalView {
   
   func startButtonClick() {
     
+    isTrial = false
+    
     guard case .start = state else {
       return
     }
     
+    // TODO: level sequence set as the selection list instead
     // generate the level order sequence array
     levelSequences = [.easy, .normal, .hard].shuffled()
         
@@ -111,6 +113,8 @@ extension ExperimentalView {
   }
   
   func trialButtonClick() {
+    
+    isTrial = true
 //    if running {
 //      stopSession(endOfTime: false)
 //    } else {
