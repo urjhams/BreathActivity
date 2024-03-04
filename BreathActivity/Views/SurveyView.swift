@@ -18,6 +18,6 @@ struct SurveyView: View {
   @State var isTrial = false
   @State var sequence = [Level]()
   
-  SurveyView(isTrial: $isTrial, levelSequences: $sequence, storage: $storage)
+  return SurveyView(isTrial: $isTrial, levelSequences: $sequence, storage: storage)
     .frame(minWidth: 500, minHeight: 300)
 }

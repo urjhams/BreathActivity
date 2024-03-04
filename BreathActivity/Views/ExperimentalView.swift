@@ -13,7 +13,7 @@ public enum ExperimentalState {
   case start
   case running(level: Level)
   case instruction(level: Level)
-  case survey(level: Level)
+  case survey
 }
 
 struct ExperimentalView: View {
@@ -36,7 +36,6 @@ struct ExperimentalView: View {
   
   var body: some View {
     VStack {
-      // TODO: define isTrial in GameView, InstructionView and Survey view
       switch state {
       case .start:
         StartView(
@@ -49,7 +48,6 @@ struct ExperimentalView: View {
         GameView(
           isTrial: isTrial,
           state: $state,
-          enableLabel: $labelEnable,
           showAmplitude: $showAmplitude,
           levelSequences: $levelSequences,
           engine: ExperimentalEngine(level: level),
@@ -58,13 +56,18 @@ struct ExperimentalView: View {
         .environmentObject(observer)
       case .instruction(let level):
         // instruction view
-        InstructionView(isTrial: isTrial, nBack: level.nBack, state: $state)
-      case .survey(let level):
-        // TODO: create survey for level
+        InstructionView(
+          isTrial: isTrial,
+          nBack: level.nBack,
+          state: $state,
+          levelSequences: $levelSequences
+        )
+      case .survey:
+        // create survey for level
         // question: 
         // rate the difficulity of the task (0 to 5 scale)
         // how stressful is the user (0 to 5 scale)
-        Spacer()
+        SurveyView(isTrial: $isTrial, levelSequences: $levelSequences, storage: storage)
       }
     }
 //    .onReceive(

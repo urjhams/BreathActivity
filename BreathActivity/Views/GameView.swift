@@ -15,9 +15,7 @@ struct GameView: View {
   let isTrial: Bool
   
   @Binding var state: ExperimentalState
-  
-  @Binding var enableLabel: Bool
-    
+      
   @State var screenBackground: Color = .background
   
   @State var running = false
@@ -194,9 +192,9 @@ extension GameView {
     } else {
       // TODO: this writting step should be in the last Survey view
       // save data of the all sessions
-      if !isTrial {
-        IOManager.tryToWrite(storage)
-      }
+//      if !isTrial {
+//        IOManager.tryToWrite(storage)
+//      }
       
       // go back to start screen because the sequences now is empty
       state = .start
@@ -275,7 +273,6 @@ extension GameView {
 }
 
 #Preview {
-  @State var label: Bool = true
   @State var showAmplitude: Bool = false
   @State var sound = false
   @State var state: ExperimentalState = .running(level: .easy)
@@ -287,7 +284,6 @@ extension GameView {
   return GameView(
     isTrial: false,
     state: $state,
-    enableLabel: $label,
     showAmplitude: $showAmplitude,
     levelSequences: $sequence,
     engine: engine,
