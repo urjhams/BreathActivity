@@ -14,6 +14,7 @@ public enum ExperimentalState {
   case running(level: Level)
   case trial(level: Level)
   case instruction(level: Level)
+  case survey(level: Level)
 }
 
 struct ExperimentalView: View {
@@ -55,6 +56,12 @@ struct ExperimentalView: View {
       case .instruction(let level):
         // instruction view
         InstructionView(nBack: level.nBack, state: $state)
+      case .survey(let level):
+        // TODO: create survey for level
+        // question: 
+        // rate the difficulity of the task (0 to 5 scale)
+        // how stressful is the user (0 to 5 scale)
+        Spacer()
       case .trial(let level):
         // TODO: create trial view seperate with game view
         Spacer()

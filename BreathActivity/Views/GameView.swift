@@ -10,38 +10,6 @@ import GameController
 import BreathObsever
 import AVFAudio
 
-struct MakeKeyPressSilentView: NSViewRepresentable {
-  
-  class KeyView: NSView {
-    func isManagedByThisView(_ event: NSEvent) -> Bool {
-      // just a work around so we always return true
-      return true
-    }
-    
-    override var acceptsFirstResponder: Bool { true }
-    override func keyDown(with event: NSEvent) {
-      guard isManagedByThisView(event) else {
-        // in `super.keyDown(with: event)`,
-        // the event goes up through the responder chain
-        // and if no other responders process it, causes beep sound.
-        return super.keyDown(with: event)
-      }
-      // print("pressed \(event.keyCode)")
-    }
-  }
-  
-  func makeNSView(context: Context) -> NSView {
-    let view = KeyView()
-    DispatchQueue.main.async { // wait till next event cycle
-      view.window?.makeFirstResponder(view)
-    }
-    return view
-  }
-  
-  func updateNSView(_ nsView: NSView, context: Context) { }
-  
-}
-
 struct GameView: View {
   
   @Binding var state: ExperimentalState
@@ -201,6 +169,12 @@ extension GameView {
       // TODO: set the data of current session and append into storage
       
       // TODO: Reconstruct the storage so it now stores metadata and the array that store 3 stages randomly that contain the level of each stage and its data
+      
+      // TODO: use image with name instead of asset
+      
+      // TODO: make sure to have at least 10 matches -> need minimum not match threshold and maximum not match threshold -> rework on the condition to make random image: if it guarantee not to match, check the 1st element of the stack and make a random in an image array that does not contain the matched image name.
+      
+      // TODO: need a survey screen as well
       
       // go to the next stage
       state = .instruction(level: nextLevel)
