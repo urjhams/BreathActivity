@@ -64,7 +64,14 @@ struct GameView: View {
         }
         Spacer()
         if showAmplitude {
-          debugView
+          debugView()
+            .onReceive(observer.amplitudeSubject) { value in
+              // scale up with 1000 because the data is something like 0,007.
+              // So we would like it to start from 1 to around 80
+              // add amplutudes value to draw
+              print("😀 \(value)")
+              amplitudes.append(value * 1000)
+            }
         }
         // work-around view to disable the "funk" error sound when click on keyboard on macOS
         MakeKeyPressSilentView()
@@ -213,8 +220,8 @@ extension GameView {
 }
 
 extension GameView {
-  
-  private var debugView: some View {
+  @ViewBuilder
+  private func debugView() -> some View {
     VStack {
       Text(tobiiInfoText)
       
@@ -230,12 +237,6 @@ extension GameView {
       default:
         break
       }
-    }
-    .onReceive(observer.amplitudeSubject) { value in
-      // scale up with 1000 because the data is something like 0,007.
-      // So we would like it to start from 1 to around 80
-      // add amplutudes value to draw
-      amplitudes.append(value * 1000)
     }
   }
   

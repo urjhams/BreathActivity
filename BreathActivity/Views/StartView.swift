@@ -18,7 +18,7 @@ struct StartView: View {
   
   @State var showAlert = false
   
-  // TODO: add another information of the candidate (age, sex), also add it into the DataStorage
+  // TODO: add another information of the candidate (age, gender), also add it into the DataStorage
   // TODO: change the response only when click space.
   
   var startButtonClick: () -> Void
