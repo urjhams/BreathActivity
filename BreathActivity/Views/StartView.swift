@@ -31,18 +31,24 @@ struct StartView: View {
   
   var body: some View {
     VStack {
-      HStack {
-        Spacer()
-        Text(currentAudioInput)
-          .onReceive(checkTimer) { _ in
-            withAnimation {
-              checkCurrentAudioInput()
+      ZStack {
+        HStack {
+          Spacer()
+          Text(currentAudioInput)
+            .font(.title)
+            .baselineOffset(8)
+            .padding()
+            .onReceive(checkTimer) { _ in
+              withAnimation {
+                checkCurrentAudioInput()
+              }
             }
-          }
+        }
+        
+        Text("N-back Task")
+          .font(.largeTitle)
+          .fontWeight(.heavy)
       }
-      Text("N-back Task")
-        .font(.largeTitle)
-        .fontWeight(.heavy)
       HStack {
         Spacer()
         TextField("Your Name", text: $storage.candidateName)
