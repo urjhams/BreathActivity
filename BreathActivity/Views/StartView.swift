@@ -11,7 +11,7 @@ struct StartView: View {
   
   let checkTimer = Timer.publish(every: 0.1, on: .current, in: .common).autoconnect()
   
-  @State var airpodIcon = ""
+  @State var currentAudioInput = ""
   
   @Binding var selection: Int
           
@@ -33,10 +33,10 @@ struct StartView: View {
     VStack {
       HStack {
         Spacer()
-        Text(airpodIcon)
+        Text(currentAudioInput)
           .onReceive(checkTimer) { _ in
             withAnimation {
-              checkAirPod()
+              checkCurrentAudioInput()
             }
           }
       }
@@ -121,25 +121,20 @@ extension StartView {
 import AVFoundation
 
 extension StartView {
-  private func checkAirPod() {
+  private func checkCurrentAudioInput() {
     
-    let type: AVCaptureDevice.DeviceType = if #available(macOS 14.0, *) {
-      .microphone
-    } else {
-      // Fallback on earlier versions
-      .builtInMicrophone
+    let current = AVCaptureDevice.default(for: .audio)
+        
+    switch current?.modelID {
+    case "Digital Mic":
+      currentAudioInput = "􀟛"
+    case "200e 4c": // 200e 4c is the modelID of airpod pro
+      currentAudioInput = "􀪷"
+    case "iPhone Mic":
+      currentAudioInput = "􀬩"
+    default:
+      currentAudioInput = "􀭉"
     }
-    
-    let devices = AVCaptureDevice.DiscoverySession(
-      deviceTypes: [type],
-      mediaType: .audio,
-      position: .unspecified
-    ).devices
-    
-    // 200e 4c is the modelID of airpod pro
-    let microphone = devices.first(where: { device in device.modelID == "200e 4c"})
-    
-    airpodIcon = microphone != nil ? "􀪷" : "􀟛"
   }
 }
 
