@@ -68,11 +68,12 @@ struct GameView: View {
         if showAmplitude {
           debugView()
             .onReceive(observer.amplitudeSubject) { value in
-              // scale up with 1000 because the data is something like 0,007.
-              // So we would like it to start from 1 to around 80
-              // add amplutudes value to draw
-              print("😀 \(value)")
-              amplitudes.append(value * 1000)
+              amplitudes.append(value)
+              let amplitudesInOneSec = Int(Int(BreathObsever.sampleRate) / BreathObsever.samples)
+              // keep only data of 5 seconds of amplirudes
+              if amplitudes.count >= 5 * amplitudesInOneSec {
+                amplitudes.removeFirst()
+              }
             }
         }
         // work-around view to disable the "funk" error sound when click on keyboard on macOS
@@ -252,7 +253,7 @@ extension GameView {
       HStack(spacing: 1) {
         ForEach(amplitudes, id: \.self) { amplitude in
           RoundedRectangle(cornerRadius: 2)
-            .frame(width: offSet, height: CGFloat(amplitude) * offSet)
+            .frame(width: offSet, height: CGFloat(amplitude) / 10)
             .foregroundColor(.white)
         }
       }
