@@ -71,7 +71,7 @@ struct ExperimentalView: View {
         )
       case .survey:
         // create survey for level
-        // question: 
+        // questions: 
         // rate the difficulity of the task (0 to 5 scale)
         // how stressful is the user (0 to 5 scale)
         SurveyView(
@@ -82,29 +82,6 @@ struct ExperimentalView: View {
         )
       }
     }
-//    .onReceive(
-//      tobii.avgPupilDiameter.withLatestFrom(observer.amplitudeSubject)
-//    ) { tobiiData, amplitude in
-//      <#code#>
-//    }
-//    .onReceive(
-//      observer.amplitudeSubject.withLatestFrom(tobii.avgPupilDiameter)
-//    ) { (amplitude, tobiiData) in
-//      
-//      guard case .data(let data) = tobiiData else {
-//        return
-//      }
-//      
-//      Task { @MainActor in
-//        print("\(amplitude) - \(data)")
-//        // store the data into the storage
-//        let collected = CollectedData(
-//          amplitude: amplitude,
-//          pupilSize: data
-//        )
-//        storage.collectedData.append(collected)
-//      }
-//    }
   }
 }
 

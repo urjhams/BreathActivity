@@ -9,6 +9,10 @@ import SwiftUI
 
 struct StartView: View {
   
+  let checkTimer = Timer.publish(every: 0.1, on: .current, in: .common).autoconnect()
+  
+  @State var airpodIcon = ""
+  
   @Binding var selection: Int
           
   @Binding var showAmplitude: Bool
@@ -27,6 +31,15 @@ struct StartView: View {
   
   var body: some View {
     VStack {
+      HStack {
+        Spacer()
+        Text(airpodIcon)
+          .onReceive(checkTimer) { _ in
+            withAnimation {
+              checkAirPod()
+            }
+          }
+      }
       Text("N-back Task")
         .font(.largeTitle)
         .fontWeight(.heavy)
@@ -102,6 +115,31 @@ extension StartView {
       }
     }
     return result
+  }
+}
+
+import AVFoundation
+
+extension StartView {
+  private func checkAirPod() {
+    
+    let type: AVCaptureDevice.DeviceType = if #available(macOS 14.0, *) {
+      .microphone
+    } else {
+      // Fallback on earlier versions
+      .builtInMicrophone
+    }
+    
+    let devices = AVCaptureDevice.DiscoverySession(
+      deviceTypes: [type],
+      mediaType: .audio,
+      position: .unspecified
+    ).devices
+    
+    // 200e 4c is the modelID of airpod pro
+    let microphone = devices.first(where: { device in device.modelID == "200e 4c"})
+    
+    airpodIcon = microphone != nil ? "􀪷" : "􀟛"
   }
 }
 

@@ -22,13 +22,15 @@ struct GameView: View {
   
   @Binding var showAmplitude: Bool
   
-  private let offSet: CGFloat = 3
+  /// The flag to make sure we observe the data after the a bit of inital time
+  @State var processing = false
   
   /// debug text
   @State private var tobiiInfoText: String = ""
   
   @State private var amplitudes = [Float]()
-      
+  
+  /// Container to store the current level and the next levels
   @Binding var levelSequence: [Level]
     
   // the engine that store the stack to check
@@ -220,6 +222,11 @@ extension GameView {
 }
 
 extension GameView {
+  
+  private var offSet: CGFloat {
+    3
+  }
+  
   @ViewBuilder
   private func debugView() -> some View {
     VStack {
