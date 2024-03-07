@@ -16,7 +16,6 @@ struct MakeKeyPressSilentView: NSViewRepresentable {
         // and if no other responders process it, causes beep sound.
         return super.keyDown(with: event)
       }
-      // print("pressed \(event.keyCode)")
     }
   }
   

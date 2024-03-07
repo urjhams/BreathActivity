@@ -71,10 +71,11 @@ struct GameView: View {
               amplitudes.append(value)
               let amplitudesInOneSec = Int(Int(BreathObsever.sampleRate) / BreathObsever.samples)
               // keep only data of 5 seconds of amplirudes
-              if amplitudes.count >= 5 * amplitudesInOneSec {
+              if amplitudes.count >= BreathObsever.windowTime * amplitudesInOneSec {
                 amplitudes.removeFirst()
               }
             }
+            .padding()
         }
         // work-around view to disable the "funk" error sound when click on keyboard on macOS
         MakeKeyPressSilentView()
@@ -225,7 +226,7 @@ extension GameView {
 extension GameView {
   
   private var offSet: CGFloat {
-    3
+    1
   }
   
   @ViewBuilder
@@ -249,15 +250,14 @@ extension GameView {
   }
   
   private var amplitudeView: some View {
-    ScrollView(.vertical) {
-      HStack(spacing: 1) {
-        ForEach(amplitudes, id: \.self) { amplitude in
-          RoundedRectangle(cornerRadius: 2)
-            .frame(width: offSet, height: CGFloat(amplitude) / 10)
-            .foregroundColor(.white)
-        }
+    HStack(spacing: 1) {
+      ForEach(amplitudes, id: \.self) { amplitude in
+        RoundedRectangle(cornerRadius: 2)
+          .frame(width: offSet, height: CGFloat(amplitude) / 10)
+          .foregroundColor(.white)
       }
     }
+    .frame(height: 250)
   }
 }
 
