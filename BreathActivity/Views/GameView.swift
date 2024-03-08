@@ -179,7 +179,7 @@ extension GameView {
     observer.stopAnalyzing()
     
     // set the correction percentage to the data
-//    data.correctRate = ...
+    data.computeCorrectRate()
     
     // save this stage data to storage
     storage.data.append(data)

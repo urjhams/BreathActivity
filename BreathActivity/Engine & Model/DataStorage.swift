@@ -41,6 +41,14 @@ public struct ExperimentalData: Codable {
   var surveyData: SurveyData?
 }
 
+extension ExperimentalData {
+  public mutating func computeCorrectRate() {
+    let correct = Double(response.filter { $0.type == .correct }.count)
+    let total = Double(response.count)
+    correctRate = (correct * 100) / total
+  }
+}
+
 @Observable
 internal class DataStorage: Codable {
   var userData = UserData()
