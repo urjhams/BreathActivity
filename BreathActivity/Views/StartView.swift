@@ -22,9 +22,8 @@ struct StartView: View {
   
   @State var showAlert = false
   
-  // TODO: add another information of the candidate (age, gender), also add it into the DataStorage
-  // TODO: change the response only when click space.
-  
+  let genders = ["Male", "Female", "Other"]
+    
   var startButtonClick: () -> Void
   
   var trialButtonClick: () -> Void
@@ -52,18 +51,27 @@ struct StartView: View {
       .frame(height: 100)
       HStack {
         Spacer()
-        TextField("Your Name", text: $storage.userData.name)
-          .frame(minWidth: 150, maxWidth: 300)
-          .padding(.all)
-          .clipShape(.rect(cornerRadius: 10))
-        TextField("Age", text: $storage.userData.age)
-          .frame(minWidth: 150, maxWidth: 300)
-          .padding(.all)
-          .clipShape(.rect(cornerRadius: 10))
+        VStack(spacing: 10) {
+          TextField("Your Name", text: $storage.userData.name)
+            .frame(minWidth: 150, maxWidth: 300)
+            .padding([.leading, .trailing])
+            .clipShape(.rect(cornerRadius: 10))
+          TextField("Age", text: $storage.userData.age)
+            .frame(minWidth: 150, maxWidth: 300)
+            .padding([.leading, .trailing])
+            .clipShape(.rect(cornerRadius: 10))
+          Picker("Gender", selection: $storage.userData.gender) {
+            ForEach(genders, id: \.self) { gender in
+              Text(gender)
+            }
+          }
+          .frame(maxWidth: 300)
+          .pickerStyle(.menu)
+        }
         Spacer()
       }
       .alert(isPresented: $showAlert) {
-        Alert(title: Text("Please enter your name"))
+        Alert(title: Text("Please Enter the correct information"))
       }
     }
     .padding(20)
@@ -91,7 +99,11 @@ struct StartView: View {
     
     HStack {
       Button(action: {
-        guard storage.userData.name != "" else {
+        guard
+          storage.userData.name != "",
+          storage.userData.age != "",
+          storage.userData.age.isNumeric
+        else {
           return showAlert = true
         }
         startButtonClick()

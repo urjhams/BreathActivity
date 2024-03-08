@@ -25,7 +25,7 @@ public struct Response: Codable {
 public struct UserData: Codable {
   var name: String = ""
   var age: String = ""
-  var gender: String = ""
+  var gender: String = "Other"
 }
 
 public struct SurveyData: Codable {
