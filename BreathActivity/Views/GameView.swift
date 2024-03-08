@@ -149,7 +149,11 @@ extension GameView {
       try observer.startAnalyzing()
       
       if !isTrial {
-        tobii.startReadPupilDiameter()
+        // start read pupilDiameter after one seconds to match the observer
+        // because we actually collect the data after first second on the audio session start.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+          tobii.startReadPupilDiameter()
+        }
       }
     } catch {
       running = false
