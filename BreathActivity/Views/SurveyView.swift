@@ -48,14 +48,14 @@ struct SurveyView: View {
       )
       MakeKeyPressSilentView()
         .frame(height: 0)
+        .onAppear {
+          NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
+            self.setupKeyPress(from: event)
+            return event
+          }
+        }
     }
     .padding()
-    .onAppear {
-      NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
-        self.setupKeyPress(from: event)
-        return event
-      }
-    }
     .alert(isPresented: $showAlert) {
       Alert(title: Text("Please select the answer for the questions above"))
     }

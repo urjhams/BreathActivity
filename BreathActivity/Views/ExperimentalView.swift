@@ -13,6 +13,7 @@ public enum ExperimentalState {
   case start
   case running(level: Level)
   case instruction(level: Level)
+  case result
   case survey
 }
 
@@ -56,6 +57,14 @@ struct ExperimentalView: View {
           storage.candidateName = ""
           storage.reset()
         }
+      case .instruction(let level):
+        // instruction view
+        InstructionView(
+          isTrial: isTrial,
+          nBack: level.nBack,
+          state: $state,
+          levelSequence: $levelSequence
+        )
       case .running(let level):
         GameView(
           isTrial: isTrial,
@@ -65,13 +74,11 @@ struct ExperimentalView: View {
           engine: ExperimentalEngine(level: level),
           storage: storage
         )
-      case .instruction(let level):
-        // instruction view
-        InstructionView(
-          isTrial: isTrial,
-          nBack: level.nBack,
+      case .result:
+        ResultView(
           state: $state,
-          levelSequence: $levelSequence
+          storage: storage,
+          levelSequence: levelSequence
         )
       case .survey:
         // create survey for level

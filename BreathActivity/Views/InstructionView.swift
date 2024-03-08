@@ -28,12 +28,12 @@ struct InstructionView: View {
       Text("Press Space to start")
       MakeKeyPressSilentView()
         .frame(height: 0)
-    }
-    .onAppear {
-      NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
-        self.setupKeyPress(from: event)
-        return event
-      }
+        .onAppear {
+          NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
+            self.setupKeyPress(from: event)
+            return event
+          }
+        }
     }
   }
 }

@@ -36,7 +36,7 @@ struct GameView: View {
   // the engine that store the stack to check
   @State var engine: ExperimentalEngine
   
-  // use an array to store, construct the respiratory rate from amplitudes
+  // data container
   @Bindable var storage: DataStorage
   
   /// Tobii tracker object that read the python script
@@ -76,6 +76,13 @@ struct GameView: View {
         // work-around view to disable the "funk" error sound when click on keyboard on macOS
         MakeKeyPressSilentView()
           .frame(height: 0)
+          .onAppear {
+            // key pressed notification register
+            NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
+              self.setupKeyPress(from: event)
+              return event
+            }
+          }
       }
       .onReceive(engine.sessionTimer) { _ in
         guard engine.running else {
@@ -127,12 +134,6 @@ struct GameView: View {
       }
     }
     .onAppear {
-      // key pressed notification register
-      NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
-        self.setupKeyPress(from: event)
-        return event
-      }
-      
       // set level for storage
       storage.level = engine.stack.level.name
       
@@ -179,7 +180,7 @@ extension GameView {
     handleCollectedData()
     
     // show the survey
-    state = .survey
+    state = .result
   }
 }
 

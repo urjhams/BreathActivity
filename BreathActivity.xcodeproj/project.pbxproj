@@ -17,6 +17,7 @@
 		4F5CE1952B436DA900945B37 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5CE1942B436DA900945B37 /* StartView.swift */; };
 		4F5CE1972B4377ED00945B37 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5CE1962B4377ED00945B37 /* GameView.swift */; };
 		4F5DAA902B03F9DE00A64D25 /* ExperimentalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5DAA8F2B03F9DE00A64D25 /* ExperimentalView.swift */; };
+		4FB6770E2B9B656E006389AE /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB6770D2B9B656E006389AE /* ResultView.swift */; };
 		4FBBE5422B91FB6400DA0D51 /* InstructionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FBBE5412B91FB6400DA0D51 /* InstructionView.swift */; };
 		4FE0C3872B02A8EF00C82853 /* BreathActivityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */; };
 		4FE0C38B2B02A8F000C82853 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C38A2B02A8F000C82853 /* Assets.xcassets */; };
@@ -57,6 +58,7 @@
 		4F5CE1942B436DA900945B37 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
 		4F5CE1962B4377ED00945B37 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		4F5DAA8F2B03F9DE00A64D25 /* ExperimentalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentalView.swift; sourceTree = "<group>"; };
+		4FB6770D2B9B656E006389AE /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
 		4FBBE5412B91FB6400DA0D51 /* InstructionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionView.swift; sourceTree = "<group>"; };
 		4FE0C3832B02A8EF00C82853 /* BreathActivity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BreathActivity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathActivityApp.swift; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 				4FBBE5412B91FB6400DA0D51 /* InstructionView.swift */,
 				4F095F9F2B95DA10001F59E9 /* MakeKeyPressSilentView.swift */,
 				4F095FA32B95DFFD001F59E9 /* SurveyView.swift */,
+				4FB6770D2B9B656E006389AE /* ResultView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -335,6 +338,7 @@
 				4F11AAD52B0984F700C4F210 /* TobiiTracker.swift in Sources */,
 				4F095FA22B95DF21001F59E9 /* DataStorage.swift in Sources */,
 				4F5CE1952B436DA900945B37 /* StartView.swift in Sources */,
+				4FB6770E2B9B656E006389AE /* ResultView.swift in Sources */,
 				4F095FA02B95DA10001F59E9 /* MakeKeyPressSilentView.swift in Sources */,
 				4F095FA42B95DFFD001F59E9 /* SurveyView.swift in Sources */,
 				4F5CE1972B4377ED00945B37 /* GameView.swift in Sources */,
