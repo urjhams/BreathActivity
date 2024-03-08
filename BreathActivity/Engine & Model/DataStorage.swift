@@ -4,6 +4,7 @@ import SwiftUI
 public struct CollectedData: Codable {
   let amplitude: Float
   let pupilSize: Float
+  let respiratoryRate: Float?
 }
 
 public struct Response: Codable {
@@ -21,23 +22,32 @@ public struct Response: Codable {
   var reaction: ReactionType
 }
 
+public struct UserData: Codable {
+  var name: String = ""
+  var age: String = ""
+  var gender: String = ""
+}
+
+public struct SurveyData: Codable {
+  var q1Answer: Int?
+  var q2Answer: Int?
+}
+
+public struct ExperimentalData: Codable {
+  let level: String
+  var response: [Response]
+  var collectedData: [CollectedData]
+  var correctRate: Double?
+  var surveyData: SurveyData?
+}
+
 @Observable
 internal class DataStorage: Codable {
-  var candidateName: String = ""
-  var level: String = ""
-  var collectedData: [CollectedData] = []
-  var responses: [Response] = []
+  var userData = UserData()
+  var data = [ExperimentalData]()
   
-  enum CodingKeys: String, CodingKey {
-    case _candidateName = "candidateName"
-    case _level = "level"
-    case _collectedData = "collectedData"
-    case _responses = "responses"
-  }
-  
-  public func reset() {
-    level = ""
-    collectedData = []
-    responses = []
+  func reset() {
+    userData = UserData()
+    data = []
   }
 }

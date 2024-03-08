@@ -52,14 +52,18 @@ struct StartView: View {
       .frame(height: 100)
       HStack {
         Spacer()
-        TextField("Your Name", text: $storage.candidateName)
+        TextField("Your Name", text: $storage.userData.name)
           .frame(minWidth: 150, maxWidth: 300)
           .padding(.all)
           .clipShape(.rect(cornerRadius: 10))
-          .alert(isPresented: $showAlert) {
-            Alert(title: Text("Please enter your name"))
-          }
+        TextField("Age", text: $storage.userData.age)
+          .frame(minWidth: 150, maxWidth: 300)
+          .padding(.all)
+          .clipShape(.rect(cornerRadius: 10))
         Spacer()
+      }
+      .alert(isPresented: $showAlert) {
+        Alert(title: Text("Please enter your name"))
       }
     }
     .padding(20)
@@ -87,7 +91,7 @@ struct StartView: View {
     
     HStack {
       Button(action: {
-        guard storage.candidateName != "" else {
+        guard storage.userData.name != "" else {
           return showAlert = true
         }
         startButtonClick()

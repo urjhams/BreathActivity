@@ -80,14 +80,18 @@ extension SurveyView {
   
   private func finishSurvey() {
     
-    if !isTrial, let currentLevel = levelSequence.first {
-      // TODO: append the survey data of current level to storage
-            
-      // TODO: make sure to have at least 10 matches -> need minimum not match threshold and maximum not match threshold -> rework on the condition to make random image: if it guarantee not to match, check the 1st element of the stack and make a random in an image array that does not contain the matched image name.
+    if !isTrial, storage.data.count > 0 {
+      // append the survey data of current level to storage
+      storage.data[storage.data.count - 1].surveyData = .init(
+        q1Answer: question1Selection,
+        q2Answer: question2Selection
+      )
     }
     
     // remove the current level to the sequence
-    levelSequence.removeFirst()
+    if !levelSequence.isEmpty {
+      levelSequence.removeFirst()
+    }
     
     // move to the next stage if possible
     if let nextLevel = levelSequence.first {

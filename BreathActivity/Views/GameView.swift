@@ -14,6 +14,8 @@ struct GameView: View {
   
   let isTrial: Bool
   
+  @State var data: ExperimentalData
+  
   @Binding var state: ExperimentalState
       
   @State var screenBackground: Color = .background
@@ -122,7 +124,7 @@ struct GameView: View {
         }
         
         if !isTrial {
-          storage.responses.append(response)
+          data.response.append(response)
         }
       }
     }
@@ -132,11 +134,10 @@ struct GameView: View {
       guard !isTrial else {
         return
       }
+      
+      // TODO: do handle the data to data.collectedData
     }
     .onAppear {
-      // set level for storage
-      storage.level = engine.stack.level.name
-      
       // start the session
       startSession()
     }
@@ -177,20 +178,18 @@ extension GameView {
     
     observer.stopAnalyzing()
     
-    handleCollectedData()
+    // set the correction percentage to the data
+//    data.correctRate = ...
     
+    // save this stage data to storage
+    storage.data.append(data)
+        
     // show the survey
     state = .result
   }
 }
 
 extension GameView {
-  
-  private func handleCollectedData() {
-    // TODO: in the breath observer, we use another passthroughSubject that store the respiratory rate data
-    // TODO: append the data of this level in the storage
-    
-  }
   
   private func setupKeyPress(from event: NSEvent) {
     switch event.keyCode {
@@ -273,7 +272,7 @@ extension GameView {
   @State var sequence = [Level]()
   
   return GameView(
-    isTrial: false,
+    isTrial: false, data: .init(level: engine.level.name, response: [], collectedData: []),
     state: $state,
     showAmplitude: $showAmplitude,
     levelSequence: $sequence,

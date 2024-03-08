@@ -54,7 +54,6 @@ struct ExperimentalView: View {
           trialButtonClick: trialButtonClick
         )
         .onAppear {
-          storage.candidateName = ""
           storage.reset()
         }
       case .instruction(let level):
@@ -68,6 +67,7 @@ struct ExperimentalView: View {
       case .running(let level):
         GameView(
           isTrial: isTrial,
+          data: .init(level: level.name, response: [], collectedData: []),
           state: $state,
           showAmplitude: $showAmplitude,
           levelSequence: $levelSequence,
