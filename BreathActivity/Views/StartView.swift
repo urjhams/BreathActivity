@@ -92,12 +92,13 @@ struct StartView: View {
     
     Spacer()
     
-    Picker("Show amplitude (for debugging purpose)", selection: $showAmplitude) {
-      Text("Yes").tag(true)
-      Text("No").tag(false)
+    Toggle(isOn: $showAmplitude) {
+      Label {
+        Text("Show amplitudes 􀙫")
+      } icon: {
+        Text("")
+      }
     }
-    .pickerStyle(.radioGroup)
-    .horizontalRadioGroupLayout()
     
     HStack {
       Button(action: {
