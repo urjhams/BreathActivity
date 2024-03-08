@@ -23,11 +23,12 @@ struct ResultView: View {
     Text(content)
       .onAppear {
         if let correctionRate = storage.data.last?.correctRate {
-          switch correctionRate {
+          let rounded = correctionRate.roundToDecimal(2)
+          switch rounded {
           case 0...50:
-            content = "Not bad, you have \(correctionRate) % correction."
+            content = "Not bad, you have \(rounded) % correction."
           default:
-            content = "Wow, you have \(correctionRate) % correction."
+            content = "Wow, you have \(rounded) % correction."
           }
         }
       }

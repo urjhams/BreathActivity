@@ -9,6 +9,13 @@ extension Encodable {
   }
 }
 
+extension Double {
+  func roundToDecimal(_ fractionDigits: Int) -> Double {
+    let multiplier = pow(10, Double(fractionDigits))
+    return Darwin.round(self * multiplier) / multiplier
+  }
+}
+
 extension Collection {
   /// Returns the element at the specified index if it is within bounds, otherwise nil.
   subscript (safe index: Index) -> Element? {
