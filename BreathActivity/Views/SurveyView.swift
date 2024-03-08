@@ -18,8 +18,10 @@ struct SurveyView: View {
   
   var body: some View {
     VStack(spacing: 10) {
-      Text("Question 1 content")
-        .font(.title3)
+      Text("Rating the difficulity of the task (from 1 to 5)")
+        .font(.title2)
+        .padding(.top)
+      
       Picker("", selection: $question1Selection) {
         Text("1").tag(1)
         Text("2").tag(2)
@@ -29,10 +31,20 @@ struct SurveyView: View {
       }
       .pickerStyle(.segmented)
       
-      Divider()
+      HStack {
+        Text("Very easy")
+        Spacer()
+        Text("Very hard")
+      }
+      .padding([.leading, .trailing])
       
-      Text("Question 2 content")
-        .font(.title3)
+      Divider()
+        .padding()
+      
+      Text("Rating the stressful you feel (from 1 to 5)")
+        .font(.title2)
+        .padding(.top)
+      
       Picker("", selection: $question2Selection) {
         Text("1").tag(1)
         Text("2").tag(2)
@@ -41,6 +53,13 @@ struct SurveyView: View {
         Text("5").tag(5)
       }
       .pickerStyle(.segmented)
+      
+      HStack {
+        Text("Not stress at all")
+        Spacer()
+        Text("Very stressful")
+      }
+      .padding([.leading, .trailing])
       
       Spacer()
       Text(
