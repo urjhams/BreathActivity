@@ -10,7 +10,9 @@ import Combine
 
 @Observable public class ExperimentalEngine {
   
-  var maximumUnmatched = 5
+  let maximumUnmatched = 7
+  
+  let minimumUnmatched = 5
   
   var unmatchedCount = 0
     
@@ -31,17 +33,15 @@ import Combine
   // this timer will publish every 10 milisecond
   var analyzeTimer = Timer.publish(every: mili, on: .main, in: .default).autoconnect()
   
+  /// This is the maximum reaction time before swift to the new image
   private static let limitReactionTime: Double = 3
   
   /// duration of each image that be able or being show
   public var duration = Int(limitReactionTime)
   
   private var analyzeTime: Double = limitReactionTime
-  
-  private let trialLimit: Int = 60
-  private let experimentalLimit: Int = 20//300
-  
-  private var levelTime: Int = 180
+    
+  private var levelTime: Int = 300
   
   var timeLeft: Int {
     levelTime

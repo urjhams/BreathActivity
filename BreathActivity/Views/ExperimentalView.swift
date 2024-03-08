@@ -52,6 +52,10 @@ struct ExperimentalView: View {
           startButtonClick: startButtonClick,
           trialButtonClick: trialButtonClick
         )
+        .onAppear {
+          storage.candidateName = ""
+          storage.reset()
+        }
       case .running(let level):
         GameView(
           isTrial: isTrial,

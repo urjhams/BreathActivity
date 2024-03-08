@@ -49,6 +49,7 @@ struct StartView: View {
           .font(.largeTitle)
           .fontWeight(.heavy)
       }
+      .frame(height: 100)
       HStack {
         Spacer()
         TextField("Your Name", text: $storage.candidateName)
