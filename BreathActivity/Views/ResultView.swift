@@ -51,5 +51,9 @@ extension ResultView {
 }
 
 #Preview {
-  ResultView(state: <#Binding<ExperimentalState>#>, storage: <#DataStorage#>, levelSequence: <#[Level]#>)
+  @State var state: ExperimentalState = .survey
+  @Bindable var storage = DataStorage()
+  @State var sequence: [Level] = [.easy]
+  
+  return ResultView(state: $state, storage: storage, levelSequence: sequence)
 }
