@@ -22,7 +22,14 @@ struct ResultView: View {
   var body: some View {
     Text(content)
       .onAppear {
-        // TODO: based on the storage, get the result (% correction) and show the content with it
+        if let correctionRate = storage.data.last?.correctRate {
+          switch correctionRate {
+          case 0...50:
+            content = "Not bad, you have \(correctionRate) % correction."
+          default:
+            content = "Wow, you have \(correctionRate) % correction."
+          }
+        }
       }
     
     Spacer()

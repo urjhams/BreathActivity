@@ -129,6 +129,8 @@ struct GameView: View {
       }
     }
     .onReceive(
+      // tobii take the data by frame (60 FPS) which mean 60 times, while observer amplitude is 47 times
+      // so there is always newer pupil data
       tobii.avgPupilDiameter.withLatestFrom(observer.amplitudeSubject)
     ) { tobiiData, amplitude in
       guard !isTrial else {
