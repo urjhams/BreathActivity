@@ -102,30 +102,22 @@ struct GameView: View {
     .background(screenBackground)
     .onReceive(engine.responseEvent) { response in
       Task {
+        guard case .pressedSpace = response.reaction else {
+          return
+        }
+        
         switch response.type {
         case .correct:
-          withAnimation(.easeInOut(duration: 0.2)) {
-            switch response.reaction {
-            case .doNothing:
-              screenBackground = .blue
-            case .pressedSpace:
-              screenBackground = .green
-            }
-          }
-          try? await Task.sleep(nanoseconds: 300_000_000)
-          withAnimation(.easeInOut(duration: 0.2)) {
-            screenBackground = .background
-          }
-          
+          screenBackground = .green
         case .incorrect:
-          withAnimation(.easeInOut(duration: 0.2)) {
-            screenBackground = .red
-          }
-          try? await Task.sleep(nanoseconds: 300_000_000)
-          withAnimation(.easeInOut(duration: 0.2)) {
-            screenBackground = .background
-          }
+          screenBackground = .red
         }
+        
+        try? await Task.sleep(nanoseconds: 300_000_000)
+        withAnimation(.easeInOut(duration: 0.2)) {
+          screenBackground = .background
+        }
+        
         if !isTrial {
           storage.responses.append(response)
         }
