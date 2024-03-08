@@ -41,7 +41,7 @@ import Combine
   
   private var analyzeTime: Double = limitReactionTime
     
-  private var levelTime: Int = 300
+  private var levelTime: Int = 300 + 1  // extra 1 second for the audio engine to be ready to collect data
   
   var timeLeft: Int {
     levelTime
@@ -89,21 +89,29 @@ import Combine
     
     // random adding the image
     var randomImage: String? {
-      if let current = stack.peak(), let index = images.firstIndex(of: current) {
-        var copy = images
-        copy.remove(at: index)
-        return copy.randomElement()
+      if stack.atCapacity, let bottom = stack.nextBottom {
+        switch unmatchedCount {
+        case 0..<minimumUnmatched:
+          // make sure to not add image of the current bottom
+          var copy = images
+          if let bottomIndex = copy.firstIndex(of: bottom) {
+            copy.remove(at: bottomIndex)
+          }
+          return copy.randomElement()
+        case minimumUnmatched..<maximumUnmatched:
+          // return just random image
+          return images.randomElement()
+        default:
+          // guarantee to return the matched image
+          return bottom
+        }
       } else {
+        // when filling
         return images.randomElement()
       }
     }
     
-    // guarantee to add the matched image to the next bottom
-    // if we reach the maximum unmatched cases
-    // otherwise just add a random image
-    let image = if unmatchedCount >= maximumUnmatched { stack.nextBottom } else { randomImage }
-    
-    stack.add(image)
+    stack.add(randomImage)
     
     // generate the id for animation no matter if the same image appear
     currentImageId = UUID()

@@ -92,16 +92,22 @@ struct StartView: View {
         }
         startButtonClick()
       }) {
-        Image(systemName: "play.circle.fill")
-          .font(.largeTitle)
+        VStack {
+          Image(systemName: "play.circle.fill")
+            .font(.largeTitle)
+          Text("Start")
+        }
       }
       .controlSize(.extraLarge)
       .buttonStyle(.borderless)
       .padding()
       
       Button(action: trialButtonClick) {
-        Image(systemName: "questionmark.circle.fill")
-          .font(.largeTitle)
+        VStack {
+          Image(systemName: "questionmark.circle.fill")
+            .font(.largeTitle)
+          Text("Trial")
+        }
       }
       .controlSize(.extraLarge)
       .buttonStyle(.borderless)
