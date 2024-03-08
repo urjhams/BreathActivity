@@ -135,7 +135,16 @@ struct GameView: View {
         return
       }
       
-      // TODO: do handle the data to data.collectedData
+      guard case .data(let pupilSize) = tobiiData else {
+        return
+      }
+      let respiratoryRate = observer.respiratoryRate.value
+      let currentResporitoryRate: Float? = respiratoryRate == 0.0 ? nil : respiratoryRate
+      
+      // handle the data to data.collectedData
+      data.collectedData.append(
+        .init(amplitude: amplitude, pupilSize: pupilSize, respiratoryRate: currentResporitoryRate)
+      )
     }
     .onAppear {
       // start the session
