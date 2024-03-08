@@ -49,6 +49,12 @@ struct StartView: View {
           .fontWeight(.heavy)
       }
       .frame(height: 100)
+      
+      Text("Welcome to my Experiment. \nI really appraciate you for participating 🤗")
+        .font(.title2)
+        .multilineTextAlignment(.center)
+        .padding(.bottom)
+      
       HStack {
         Spacer()
         VStack(spacing: 10) {
@@ -75,10 +81,6 @@ struct StartView: View {
       }
     }
     .padding(20)
-    
-    Text("Welcome to my Experiment. \nI really appraciate you for participating 🤗")
-      .font(.title2)
-      .multilineTextAlignment(.center)
     
     Picker("Level sequences", selection: $selection) {
       ForEach(0...5, id: \.self) { index in
