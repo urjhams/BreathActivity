@@ -251,9 +251,9 @@ extension GameView {
   
   private var amplitudeView: some View {
     HStack(spacing: 1) {
-      ForEach(amplitudes, id: \.self) { amplitude in
+      ForEach(0..<amplitudes.count, id: \.self) { index in
         RoundedRectangle(cornerRadius: 2)
-          .frame(width: offSet, height: CGFloat(amplitude) / 10)
+          .frame(width: offSet, height: CGFloat(amplitudes[index]) / 10)
           .foregroundColor(.white)
       }
     }
