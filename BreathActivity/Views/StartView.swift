@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import BreathObsever
 
 struct StartView: View {
   
@@ -22,6 +23,8 @@ struct StartView: View {
   
   @State var showAlert = false
   
+  @State var alertContent = ""
+    
   let genders = ["Male", "Female", "Other"]
     
   var startButtonClick: () -> Void
@@ -77,7 +80,7 @@ struct StartView: View {
         Spacer()
       }
       .alert(isPresented: $showAlert) {
-        Alert(title: Text("Please Enter the correct information"))
+        Alert(title: Text(alertContent))
       }
     }
     .padding(20)
@@ -107,8 +110,15 @@ struct StartView: View {
           storage.userData.age != "",
           storage.userData.age.isNumeric
         else {
+          alertContent = "Please Enter the correct information."
           return showAlert = true
         }
+        
+        guard currentAudioInput == "􀪷" else {
+          alertContent = "Please make sure airPod is connected."
+          return showAlert = true
+        }
+        
         startButtonClick()
       }) {
         VStack {
@@ -121,7 +131,14 @@ struct StartView: View {
       .buttonStyle(.borderless)
       .padding()
       
-      Button(action: trialButtonClick) {
+      Button(action: {
+        guard currentAudioInput == "􀪷" else {
+          alertContent = "Please make sure airPod is connected."
+          return showAlert = true
+        }
+        
+        trialButtonClick()
+      }) {
         VStack {
           Image(systemName: "questionmark.circle.fill")
             .font(.largeTitle)
