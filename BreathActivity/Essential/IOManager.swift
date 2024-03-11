@@ -2,7 +2,7 @@ import Foundation
 
 public class IOManager {
   static func tryToWrite(_ storage: DataStorage) {
-    let fileName = "\(storage.userData.name)"
+    let fileName = "\(storage.userData.name)(\(storage.userData.levelTried))"
     let fileUrl = try? FileManager
       .default
       .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)

@@ -96,31 +96,11 @@ struct StartView: View {
     Spacer()
     
     Toggle(isOn: $showAmplitude) {
-      Label {
-        Text("Show amplitudes 􀙫")
-      } icon: {
-        Text("")
-      }
+      Label { Text("Show amplitudes 􀙫") } icon: { Text("") }
     }
     
     HStack {
-      Button(action: {
-        guard
-          storage.userData.name != "",
-          storage.userData.age != "",
-          storage.userData.age.isNumeric
-        else {
-          alertContent = "Please Enter the correct information."
-          return showAlert = true
-        }
-        
-        guard currentAudioInput == "􀪷" else {
-          alertContent = "Please make sure airPod is connected."
-          return showAlert = true
-        }
-        
-        startButtonClick()
-      }) {
+      Button(action: startClick) {
         VStack {
           Image(systemName: "play.circle.fill")
             .font(.largeTitle)
@@ -132,14 +112,7 @@ struct StartView: View {
       .buttonStyle(.borderless)
       .padding()
       
-      Button(action: {
-        guard currentAudioInput == "􀪷" else {
-          alertContent = "Please make sure airPod is connected."
-          return showAlert = true
-        }
-        
-        trialButtonClick()
-      }) {
+      Button(action: trialClick) {
         VStack {
           Image(systemName: "questionmark.circle.fill")
             .font(.largeTitle)
@@ -152,6 +125,37 @@ struct StartView: View {
       .padding()
     }
     .padding()
+  }
+}
+
+extension StartView {
+  private func startClick() {
+    guard
+      storage.userData.name != "",
+      storage.userData.age != "",
+      storage.userData.age.isNumeric
+    else {
+      alertContent = "Please Enter the correct information."
+      return showAlert = true
+    }
+    
+    guard currentAudioInput == "􀪷" else {
+      alertContent = "Please make sure airPod is connected."
+      return showAlert = true
+    }
+    
+    storage.userData.levelTried = text(for: levelSequences[selection])
+    
+    startButtonClick()
+  }
+  
+  private func trialClick() {
+    guard currentAudioInput == "􀪷" else {
+      alertContent = "Please make sure airPod is connected."
+      return showAlert = true
+    }
+    
+    trialButtonClick()
   }
 }
 

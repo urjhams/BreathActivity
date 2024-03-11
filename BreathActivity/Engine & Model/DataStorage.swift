@@ -24,6 +24,7 @@ public struct UserData: Codable {
   var name: String = ""
   var age: String = ""
   var gender: String = "Other"
+  var levelTried: String = ""
 }
 
 public struct SurveyData: Codable {

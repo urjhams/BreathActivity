@@ -242,7 +242,7 @@ extension GameView {
     
     if data.collectedData[index].respiratoryRate == nil {
       /// replace the nil value we that set at the moment of calculation requested that we reserved
-      var reservedPupilSize = data.collectedData[index].pupilSize
+      let reservedPupilSize = data.collectedData[index].pupilSize
       data.collectedData[index] = CollectedData(pupilSize: reservedPupilSize, respiratoryRate: rr)
     } else {
       data.collectedData.append(

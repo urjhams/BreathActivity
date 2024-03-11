@@ -39,16 +39,20 @@ import Combine
   /// duration of each image that be able or being show
   public var duration = Int(limitReactionTime)
   
+  /// The time to monitor the user's interaction time and also used to trigger the switch image in `goNext`
   private var analyzeTime: Double = limitReactionTime
-    
-  private var levelTime: Int = 300 + 1  // extra 1 second for the audio engine to be ready to collect data
   
-  var timeLeft: Int {
-    levelTime
-  }
+  /// The time for each stage
+  // extra 1 second for the audio engine to be ready to collect data
+  private var levelTime: Int = 300 + 1
   
+  /// The time left in the stage
+  var timeLeft: Int { levelTime }
+  
+  /// Object to emit the tracked response events
   public var responseEvent = PassthroughSubject<Response, Never>()
   
+  /// The array of original image names we use
   let images: [String] = [
     "animalface_cheetah",
     "animalface_duck",
@@ -60,9 +64,8 @@ import Combine
     "animalface_zou"
   ]
   
-  var current: String? {
-    stack.peak()
-  }
+  /// Current image (peak of the stack)
+  var current: String? { stack.peak() }
   
   /// This workaround make sure each time an image is push to the stack, it emits an unique Id so the transition
   /// for the image view based on Id will always fire up even the same image is pushed
@@ -80,11 +83,13 @@ import Combine
     return peak == bottom
   }
   
+  /// reset the stack and engine
   func reset() {
     stack.setEmpty()
     running = false
   }
   
+  /// Add new image to the stack
   private func addImage() {
     
     // random adding the image
