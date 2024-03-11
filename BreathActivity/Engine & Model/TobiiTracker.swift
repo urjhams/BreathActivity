@@ -15,6 +15,8 @@ public class TobiiTracker: ObservableObject {
   /// Store the average value of Pupil diameters (left and right eye)
   public var avgPupilDiameter = PassthroughSubject<TobiiData, Never>()
   
+  public var currentPupilDialect = CurrentValueSubject<Float, Error>(-1)
+  
   var process = Process()
   
   init() {}
@@ -94,6 +96,7 @@ extension TobiiTracker {
         if let output = String(data: data, encoding: .utf8)?.dropLast() {
           if let float = Float(String(output)) {
             self?.avgPupilDiameter.send(.data(float))
+            self?.currentPupilDialect.send(float)
           } else {
             if String(output).contains("Eye tracker connected") {
               self?.avgPupilDiameter.send(.message(String(output)))

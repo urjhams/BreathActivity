@@ -86,75 +86,18 @@ struct GameView: View {
             }
           }
       }
-      .onReceive(engine.sessionTimer) { _ in
-        guard engine.running else {
-          return
-        }
-        engine.reduceTime()
-        // stop the session when end of time
-        if engine.timeLeft == 0 {
-          endSession()
-        }
-      }
-      .onReceive(engine.analyzeTimer) { _ in
-        guard engine.running, !isTrial else {
-          return
-        }
-        engine.reduceAnalyzeTime()
-      }
+      .onReceive(engine.sessionTimer) { _ in handleSessionTimer() }
+      .onReceive(engine.analyzeTimer) { _ in handleAnalyzeTimer() }
       .padding()
     }
     .background(screenBackground)
-    .onReceive(engine.responseEvent) { response in
-      Task {
-        guard case .pressedSpace = response.reaction else {
-          return
-        }
-        
-        switch response.type {
-        case .correct:
-          screenBackground = .green
-        case .incorrect:
-          screenBackground = .red
-        }
-        
-        try? await Task.sleep(nanoseconds: 300_000_000)
-        withAnimation(.easeInOut(duration: 0.2)) {
-          screenBackground = .background
-        }
-        
-        if !isTrial {
-          data.response.append(response)
-        }
-      }
-    }
-    .onReceive(
-      // tobii take the data by frame (60 FPS) which mean 60 times, while observer amplitude is 47 times
-      // so there is always newer pupil data
-      tobii.avgPupilDiameter.withLatestFrom(observer.amplitudeSubject)
-    ) { tobiiData, amplitude in
-      guard !isTrial else {
-        return
-      }
-      
-      guard case .data(let pupilSize) = tobiiData else {
-        return
-      }
-      let respiratoryRate = observer.respiratoryRate.value
-      let currentResporitoryRate: Float? = respiratoryRate == 0.0 ? nil : respiratoryRate
-      
-      // handle the data to data.collectedData
-      data.collectedData.append(
-        .init(amplitude: amplitude, pupilSize: pupilSize, respiratoryRate: currentResporitoryRate)
-      )
-    }
-    .onAppear {
-      // start the session
-      startSession()
-    }
+    .onReceive(engine.responseEvent) { handleResponse($0) }
+    .onReceive(observer.respiratoryRate) { handleRespiratoryRate($0) }
+    .onAppear { startSession() }
   }
 }
 
+// MARK: Observer session
 extension GameView {
   private func startSession() {
     do {
@@ -200,6 +143,7 @@ extension GameView {
   }
 }
 
+// MARK: setup key press
 extension GameView {
   
   private func setupKeyPress(from event: NSEvent) {
@@ -226,11 +170,10 @@ extension GameView {
   }
 }
 
+// MARK: setup view
 extension GameView {
   
-  private var offSet: CGFloat {
-    1
-  }
+  private var offSet: CGFloat { 1 }
   
   @ViewBuilder
   private func debugView() -> some View {
@@ -270,6 +213,84 @@ extension GameView {
       }
     }
     .frame(height: 250)
+  }
+}
+
+// MARK: handle observed data subjects
+extension GameView {
+  
+  private func handleRespiratoryRate(_ rr: UInt8?) {
+    guard !isTrial else {
+      return
+    }
+    
+    let pupilSize = tobii.currentPupilDialect.value
+    
+    guard pupilSize != -1 else {
+      return
+    }
+    
+    let index = data.collectedData.count - 1
+    
+    // if there is no reserved nil respiratory rate
+    guard let rr else {
+      /// We add the initial respiratory rate when it emit nil and replace it with the later calculated value
+      return data.collectedData.append(
+        CollectedData(pupilSize: pupilSize, respiratoryRate: nil)
+      )
+    }
+    
+    if data.collectedData[index].respiratoryRate == nil {
+      /// replace the nil value we that set at the moment of calculation requested that we reserved
+      var reservedPupilSize = data.collectedData[index].pupilSize
+      data.collectedData[index] = CollectedData(pupilSize: reservedPupilSize, respiratoryRate: rr)
+    } else {
+      data.collectedData.append(
+        CollectedData(pupilSize: pupilSize, respiratoryRate: rr)
+      )
+    }
+  }
+  
+  private func handleResponse(_ response: Response) {
+    Task {
+      guard case .pressedSpace = response.reaction else {
+        return
+      }
+      
+      switch response.type {
+      case .correct:
+        screenBackground = .green
+      case .incorrect:
+        screenBackground = .red
+      }
+      
+      try? await Task.sleep(nanoseconds: 300_000_000)
+      withAnimation(.easeInOut(duration: 0.2)) {
+        screenBackground = .background
+      }
+      
+      if !isTrial {
+        data.response.append(response)
+      }
+    }
+  }
+  
+  private func handleAnalyzeTimer() {
+    guard engine.running, !isTrial else {
+      return
+    }
+    engine.reduceAnalyzeTime()
+  }
+  
+  private func handleSessionTimer() {
+    guard engine.running else {
+      return
+    }
+    engine.reduceTime()
+    // stop the session when end of time
+    if engine.timeLeft == 0 {
+      endSession()
+    }
   }
 }
 

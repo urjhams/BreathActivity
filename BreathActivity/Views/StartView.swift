@@ -124,6 +124,7 @@ struct StartView: View {
         VStack {
           Image(systemName: "play.circle.fill")
             .font(.largeTitle)
+          
           Text("Start")
         }
       }
@@ -142,6 +143,7 @@ struct StartView: View {
         VStack {
           Image(systemName: "questionmark.circle.fill")
             .font(.largeTitle)
+          
           Text("Trial")
         }
       }
