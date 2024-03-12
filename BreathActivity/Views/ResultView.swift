@@ -20,7 +20,9 @@ struct ResultView: View {
   var levelSequence: [Level]
   
   var body: some View {
+    Spacer()
     Text(content)
+      .font(.title)
       .onAppear {
         if let correctionRate = storage.data.last?.correctRate {
           let rounded = correctionRate.roundToDecimal(2)
@@ -35,6 +37,9 @@ struct ResultView: View {
     
     Spacer()
     Text("Press space to continue")
+      .font(.title3)
+      .fontWeight(.bold)
+      .padding()
     MakeKeyPressSilentView()
       .frame(height: 0)
       .onAppear {
