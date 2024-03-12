@@ -158,6 +158,7 @@ import Combine
   /// When the user don't click anything
   func noAnswerCheck() {
     
+    // if the image is matched, but the user didn't press space -> incorrect
     let responseType: Response.ResponseType = matched() ? .incorrect : .correct
     
     let result = Response(type: responseType, reaction: .doNothing)

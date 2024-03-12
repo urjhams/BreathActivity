@@ -257,25 +257,21 @@ extension GameView {
   
   private func handleResponse(_ response: Response) {
     Task {
-      guard case .pressedSpace = response.reaction else {
-        return
+      if case .pressedSpace = response.reaction {
+        switch response.type {
+        case .correct:
+          screenBackground = .green
+        case .incorrect:
+          screenBackground = .red
+        }
       }
-      
-      switch response.type {
-      case .correct:
-        screenBackground = .green
-      case .incorrect:
-        screenBackground = .red
-      }
-      
+            
       try? await Task.sleep(nanoseconds: 300_000_000)
       withAnimation(.easeInOut(duration: 0.2)) {
         screenBackground = .background
       }
       
-      if !isTrial {
-        data.response.append(response)
-      }
+      data.response.append(response)
     }
   }
   
