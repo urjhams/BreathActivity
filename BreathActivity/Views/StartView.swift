@@ -65,10 +65,12 @@ struct StartView: View {
             .frame(minWidth: 150, maxWidth: 300)
             .padding([.leading, .trailing])
             .clipShape(.rect(cornerRadius: 10))
+          
           TextField("Age", text: $storage.userData.age)
             .frame(minWidth: 150, maxWidth: 300)
             .padding([.leading, .trailing])
             .clipShape(.rect(cornerRadius: 10))
+          
           Picker("Gender", selection: $storage.userData.gender) {
             ForEach(genders, id: \.self) { gender in
               Text(gender)

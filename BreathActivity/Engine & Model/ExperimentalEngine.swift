@@ -186,3 +186,9 @@ import Combine
   }
   
 }
+
+extension ExperimentalEngine {
+  public func setTrialTime() {
+    levelTime = 60
+  }
+}

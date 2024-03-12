@@ -116,6 +116,10 @@ extension GameView {
       return
     }
     
+    if isTrial {
+      engine.setTrialTime()
+    }
+    
     // start the session
     engine.running = true
     
@@ -304,7 +308,8 @@ extension GameView {
   @State var sequence = [Level]()
   
   return GameView(
-    isTrial: false, data: .init(level: engine.level.name, response: [], collectedData: []),
+    isTrial: false, 
+    data: .init(level: engine.level.name, response: [], collectedData: []),
     state: $state,
     showAmplitude: $showAmplitude,
     levelSequence: $sequence,
