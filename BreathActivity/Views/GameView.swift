@@ -66,15 +66,13 @@ struct GameView: View {
         } else {
           Color(.clear)
         }
+        
         Spacer()
-        switch (isTrial, showAmplitude) {
-        case (true, _):
+        
+        if showAmplitude {
           debugView()
-        case (false, let showAmplitude):
-          if showAmplitude {
-            debugView()
-          }
         }
+        
         // work-around view to disable the "funk" error sound when click on keyboard on macOS
         MakeKeyPressSilentView()
           .frame(height: 0)
