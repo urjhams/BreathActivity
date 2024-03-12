@@ -17,6 +17,7 @@
 		4F5CE1952B436DA900945B37 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5CE1942B436DA900945B37 /* StartView.swift */; };
 		4F5CE1972B4377ED00945B37 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5CE1962B4377ED00945B37 /* GameView.swift */; };
 		4F5DAA902B03F9DE00A64D25 /* ExperimentalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5DAA8F2B03F9DE00A64D25 /* ExperimentalView.swift */; };
+		4FAD50DC2BA0B18B008C12B5 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FAD50DB2BA0B18B008C12B5 /* AboutView.swift */; };
 		4FB6770E2B9B656E006389AE /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB6770D2B9B656E006389AE /* ResultView.swift */; };
 		4FBBE5422B91FB6400DA0D51 /* InstructionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FBBE5412B91FB6400DA0D51 /* InstructionView.swift */; };
 		4FE0C3872B02A8EF00C82853 /* BreathActivityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */; };
@@ -58,6 +59,7 @@
 		4F5CE1942B436DA900945B37 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
 		4F5CE1962B4377ED00945B37 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		4F5DAA8F2B03F9DE00A64D25 /* ExperimentalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentalView.swift; sourceTree = "<group>"; };
+		4FAD50DB2BA0B18B008C12B5 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		4FB6770D2B9B656E006389AE /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
 		4FBBE5412B91FB6400DA0D51 /* InstructionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionView.swift; sourceTree = "<group>"; };
 		4FE0C3832B02A8EF00C82853 /* BreathActivity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BreathActivity.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,6 +127,7 @@
 			isa = PBXGroup;
 			children = (
 				4F5DAA8F2B03F9DE00A64D25 /* ExperimentalView.swift */,
+				4FAD50DB2BA0B18B008C12B5 /* AboutView.swift */,
 				4F5CE1942B436DA900945B37 /* StartView.swift */,
 				4F5CE1962B4377ED00945B37 /* GameView.swift */,
 				4FBBE5412B91FB6400DA0D51 /* InstructionView.swift */,
@@ -342,6 +345,7 @@
 				4F095FA02B95DA10001F59E9 /* MakeKeyPressSilentView.swift in Sources */,
 				4F095FA42B95DFFD001F59E9 /* SurveyView.swift in Sources */,
 				4F5CE1972B4377ED00945B37 /* GameView.swift in Sources */,
+				4FAD50DC2BA0B18B008C12B5 /* AboutView.swift in Sources */,
 				4F5DAA902B03F9DE00A64D25 /* ExperimentalView.swift in Sources */,
 				4F51A6AA2B55E79200ED212A /* ExperimentalEngine.swift in Sources */,
 				4FE0C3872B02A8EF00C82853 /* BreathActivityApp.swift in Sources */,

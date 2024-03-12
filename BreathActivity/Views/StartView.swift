@@ -31,6 +31,8 @@ struct StartView: View {
   
   var trialButtonClick: () -> Void
   
+  var aboutButtonClick: () -> Void
+  
   var body: some View {
     VStack {
       ZStack {
@@ -125,6 +127,18 @@ struct StartView: View {
       .controlSize(.extraLarge)
       .buttonStyle(.borderless)
       .padding()
+      
+      Button(action: aboutClick) {
+        VStack {
+          Image(systemName: "info.circle.fill")
+            .font(.largeTitle)
+          
+          Text("About")
+        }
+      }
+      .controlSize(.extraLarge)
+      .buttonStyle(.borderless)
+      .padding()
     }
     .padding()
   }
@@ -158,6 +172,10 @@ extension StartView {
     }
     
     trialButtonClick()
+  }
+  
+  private func aboutClick() {
+    aboutButtonClick()
   }
 }
 
@@ -206,6 +224,7 @@ extension StartView {
     showAmplitude: $showAmplitude,
     storage: storage,
     startButtonClick: {},
-    trialButtonClick: {}
+    trialButtonClick: {},
+    aboutButtonClick: {}
   )
 }

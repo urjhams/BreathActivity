@@ -11,6 +11,7 @@ import BreathObsever
 
 public enum ExperimentalState {
   case start
+  case about
   case running(level: Level)
   case instruction(level: Level)
   case result
@@ -45,13 +46,16 @@ struct ExperimentalView: View {
   var body: some View {
     VStack {
       switch state {
+      case .about:
+        AboutView(state: $state)
       case .start:
         StartView(
           selection: $selection,
           showAmplitude: $showAmplitude,
           storage: storage,
           startButtonClick: startButtonClick,
-          trialButtonClick: trialButtonClick
+          trialButtonClick: trialButtonClick, 
+          aboutButtonClick: aboutButtonClick
         )
         .onAppear {
           storage.reset()
@@ -98,7 +102,7 @@ struct ExperimentalView: View {
 
 extension ExperimentalView {
   
-  func startButtonClick() {
+  private func startButtonClick() {
     
     isTrial = false
     
@@ -115,7 +119,7 @@ extension ExperimentalView {
     }
   }
   
-  func trialButtonClick() {
+  private func trialButtonClick() {
     
     isTrial = true
     // in trial, we always start from easy, normal, then hard
@@ -124,6 +128,10 @@ extension ExperimentalView {
     if let first = levelSequence.first {
       state = .instruction(level: first)
     }
+  }
+  
+  private func aboutButtonClick() {
+    state = .about
   }
 }
 
