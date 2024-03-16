@@ -45,7 +45,7 @@ struct GameView: View {
   @Environment(\.tobiiTracker) var tobii
   
   /// breath observer
-  @EnvironmentObject var observer: BreathObsever
+  @Environment(BreathObsever.self) var observer: BreathObsever
   
   var body: some View {
     ZStack {
@@ -293,12 +293,11 @@ extension GameView {
 }
 
 #Preview {
-  @State var showAmplitude: Bool = false
-  @State var sound = false
+  @State var showAmplitude: Bool = true
   @State var state: ExperimentalState = .running(level: .easy)
   @Bindable var engine = ExperimentalEngine(level: .easy)
   @Bindable var storage = DataStorage()
-  @StateObject var breathObserver = BreathObsever()
+  @State var breathObserver = BreathObsever()
   @State var sequence = [Level]()
   
   return GameView(
@@ -311,5 +310,5 @@ extension GameView {
     storage: storage
   )
   .frame(minWidth: 500)
-  .environmentObject(breathObserver)
+  .environment(breathObserver)
 }

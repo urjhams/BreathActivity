@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Combine
-import BreathObsever
 
 public enum ExperimentalState {
   case start
@@ -136,10 +135,6 @@ extension ExperimentalView {
 }
 
 #Preview {
-  
-  @StateObject var breathObserver = BreathObsever()
-  
   return ExperimentalView()
     .frame(minWidth: 500)
-    .environmentObject(breathObserver)
 }

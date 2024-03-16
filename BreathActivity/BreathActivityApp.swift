@@ -28,14 +28,14 @@ extension EnvironmentValues {
 @main
 struct BreathActivityApp: App {
   
-  @StateObject var breathObserver = BreathObsever()
+  @State var breathObserver = BreathObsever()
     
   var body: some Scene {
     WindowGroup {
       ExperimentalView()
         .frame(minWidth: 800, minHeight: 600)
     }
-    .environmentObject(breathObserver)
+    .environment(breathObserver)
     .windowStyle(.hiddenTitleBar)
   }
 }
