@@ -119,7 +119,7 @@ extension SurveyView {
       // If `levelSequence` is empty, we reached the last stage, so now we write the data
       // save data of the all sessions
       if !isTrial {
-        IOManager.tryToWrite(storage)
+        IOManager.tryToWrite(storage.convertToCodable())
       }
       
       // go back to start screen because the sequences now is empty

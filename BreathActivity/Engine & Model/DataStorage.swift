@@ -49,7 +49,7 @@ extension ExperimentalData {
 }
 
 @Observable
-internal class DataStorage: Codable {
+internal class DataStorage {
   var userData = UserData()
   var data = [ExperimentalData]()
   
@@ -57,4 +57,13 @@ internal class DataStorage: Codable {
     userData = UserData()
     data = []
   }
+  
+  func convertToCodable() -> StorageData {
+    StorageData(userData: userData, data: data)
+  }
+}
+
+internal struct StorageData: Codable {
+  let userData: UserData
+  let data: [ExperimentalData]
 }

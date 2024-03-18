@@ -1,7 +1,7 @@
 import Foundation
 
 public class IOManager {
-  static func tryToWrite(_ storage: DataStorage) {
+  static func tryToWrite(_ storage: StorageData) {
     let fileName = "\(storage.userData.name)(\(storage.userData.levelTried))"
     let fileUrl = try? FileManager
       .default
@@ -16,7 +16,7 @@ public class IOManager {
     }
   }
   
-  static func tryToRead(from fileName: String) -> DataStorage? {
+  static func tryToRead(from fileName: String) -> StorageData? {
     let fileUrl = try? FileManager
       .default
       .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
@@ -27,6 +27,6 @@ public class IOManager {
     }
     
     let decoder = JSONDecoder()
-    return try? decoder.decode(DataStorage.self, from: data)
+    return try? decoder.decode(StorageData.self, from: data)
   }
 }
