@@ -221,6 +221,7 @@ extension GameView {
 // MARK: handle observed data subjects
 extension GameView {
   
+  /// Handle the received respiratory rate
   private func handleRespiratoryRate(_ rr: UInt8?) {
     guard !isTrial else {
       return
@@ -232,21 +233,22 @@ extension GameView {
       return
     }
     
-    let index = data.collectedData.count - 1
-    
-    // if there is no reserved nil respiratory rate
-    guard let rr else {
-      /// We add the initial respiratory rate when it emit nil and replace it with the later calculated value
-      return data.collectedData.append(
-        CollectedData(pupilSize: pupilSize, respiratoryRate: nil)
-      )
+    /// When the array is still empty, we just append the new data immidiately
+    guard !data.collectedData.isEmpty else {
+      return data.collectedData.append(CollectedData(pupilSize: pupilSize, respiratoryRate: rr))
     }
     
-    if data.collectedData[index].respiratoryRate == nil {
-      /// replace the nil value we that set at the moment of calculation requested that we reserved
-      let reservedPupilSize = data.collectedData[index].pupilSize
-      data.collectedData[index] = CollectedData(pupilSize: reservedPupilSize, respiratoryRate: rr)
+    let lastIndex = data.collectedData.count - 1
+  
+    /// If there is a reserved `nil` respiratory rate
+    if data.collectedData[lastIndex].respiratoryRate == nil {
+      /// replace the `nil` value we that set at the moment of calculation requested that we reserved
+      let reservedPupilSize = data.collectedData[lastIndex].pupilSize
+      data.collectedData[lastIndex] = CollectedData(pupilSize: reservedPupilSize, respiratoryRate: rr)
     } else {
+      /// Otherwise, we just append the new respiratory value no matter what
+      /// (we expected `nil` in this context but doesn't matter since the latest was filled), so if it is `nil`,
+      /// it will be new the reserved data.
       data.collectedData.append(
         CollectedData(pupilSize: pupilSize, respiratoryRate: rr)
       )
