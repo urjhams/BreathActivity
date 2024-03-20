@@ -15,14 +15,10 @@ struct GameView: View {
   let isTrial: Bool
   
   @State var data: ExperimentalData
-  
-  @Binding var state: ExperimentalState
       
   @State var screenBackground: Color = .background
   
   @State var running = false
-  
-  @Binding var showAmplitude: Bool
   
   /// The flag to make sure we observe the data after the a bit of inital time
   @State var processing = false
@@ -32,11 +28,15 @@ struct GameView: View {
   
   @State private var amplitudes = [Float]()
   
-  /// Container to store the current level and the next levels
-  @Binding var levelSequence: [Level]
-    
   // the engine that store the stack to check
   @State var engine: ExperimentalEngine
+  
+  @Binding var state: ExperimentalState
+  
+  @Binding var showAmplitude: Bool
+  
+  /// Container to store the current level and the next levels
+  @Binding var levelSequence: [Level]
   
   // data container
   @Bindable var storage: DataStorage
@@ -91,7 +91,6 @@ struct GameView: View {
     .background(screenBackground)
     .onReceive(engine.responseEvent) { handleResponse($0) }
     .onReceive(observer.respiratoryRate) { handleRespiratoryRate($0) }
-    // TODO: in observer.respiratoryRate, add respiratory rate if not nil into serial data
     // TODO: make a schedule for every 1 second for tobii and send it, receive it here and send to serial data
     .onAppear { startSession() }
   }
@@ -315,10 +314,10 @@ extension GameView {
   return GameView(
     isTrial: false, 
     data: .init(level: engine.level.name, response: [], collectedData: []),
+    engine: engine, 
     state: $state,
     showAmplitude: $showAmplitude,
     levelSequence: $sequence,
-    engine: engine,
     storage: storage
   )
   .frame(minWidth: 500)

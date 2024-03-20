@@ -7,10 +7,13 @@
 
 import SwiftUI
 import BreathObsever
+import Combine
 
 struct StartView: View {
   
-  let checkTimer = Timer.publish(every: 0.1, on: .current, in: .common).autoconnect()
+  @State var showAlert = false
+  
+  @State var alertContent = ""
   
   @State var currentAudioInput = ""
   
@@ -21,10 +24,8 @@ struct StartView: View {
   // use an array to store, construct the respiratory rate from amplitudes
   @Bindable var storage: DataStorage
   
-  @State var showAlert = false
-  
-  @State var alertContent = ""
-    
+  var checkTimer = Timer.publish(every: 0.1, on: .current, in: .common).autoconnect()
+      
   let genders = ["Male", "Female", "Other"]
     
   var startButtonClick: () -> Void
@@ -43,9 +44,7 @@ struct StartView: View {
             .baselineOffset(8)
             .padding()
             .onReceive(checkTimer) { _ in
-              withAnimation {
-                checkCurrentAudioInput()
-              }
+              withAnimation {  checkCurrentAudioInput() }
             }
         }
         

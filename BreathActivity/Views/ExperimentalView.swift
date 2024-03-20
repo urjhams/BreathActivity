@@ -71,10 +71,10 @@ struct ExperimentalView: View {
         GameView(
           isTrial: isTrial,
           data: .init(level: level.name, response: [], collectedData: []),
+          engine: ExperimentalEngine(level: level), 
           state: $state,
           showAmplitude: $showAmplitude,
           levelSequence: $levelSequence,
-          engine: ExperimentalEngine(level: level),
           storage: storage
         )
       case .result:
