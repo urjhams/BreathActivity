@@ -91,6 +91,8 @@ struct GameView: View {
     .background(screenBackground)
     .onReceive(engine.responseEvent) { handleResponse($0) }
     .onReceive(observer.respiratoryRate) { handleRespiratoryRate($0) }
+    // TODO: in observer.respiratoryRate, add respiratory rate if not nil into serial data
+    // TODO: make a schedule for every 1 second for tobii and send it, receive it here and send to serial data
     .onAppear { startSession() }
   }
 }
@@ -227,6 +229,12 @@ extension GameView {
       return
     }
     
+    /// The serial data store continous data from the respiratory rate calculation
+    /// So if the respiratory rate is not `nil`, store it in this session `StorageData`
+    if let nonNilRespiratoryRate = rr {
+      data.serialData.respiratoryRates.append(nonNilRespiratoryRate)
+    }
+    
     let pupilSize = tobii.currentPupilDialect.value
     
     guard pupilSize != -1 else {
@@ -244,15 +252,17 @@ extension GameView {
     if data.collectedData[lastIndex].respiratoryRate == nil {
       /// replace the `nil` value we that set at the moment of calculation requested that we reserved
       let reservedPupilSize = data.collectedData[lastIndex].pupilSize
-      data.collectedData[lastIndex] = CollectedData(pupilSize: reservedPupilSize, respiratoryRate: rr)
+      let dataToReplace = CollectedData(pupilSize: reservedPupilSize, respiratoryRate: rr)
+      data.collectedData[lastIndex] = dataToReplace
     } else {
       /// Otherwise, we just append the new respiratory value no matter what
       /// (we expected `nil` in this context but doesn't matter since the latest was filled), so if it is `nil`,
       /// it will be new the reserved data.
-      data.collectedData.append(
-        CollectedData(pupilSize: pupilSize, respiratoryRate: rr)
-      )
+      let dataToAdd = CollectedData(pupilSize: pupilSize, respiratoryRate: rr)
+      data.collectedData.append(dataToAdd)
     }
+    
+    print("🙆🏻 pupil: \(data.collectedData.map(\.pupilSize)) - rr: \(data.collectedData.map(\.respiratoryRate))")
   }
   
   private func handleResponse(_ response: Response) {

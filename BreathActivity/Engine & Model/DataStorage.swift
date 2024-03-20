@@ -5,6 +5,11 @@ public struct CollectedData: Codable {
   let respiratoryRate: UInt8?
 }
 
+public struct SerialData: Codable {
+  var pupilSizes: [Float] = []
+  var respiratoryRates: [UInt8] = []
+}
+
 public struct Response: Codable {
   public enum ReactionType: Codable {
     case pressedSpace(reactionTime: Double)
@@ -36,6 +41,7 @@ public struct ExperimentalData: Codable {
   let level: String
   var response: [Response]
   var collectedData: [CollectedData]
+  var serialData = SerialData()
   var correctRate: Double?
   var surveyData: SurveyData?
 }
