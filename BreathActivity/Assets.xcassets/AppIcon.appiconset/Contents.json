@@ -1,51 +1,61 @@
 {
   "images" : [
     {
+      "filename" : "16.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "16x16"
     },
     {
+      "filename" : "pixlr-image-generator-29f3d54f-b1e3-4675-b320-69c6ffff5026 1Icon 1512x512 1256 1128 164 133.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "16x16"
     },
     {
+      "filename" : "pixlr-image-generator-29f3d54f-b1e3-4675-b320-69c6ffff5026 1Icon 1512x512 1256 1128 164 132.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "32x32"
     },
     {
+      "filename" : "pixlr-image-generator-29f3d54f-b1e3-4675-b320-69c6ffff5026 1Icon 1512x512 1256 1128 164.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "32x32"
     },
     {
+      "filename" : "pixlr-image-generator-29f3d54f-b1e3-4675-b320-69c6ffff5026 1Icon 1512x512 1256 1128.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "128x128"
     },
     {
+      "filename" : "pixlr-image-generator-29f3d54f-b1e3-4675-b320-69c6ffff5026 1Icon 1512x512 1257.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "128x128"
     },
     {
+      "filename" : "pixlr-image-generator-29f3d54f-b1e3-4675-b320-69c6ffff5026 1Icon 1512x512 1256.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "256x256"
     },
     {
+      "filename" : "pixlr-image-generator-29f3d54f-b1e3-4675-b320-69c6ffff5026 1Icon 1512x512.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "256x256"
     },
     {
+      "filename" : "pixlr-image-generator-29f3d54f-b1e3-4675-b320-69c6ffff5026 1Icon 1512x512 1.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "512x512"
     },
     {
+      "filename" : "pixlr-image-generator-29f3d54f-b1e3-4675-b320-69c6ffff5026 1Icon.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "512x512"
