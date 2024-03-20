@@ -14,6 +14,7 @@ struct GameView: View {
   
   let isTrial: Bool
   
+  /// The experiment data of this current stage to store in `storage`
   @State var data: ExperimentalData
       
   @State var screenBackground: Color = .background
@@ -89,10 +90,17 @@ struct GameView: View {
       .padding()
     }
     .background(screenBackground)
-    .onReceive(engine.responseEvent) { handleResponse($0) }
-    .onReceive(observer.respiratoryRate) { handleRespiratoryRate($0) }
-    // TODO: make a schedule for every 1 second for tobii and send it, receive it here and send to serial data
-    .onAppear { startSession() }
+    .onAppear {
+      /// config tobii's custom frequency
+      /// Here we set frequency to 1Hz which mean the custom data we receive with be each 1 second
+      tobii.customFrequency = 1
+      
+      // start the session
+      startSession()
+    }
+    .onReceive(engine.responseEvent, perform: handleResponse)
+    .onReceive(observer.respiratoryRate, perform: handleRespiratoryRate)
+    .onReceive(tobii.avgPupilSizeByFrequency, perform: handleTobiiSerialData)
   }
 }
 
@@ -106,7 +114,7 @@ extension GameView {
       if !isTrial {
         // start read pupilDiameter after one seconds to match the observer
         // because we actually collect the data after first second on the audio session start.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { timer in
           tobii.startReadPupilDiameter()
         }
       }
@@ -221,6 +229,15 @@ extension GameView {
 
 // MARK: handle observed data subjects
 extension GameView {
+  
+  /// Handle the received serial tobii data by the prefered frequency
+  private func handleTobiiSerialData(_ pupilDialect: TobiiData) {
+    guard case .data(let value) = pupilDialect else {
+      return
+    }
+    
+    data.serialData.pupilSizes.append(value)
+  }
   
   /// Handle the received respiratory rate
   private func handleRespiratoryRate(_ rr: UInt8?) {

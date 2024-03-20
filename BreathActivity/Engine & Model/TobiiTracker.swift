@@ -19,7 +19,22 @@ public class TobiiTracker: ObservableObject {
   
   var process = Process()
   
-  init() {}
+  var timer: AnyCancellable?
+  
+  /// This is the similar `avgPupilDiameter` but emitted with the control of `timer`
+  public var avgPupilSizeByFrequency = PassthroughSubject<TobiiData, Never>()
+  
+  /// The scanning frequency, which mean howmany time we collect the tobii data 
+  /// from `currentPupilDialect` in one seconds
+  var customFrequency: UInt
+  
+  init(frequency: UInt = 60) {
+    self.customFrequency = frequency
+  }
+  
+  deinit {
+    timer = nil
+  }
 }
 
 extension TobiiTracker {
@@ -40,11 +55,32 @@ extension TobiiTracker {
       print(error.localizedDescription)
       return
     }
+    
+    /// Assign and start the timer
+    let duration = 1 / Double(customFrequency)
+    self.timer = Timer.publish(every: duration, on: .main, in: .common)
+      .autoconnect()
+      .sink { [weak self] _ in
+        
+        guard let self else {
+          return
+        }
+        
+        let pupilDialect = currentPupilDialect.value
+        
+        if pupilDialect != -1 {
+          avgPupilSizeByFrequency.send(.data(pupilDialect))
+        }
+    }
   }
   
   public func stopReadPupilDiameter() {
     if process.isRunning {
+      // stop the process
       process.terminate()
+      
+      // stop timer
+      timer?.cancel()
     }
   }
 }
