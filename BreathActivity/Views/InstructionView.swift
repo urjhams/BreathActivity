@@ -17,6 +17,8 @@ struct InstructionView: View {
   
   @Binding var levelSequence: [Level]
   
+  @State private var pressedSpace = false
+  
   var content: String {
     switch nBack {
     case 1:
@@ -50,10 +52,15 @@ struct InstructionView: View {
 extension InstructionView {
   private func setupKeyPress(from event: NSEvent) {
     if case 49 = event.keyCode {  // space
-      guard case .instruction(let level) = state else {
+      guard case .instruction(let level) = state, !pressedSpace else {
         return
       }
-      state = .running(level: level)
+      
+      pressedSpace = true
+      
+      DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        state = .running(level: level)
+      }
     }
   }
 }

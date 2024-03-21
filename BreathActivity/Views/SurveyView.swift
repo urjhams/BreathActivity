@@ -16,6 +16,8 @@ struct SurveyView: View {
   
   @State var showAlert = false
   
+  @State private var pressedSpace = false
+  
   var body: some View {
     VStack(spacing: 10) {
       Text("Rating the difficulity of the task (from 1 to 5)")
@@ -85,7 +87,7 @@ extension SurveyView {
   
   private func setupKeyPress(from event: NSEvent) {
     if case 49 = event.keyCode {  // space
-      guard case .survey = state else {
+      guard case .survey = state, !pressedSpace else {
         return
       }
 
@@ -94,13 +96,15 @@ extension SurveyView {
           return showAlert = true
         }
       }
-      DispatchQueue.main.async {
+      
+      pressedSpace = true
+     
+      DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
         finishSurvey()
       }
     }
   }
   
-  @MainActor
   private func finishSurvey() {
     
     if !isTrial, storage.data.count > 0 {

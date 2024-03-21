@@ -16,6 +16,8 @@ struct ResultView: View {
   
   @State var content = "Correction: xxx %"
   
+  @State private var pressedSpace = false
+  
   /// Container to store the current level and the next levels
   var levelSequence: [Level]
   
@@ -55,10 +57,13 @@ extension ResultView {
   
   private func setupKeyPress(from event: NSEvent) {
     if case 49 = event.keyCode {  // space
-      guard case .result = state else {
+      guard case .result = state, !pressedSpace else {
         return
       }
-      DispatchQueue.main.async {
+      
+      pressedSpace = true
+      
+      DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
         state = .survey
       }
     }
