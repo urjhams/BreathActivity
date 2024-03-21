@@ -124,14 +124,11 @@ extension SurveyView {
     if let nextLevel = levelSequence.first {
       state = .instruction(level: nextLevel)
     } else {
-      // If `levelSequence` is empty, we reached the last stage, so now we write the data
-      // save data of the all sessions
-      if !isTrial {
-        IOManager.tryToWrite(storage.convertToCodable())
-      }
+      // If `levelSequence` is empty, we reached the last stage,
+      // so now we reach the end stage
       
       // go back to start screen because the sequences now is empty
-      state = .start
+      state = isTrial ? .start : .end
     }
   }
 }

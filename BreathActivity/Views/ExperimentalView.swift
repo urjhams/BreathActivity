@@ -15,6 +15,7 @@ public enum ExperimentalState {
   case instruction(level: Level)
   case result
   case survey
+  case end
 }
 
 public let levelSequences: [[Level]] = [
@@ -94,6 +95,8 @@ struct ExperimentalView: View {
           levelSequence: $levelSequence,
           storage: storage
         )
+      case .end:
+        EndView(state: $state, storage: storage)
       }
     }
   }

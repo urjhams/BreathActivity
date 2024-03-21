@@ -58,18 +58,21 @@ extension ExperimentalData {
 internal class DataStorage {
   var userData = UserData()
   var data = [ExperimentalData]()
+  var comment: String = ""
   
   func reset() {
     userData = UserData()
     data = []
+    comment = ""
   }
   
   func convertToCodable() -> StorageData {
-    StorageData(userData: userData, data: data)
+    StorageData(userData: userData, data: data, comment: comment)
   }
 }
 
 internal struct StorageData: Codable {
   let userData: UserData
   let data: [ExperimentalData]
+  let comment: String
 }
