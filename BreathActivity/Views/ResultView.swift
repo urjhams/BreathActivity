@@ -58,7 +58,9 @@ extension ResultView {
       guard case .result = state else {
         return
       }
-      state = .survey
+      DispatchQueue.main.async {
+        state = .survey
+      }
     }
   }
 }

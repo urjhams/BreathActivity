@@ -10,9 +10,9 @@ struct SurveyView: View {
   
   @Bindable var storage: DataStorage
   
-  @State var question1Selection: Int?
+  @State var question1Selection: Int = 0
   
-  @State var question2Selection: Int?
+  @State var question2Selection: Int = 0
   
   @State var showAlert = false
   
@@ -88,15 +88,19 @@ extension SurveyView {
       guard case .survey = state else {
         return
       }
-      
-      guard question1Selection != nil, question2Selection != nil else {
-        return showAlert = true
+
+      if !isTrial {
+        guard question1Selection != 0, question2Selection != 0 else {
+          return showAlert = true
+        }
       }
-            
-      finishSurvey()
+      DispatchQueue.main.async {
+        finishSurvey()
+      }
     }
   }
   
+  @MainActor
   private func finishSurvey() {
     
     if !isTrial, storage.data.count > 0 {

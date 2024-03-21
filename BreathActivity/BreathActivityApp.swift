@@ -17,7 +17,7 @@ private struct TobiiKey: EnvironmentKey {
 extension EnvironmentValues {
   var tobiiTracker: TobiiTracker {
     get {
-      return self[TobiiKey.self]
+      self[TobiiKey.self]
     }
     set {
       self[TobiiKey.self] = newValue
