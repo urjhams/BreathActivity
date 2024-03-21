@@ -68,6 +68,23 @@ extension Publisher {
   }
 }
 
+infix operator ?/ : MultiplicationPrecedence
+
+extension FloatingPoint {
+  ///
+  public static func ?/ (lhs: Self, rhs: Self) -> Self? {
+    guard rhs != 0 else { return nil }
+    return lhs / rhs
+  }
+}
+
+extension Double {
+  public static func ?/ (lhs: Self, rhs: Self) -> Self {
+    return rhs != 0 ? (lhs / rhs) : 0
+  }
+}
+
+
 //                       _oo0oo_
 //                      o8888888o
 //                      88" . "88

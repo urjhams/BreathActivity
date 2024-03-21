@@ -12,9 +12,7 @@ struct EndView: View {
   @Binding var state: ExperimentalState
   
   @Bindable var storage: DataStorage
-  
-  @State private var pressedSpace = false
-  
+    
   var body: some View {
     VStack {
       Spacer()
@@ -38,37 +36,32 @@ struct EndView: View {
       
       
       Spacer()
-      MakeKeyPressSilentView()
-        .frame(height: 0)
-        .onAppear {
-          NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
-            self.setupKeyPress(from: event)
-            return event
-          }
-        }
-      Text("Press Space to finish")
-        .font(.title2)
-        .padding()
+      
+      iconButton(
+        text: "Finish",
+        iconSystemName: "party.popper.fill",
+        action: finish
+      ).padding()
     }
-    .padding([.leading, .trailing], 24)
+    .padding([.leading, .trailing], 32)
     .padding()
   }
 }
 
 extension EndView {
-  private func setupKeyPress(from event: NSEvent) {
-    if case 49 = event.keyCode {  // space
-      guard case .end = state, !pressedSpace else {
-        return
-      }
-      
-      pressedSpace = true
-      
-      DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-        IOManager.tryToWrite(storage.convertToCodable())
-        
-        state = .start
-      }
+  
+  private func finish() {
+    
+    guard case .end = state else {
+      return
+    }
+    
+    do {
+      try IOManager.tryToWrite(storage.asCodable())
+      state = .start
+    } catch {
+      print(error.localizedDescription)
+      state = .start
     }
   }
 }
@@ -78,5 +71,5 @@ extension EndView {
   @Bindable var storage = DataStorage()
   
   return EndView(state: $state, storage: storage)
-    .frame(minWidth: 500, minHeight: 500)
+    .frame(minWidth: 500, minHeight: 400)
 }

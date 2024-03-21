@@ -50,7 +50,7 @@ extension ExperimentalData {
   public mutating func computeCorrectRate() {
     let correct = Double(response.filter { $0.type == .correct }.count)
     let total = Double(response.count)
-    correctRate = (correct * 100) / total
+    correctRate = (correct * 100) ?/ total
   }
 }
 
@@ -66,7 +66,7 @@ internal class DataStorage {
     comment = ""
   }
   
-  func convertToCodable() -> StorageData {
+  func asCodable() -> StorageData {
     StorageData(userData: userData, data: data, comment: comment)
   }
 }

@@ -1,9 +1,9 @@
 import Foundation
 
 public class IOManager {
-  static func tryToWrite(_ storage: StorageData) {
+  static func tryToWrite(_ storage: StorageData) throws {
     let fileName = "\(storage.userData.name)(\(storage.userData.levelTried))"
-    let fileUrl = try? FileManager
+    let fileUrl = try FileManager
       .default
       .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
       .appendingPathComponent(fileName, conformingTo: .json)
@@ -11,9 +11,7 @@ public class IOManager {
     let encoder = JSONEncoder()
     encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
     
-    if let fileUrl {
-      try? encoder.encode(storage).write(to: fileUrl)
-    }
+    try encoder.encode(storage).write(to: fileUrl)
   }
   
   static func tryToRead(from fileName: String) -> StorageData? {

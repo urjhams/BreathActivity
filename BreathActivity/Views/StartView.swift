@@ -103,41 +103,23 @@ struct StartView: View {
     }
     
     HStack {
-      Button(action: startClick) {
-        VStack {
-          Image(systemName: "play.circle.fill")
-            .font(.largeTitle)
-          
-          Text("Start")
-        }
-      }
-      .controlSize(.extraLarge)
-      .buttonStyle(.borderless)
-      .padding()
+      iconButton(
+        text: "Start",
+        iconSystemName: "play.circle.fill",
+        action: startClick
+      ).padding()
       
-      Button(action: trialClick) {
-        VStack {
-          Image(systemName: "questionmark.circle.fill")
-            .font(.largeTitle)
-          
-          Text("Trial")
-        }
-      }
-      .controlSize(.extraLarge)
-      .buttonStyle(.borderless)
-      .padding()
+      iconButton(
+        text: "Trial",
+        iconSystemName: "questionmark.circle.fill",
+        action: trialClick
+      ).padding()
       
-      Button(action: aboutClick) {
-        VStack {
-          Image(systemName: "info.circle.fill")
-            .font(.largeTitle)
-          
-          Text("About")
-        }
-      }
-      .controlSize(.extraLarge)
-      .buttonStyle(.borderless)
-      .padding()
+      iconButton(
+        text: "About",
+        iconSystemName: "info.circle.fill",
+        action: aboutClick
+      ).padding()
     }
     .padding()
   }
@@ -190,6 +172,24 @@ extension StartView {
     }
     return result
   }
+}
+
+@ViewBuilder func iconButton(
+  text: String,
+  iconSystemName: String,
+  action: @escaping () -> Void
+) -> some View {
+  Button(action: action) {
+    VStack {
+      Image(systemName: iconSystemName)
+        .font(.largeTitle)
+      
+      Text(text)
+        .padding(2)
+    }
+  }
+  .controlSize(.extraLarge)
+  .buttonStyle(.borderless)
 }
 
 import AVFoundation
