@@ -47,6 +47,7 @@ struct StartView: View {
         
         Text(currentAudioInput)
           .font(.title)
+          .foregroundStyle(.brown)
           .baselineOffset(8)
           .onReceive(checkTimer) { _ in
             withAnimation {  checkCurrentAudioInput() }
@@ -55,8 +56,9 @@ struct StartView: View {
       
       Text("Welcome to my Experiment. \nI really appraciate you for participating 🤗")
         .font(.title2)
+        .foregroundStyle(.teal)
         .multilineTextAlignment(.center)
-        .padding(.bottom)
+        .padding([.bottom, .top])
       
       HStack {
         Spacer()
@@ -84,6 +86,7 @@ struct StartView: View {
       .alert(isPresented: $showAlert) {
         Alert(title: Text(alertContent))
       }
+      .padding()
       
       Picker("Level sequences", selection: $selection) {
         ForEach(0...5, id: \.self) { index in
@@ -104,25 +107,33 @@ struct StartView: View {
           text: "Start",
           iconSystemName: "play.circle.fill",
           action: startClick
-        ).padding()
+        )
+        .foregroundStyle(.red)
+        .padding()
         
         iconButton(
           text: "Trial",
           iconSystemName: "questionmark.circle.fill",
           action: trialClick
-        ).padding()
+        )
+        .foregroundStyle(.indigo)
+        .padding()
         
         iconButton(
           text: "Data",
           iconSystemName: "folder.circle.fill",
           action: dataClick
-        ).padding()
+        )
+        .foregroundStyle(.blue)
+        .padding()
         
         iconButton(
           text: "About",
           iconSystemName: "info.circle.fill",
           action: aboutClick
-        ).padding()
+        )
+        .foregroundStyle(.orange)
+        .padding()
       }
     }
     .padding()
@@ -239,4 +250,5 @@ extension StartView {
     trialButtonClick: {},
     aboutButtonClick: {}
   )
+  .frame(minHeight: 500)
 }
