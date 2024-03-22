@@ -278,7 +278,6 @@ extension GameView {
       data.collectedData.append(dataToAdd)
     }
     
-    print("🙆🏻 pupil: \(data.collectedData.map(\.pupilSize)) - rr: \(data.collectedData.map(\.respiratoryRate))")
   }
   
   private func handleResponse(_ response: Response) {

@@ -57,6 +57,21 @@ extension EndView {
     }
     
     do {
+      
+      print("🙆🏻 Will save the following data:")
+      print("🙆🏻 user:", storage.userData)
+      storage.data.forEach { experimentData in
+        print("🙆🏻", experimentData.level)
+        print("🙆🏻 pupil:", experimentData.collectedData.map(\.pupilSize))
+        print("🙆🏻 respiratoryRate:", experimentData.collectedData.compactMap(\.respiratoryRate))
+        print("🙆🏻 serial pupil size:", experimentData.serialData.pupilSizes)
+        print("🙆🏻 correctionRate:", experimentData.correctRate ?? "0")
+        let q1 = experimentData.surveyData?.q1Answer ?? 0
+        let q2 = experimentData.surveyData?.q2Answer ?? 0
+        print("🙆🏻 answered: \(q1) - \(q2)")
+      }
+      print("🙆🏻 comment:", storage.comment)
+      
       try IOManager.tryToWrite(storage.asCodable())
       state = .start
     } catch {
