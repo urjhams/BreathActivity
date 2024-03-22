@@ -36,23 +36,22 @@ struct StartView: View {
   
   var body: some View {
     VStack {
-      ZStack {
-        HStack {
-          Spacer()
-          Text(currentAudioInput)
-            .font(.title)
-            .baselineOffset(8)
-            .padding()
-            .onReceive(checkTimer) { _ in
-              withAnimation {  checkCurrentAudioInput() }
-            }
-        }
+      
+      Text("N-back Task")
+        .font(.largeTitle)
+        .fontWeight(.heavy)
+      
+      HStack {
+        Text("Current audio source:")
+          .font(.title2)
         
-        Text("N-back Task")
-          .font(.largeTitle)
-          .fontWeight(.heavy)
+        Text(currentAudioInput)
+          .font(.title)
+          .baselineOffset(8)
+          .onReceive(checkTimer) { _ in
+            withAnimation {  checkCurrentAudioInput() }
+          }
       }
-      .frame(height: 100)
       
       Text("Welcome to my Experiment. \nI really appraciate you for participating 🤗")
         .font(.title2)
@@ -85,47 +84,46 @@ struct StartView: View {
       .alert(isPresented: $showAlert) {
         Alert(title: Text(alertContent))
       }
-    }
-    .padding(20)
-    
-    Picker("Level sequences", selection: $selection) {
-      ForEach(0...5, id: \.self) { index in
-        Text(text(for: levelSequences[index]))
+      
+      Picker("Level sequences", selection: $selection) {
+        ForEach(0...5, id: \.self) { index in
+          Text(text(for: levelSequences[index]))
+        }
       }
-    }
-    .frame(maxWidth: 300)
-    .pickerStyle(.menu)
-    
-    Spacer()
-    
-    Toggle(isOn: $showAmplitude) {
-      Label { Text("Show amplitudes 􀙫") } icon: { Text("") }
-    }
-    
-    HStack {
-      iconButton(
-        text: "Start",
-        iconSystemName: "play.circle.fill",
-        action: startClick
-      ).padding()
+      .frame(maxWidth: 300)
+      .pickerStyle(.menu)
       
-      iconButton(
-        text: "Trial",
-        iconSystemName: "questionmark.circle.fill",
-        action: trialClick
-      ).padding()
+      Spacer()
       
-      iconButton(
-        text: "Data",
-        iconSystemName: "folder.circle.fill",
-        action: dataClick
-      ).padding()
+      Toggle(isOn: $showAmplitude) {
+        Label { Text("Show amplitudes 􀙫") } icon: { Text("") }
+      }
       
-      iconButton(
-        text: "About",
-        iconSystemName: "info.circle.fill",
-        action: aboutClick
-      ).padding()
+      HStack {
+        iconButton(
+          text: "Start",
+          iconSystemName: "play.circle.fill",
+          action: startClick
+        ).padding()
+        
+        iconButton(
+          text: "Trial",
+          iconSystemName: "questionmark.circle.fill",
+          action: trialClick
+        ).padding()
+        
+        iconButton(
+          text: "Data",
+          iconSystemName: "folder.circle.fill",
+          action: dataClick
+        ).padding()
+        
+        iconButton(
+          text: "About",
+          iconSystemName: "info.circle.fill",
+          action: aboutClick
+        ).padding()
+      }
     }
     .padding()
   }
