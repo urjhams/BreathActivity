@@ -99,7 +99,7 @@ extension SurveyView {
       
       pressedSpace = true
      
-      DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+      DispatchQueue.main.async {
         finishSurvey()
       }
     }

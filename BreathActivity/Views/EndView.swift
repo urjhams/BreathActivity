@@ -61,7 +61,7 @@ extension EndView {
       print("🙆🏻 Will save the following data:")
       print("🙆🏻 user:", storage.userData)
       storage.data.forEach { experimentData in
-        print("🙆🏻", experimentData.level)
+        print("🙆🏻 ----------------- \(experimentData.level) ----------------------")
         print("🙆🏻 pupil:", experimentData.collectedData.map(\.pupilSize))
         print("🙆🏻 respiratoryRate:", experimentData.collectedData.compactMap(\.respiratoryRate))
         print("🙆🏻 serial pupil size:", experimentData.serialData.pupilSizes)
