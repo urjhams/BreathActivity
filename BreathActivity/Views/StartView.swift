@@ -116,6 +116,12 @@ struct StartView: View {
       ).padding()
       
       iconButton(
+        text: "Data",
+        iconSystemName: "folder.circle.fill",
+        action: dataClick
+      ).padding()
+      
+      iconButton(
         text: "About",
         iconSystemName: "info.circle.fill",
         action: aboutClick
@@ -157,6 +163,15 @@ extension StartView {
   
   private func aboutClick() {
     aboutButtonClick()
+  }
+  
+  private func dataClick() {
+    do {
+      try IOManager.openDataFolder()
+    } catch {
+      alertContent = "Cannot open Data folder.\n\(error.localizedDescription)"
+      showAlert = true
+    }
   }
 }
 

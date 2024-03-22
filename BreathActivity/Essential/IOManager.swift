@@ -1,6 +1,6 @@
 import Foundation
 
-public class IOManager {
+class IOManager {
   static func tryToWrite(_ storage: StorageData) throws {
     let fileName = "\(storage.userData.name)(\(storage.userData.levelTried))"
     
@@ -33,5 +33,17 @@ public class IOManager {
     
     let decoder = JSONDecoder()
     return try? decoder.decode(StorageData.self, from: data)
+  }
+}
+
+import AppKit
+
+extension IOManager {
+  static func openDataFolder() throws {
+    let url = try FileManager.default
+      .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+      .appending(path: "BreathActivity")
+    
+    NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: url.path())
   }
 }
