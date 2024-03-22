@@ -99,7 +99,10 @@ struct StartView: View {
       Spacer()
       
       Toggle(isOn: $showAmplitude) {
-        Label { Text("Show amplitudes 􀙫") } icon: { Text("") }
+        Label {
+          Text("Show amplitudes 􀙫")
+            .foregroundStyle(.gray)
+        } icon: { Text("") }
       }
       
       HStack {
@@ -209,6 +212,7 @@ extension StartView {
         .font(.largeTitle)
       
       Text(text)
+        .fontWeight(.bold)
         .padding(2)
     }
   }

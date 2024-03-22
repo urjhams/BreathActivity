@@ -67,6 +67,10 @@ struct SurveyView: View {
       Text(
         levelSequence.count > 1 ? "Press Space to the next stage" : "Press Space to finish"
       )
+      .font(.title3)
+      .fontWeight(.bold)
+      .foregroundStyle(.indigo)
+      
       MakeKeyPressSilentView()
         .frame(height: 0)
         .onAppear {

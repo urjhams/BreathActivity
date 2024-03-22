@@ -41,7 +41,9 @@ struct EndView: View {
         text: "Finish",
         iconSystemName: "party.popper.fill",
         action: finish
-      ).padding()
+      )
+      .foregroundStyle(.pink)
+      .padding()
     }
     .padding([.leading, .trailing], 32)
     .padding()

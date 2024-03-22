@@ -41,6 +41,7 @@ struct ResultView: View {
     Text("Press space to continue")
       .font(.title3)
       .fontWeight(.bold)
+      .foregroundStyle(.indigo)
       .padding()
     MakeKeyPressSilentView()
       .frame(height: 0)

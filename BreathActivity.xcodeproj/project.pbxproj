@@ -61,6 +61,7 @@
 		4F5CE1962B4377ED00945B37 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		4F5DAA8F2B03F9DE00A64D25 /* ExperimentalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentalView.swift; sourceTree = "<group>"; };
 		4F6134C02BACCD0A00F04B98 /* EndView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndView.swift; sourceTree = "<group>"; };
+		4F6134C22BADEBE100F04B98 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		4FAD50DB2BA0B18B008C12B5 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		4FB6770D2B9B656E006389AE /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
 		4FBBE5412B91FB6400DA0D51 /* InstructionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionView.swift; sourceTree = "<group>"; };
@@ -165,6 +166,7 @@
 		4FE0C3852B02A8EF00C82853 /* BreathActivity */ = {
 			isa = PBXGroup;
 			children = (
+				4F6134C22BADEBE100F04B98 /* Info.plist */,
 				4F51A6AB2B55E79D00ED212A /* Engine & Model */,
 				4F11AADA2B0993B500C4F210 /* Essential */,
 				4F5DAA8C2B03F57100A64D25 /* Views */,
@@ -526,10 +528,12 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BreathActivity/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Breath Activity";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "To capture breathing.";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -558,10 +562,12 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BreathActivity/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Breath Activity";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "To capture breathing.";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

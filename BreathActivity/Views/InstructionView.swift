@@ -24,19 +24,24 @@ struct InstructionView: View {
     case 1:
       "Press Space if the image matchs with the previous image."
     default:
-      "Press Space if the image matchs with the \(nBack) previous images."
+      "Press Space  if the image matchs with the \(nBack) previous images."
     }
   }
   
   var body: some View {
     VStack {
       Spacer()
+      
       Text(content)
         .font(.title2)
+      
       Spacer()
+      
       Text("Press Space to start")
         .font(.title3)
         .fontWeight(.bold)
+        .foregroundStyle(.indigo)
+      
       MakeKeyPressSilentView()
         .frame(height: 0)
         .onAppear {

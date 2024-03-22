@@ -31,6 +31,7 @@ struct AboutView: View {
       Text("About N- back task")
         .font(.title2)
         .fontWeight(.heavy)
+      
       TabView(selection: $selection) {
         ForEach(model) {
           PageView(model: $0)
@@ -38,8 +39,12 @@ struct AboutView: View {
         }
       }
       .tabViewStyle(DefaultTabViewStyle())
+      
       Text("Press ESC to go back")
+        .font(.title3)
         .fontWeight(.bold)
+        .foregroundStyle(.indigo)
+      
       MakeKeyPressSilentView()
         .frame(height: 0)
         .onAppear {
