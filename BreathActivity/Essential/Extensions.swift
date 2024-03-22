@@ -1,5 +1,26 @@
-import Foundation
+import SwiftUI
 import Combine
+
+extension Encodable {
+  /// Converting object to postable JSON
+  func toJSON(_ encoder: JSONEncoder = JSONEncoder()) throws -> String {
+    let data = try encoder.encode(self)
+    return String(decoding: data, as: UTF8.self)
+  }
+}
+
+extension Double {
+  func roundToDecimal(_ fractionDigits: Int) -> Double {
+    let multiplier = pow(10, Double(fractionDigits))
+    return Darwin.round(self * multiplier) / multiplier
+  }
+}
+
+extension String {
+  var isNumeric : Bool {
+    Double(self) != nil
+  }
+}
 
 extension Collection {
   /// Returns the element at the specified index if it is within bounds, otherwise nil.
@@ -7,6 +28,20 @@ extension Collection {
     return indices.contains(index) ? self[index] : nil
   }
 }
+
+public extension Color {
+  
+#if os(macOS)
+  static let background = Color(NSColor.windowBackgroundColor)
+  static let secondaryBackground = Color(NSColor.underPageBackgroundColor)
+  static let tertiaryBackground = Color(NSColor.controlBackgroundColor)
+#else
+  static let background = Color(UIColor.systemBackground)
+  static let secondaryBackground = Color(UIColor.secondarySystemBackground)
+  static let tertiaryBackground = Color(UIColor.tertiarySystemBackground)
+#endif
+}
+
 
 extension Publisher {
   func withLatestFrom<P>(
@@ -32,6 +67,23 @@ extension Publisher {
       .eraseToAnyPublisher()
   }
 }
+
+infix operator ?/ : MultiplicationPrecedence
+
+extension FloatingPoint {
+  ///
+  public static func ?/ (lhs: Self, rhs: Self) -> Self? {
+    guard rhs != 0 else { return nil }
+    return lhs / rhs
+  }
+}
+
+extension Double {
+  public static func ?/ (lhs: Self, rhs: Self) -> Self {
+    return rhs != 0 ? (lhs / rhs) : 0
+  }
+}
+
 
 //                       _oo0oo_
 //                      o8888888o

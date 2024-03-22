@@ -10,18 +10,32 @@ import Foundation
 import Combine
 import BreathObsever
 
+private struct TobiiKey: EnvironmentKey {
+  static let defaultValue = TobiiTracker()
+}
+
+extension EnvironmentValues {
+  var tobiiTracker: TobiiTracker {
+    get {
+      self[TobiiKey.self]
+    }
+    set {
+      self[TobiiKey.self] = newValue
+    }
+  }
+}
+
 @main
 struct BreathActivityApp: App {
   
-  @StateObject var tobii = TobiiTracker()
-  @StateObject var breathObserver = BreathObsever()
-  
+  @State var breathObserver = BreathObsever()
+    
   var body: some Scene {
     WindowGroup {
-      ContentView()
-        .environmentObject(tobii)
-        .environmentObject(breathObserver)
-        .frame(maxWidth: 800, maxHeight: 400)
+      ExperimentalView()
+        .frame(minWidth: 800, minHeight: 600)
     }
+    .environment(breathObserver)
+    .windowStyle(.hiddenTitleBar)
   }
 }

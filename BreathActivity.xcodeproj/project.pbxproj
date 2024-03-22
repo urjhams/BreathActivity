@@ -7,9 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4F095FA02B95DA10001F59E9 /* MakeKeyPressSilentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F095F9F2B95DA10001F59E9 /* MakeKeyPressSilentView.swift */; };
+		4F095FA22B95DF21001F59E9 /* DataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F095FA12B95DF21001F59E9 /* DataStorage.swift */; };
+		4F095FA42B95DFFD001F59E9 /* SurveyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F095FA32B95DFFD001F59E9 /* SurveyView.swift */; };
 		4F11AAD52B0984F700C4F210 /* TobiiTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */; };
 		4F11AAD92B09939D00C4F210 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F11AAD82B09939D00C4F210 /* Extensions.swift */; };
+		4F4390312B60672800247198 /* IOManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4390302B60672800247198 /* IOManager.swift */; };
+		4F51A6AA2B55E79200ED212A /* ExperimentalEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F51A6A92B55E79200ED212A /* ExperimentalEngine.swift */; };
+		4F5CE1952B436DA900945B37 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5CE1942B436DA900945B37 /* StartView.swift */; };
+		4F5CE1972B4377ED00945B37 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5CE1962B4377ED00945B37 /* GameView.swift */; };
 		4F5DAA902B03F9DE00A64D25 /* ExperimentalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5DAA8F2B03F9DE00A64D25 /* ExperimentalView.swift */; };
+		4F6134C12BACCD0A00F04B98 /* EndView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6134C02BACCD0A00F04B98 /* EndView.swift */; };
+		4FAD50DC2BA0B18B008C12B5 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FAD50DB2BA0B18B008C12B5 /* AboutView.swift */; };
+		4FB6770E2B9B656E006389AE /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB6770D2B9B656E006389AE /* ResultView.swift */; };
+		4FBBE5422B91FB6400DA0D51 /* InstructionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FBBE5412B91FB6400DA0D51 /* InstructionView.swift */; };
 		4FE0C3872B02A8EF00C82853 /* BreathActivityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */; };
 		4FE0C38B2B02A8F000C82853 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C38A2B02A8F000C82853 /* Assets.xcassets */; };
 		4FE0C38E2B02A8F000C82853 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C38D2B02A8F000C82853 /* Preview Assets.xcassets */; };
@@ -17,9 +28,8 @@
 		4FE0C3A32B02A8F000C82853 /* BreathActivityUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3A22B02A8F000C82853 /* BreathActivityUITests.swift */; };
 		4FE0C3A52B02A8F000C82853 /* BreathActivityUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3A42B02A8F000C82853 /* BreathActivityUITestsLaunchTests.swift */; };
 		4FE0C3B62B02A9E300C82853 /* Python in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C3B22B02A9E300C82853 /* Python */; };
-		4FE0C3B72B02A9E300C82853 /* SupportingFiles in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C3B32B02A9E300C82853 /* SupportingFiles */; };
 		4FE0C3BE2B02AB6500C82853 /* BreathObsever in Frameworks */ = {isa = PBXBuildFile; productRef = 4FE0C3BD2B02AB6500C82853 /* BreathObsever */; };
-		4FE0C3C52B02AF6D00C82853 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3C42B02AF6D00C82853 /* ContentView.swift */; };
+		4FFC9F172B28C82C00E70731 /* ImageStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FFC9F162B28C82C00E70731 /* ImageStack.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,9 +50,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4F095F9F2B95DA10001F59E9 /* MakeKeyPressSilentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeKeyPressSilentView.swift; sourceTree = "<group>"; };
+		4F095FA12B95DF21001F59E9 /* DataStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStorage.swift; sourceTree = "<group>"; };
+		4F095FA32B95DFFD001F59E9 /* SurveyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyView.swift; sourceTree = "<group>"; };
 		4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TobiiTracker.swift; sourceTree = "<group>"; };
 		4F11AAD82B09939D00C4F210 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		4F4390302B60672800247198 /* IOManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOManager.swift; sourceTree = "<group>"; };
+		4F51A6A92B55E79200ED212A /* ExperimentalEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentalEngine.swift; sourceTree = "<group>"; };
+		4F5CE1942B436DA900945B37 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
+		4F5CE1962B4377ED00945B37 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		4F5DAA8F2B03F9DE00A64D25 /* ExperimentalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentalView.swift; sourceTree = "<group>"; };
+		4F6134C02BACCD0A00F04B98 /* EndView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndView.swift; sourceTree = "<group>"; };
+		4FAD50DB2BA0B18B008C12B5 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		4FB6770D2B9B656E006389AE /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
+		4FBBE5412B91FB6400DA0D51 /* InstructionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionView.swift; sourceTree = "<group>"; };
 		4FE0C3832B02A8EF00C82853 /* BreathActivity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BreathActivity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathActivityApp.swift; sourceTree = "<group>"; };
 		4FE0C38A2B02A8F000C82853 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -54,9 +75,8 @@
 		4FE0C3A22B02A8F000C82853 /* BreathActivityUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathActivityUITests.swift; sourceTree = "<group>"; };
 		4FE0C3A42B02A8F000C82853 /* BreathActivityUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathActivityUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		4FE0C3B22B02A9E300C82853 /* Python */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Python; sourceTree = "<group>"; };
-		4FE0C3B32B02A9E300C82853 /* SupportingFiles */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SupportingFiles; sourceTree = "<group>"; };
 		4FE0C3C32B02AF4100C82853 /* BreathObsever */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = BreathObsever; path = ../BreathObsever; sourceTree = "<group>"; };
-		4FE0C3C42B02AF6D00C82853 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		4FFC9F162B28C82C00E70731 /* ImageStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageStack.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,16 +109,34 @@
 			isa = PBXGroup;
 			children = (
 				4F11AAD82B09939D00C4F210 /* Extensions.swift */,
-				4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */,
+				4F4390302B60672800247198 /* IOManager.swift */,
 			);
 			path = Essential;
+			sourceTree = "<group>";
+		};
+		4F51A6AB2B55E79D00ED212A /* Engine & Model */ = {
+			isa = PBXGroup;
+			children = (
+				4FFC9F162B28C82C00E70731 /* ImageStack.swift */,
+				4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */,
+				4F51A6A92B55E79200ED212A /* ExperimentalEngine.swift */,
+				4F095FA12B95DF21001F59E9 /* DataStorage.swift */,
+			);
+			path = "Engine & Model";
 			sourceTree = "<group>";
 		};
 		4F5DAA8C2B03F57100A64D25 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				4FE0C3C42B02AF6D00C82853 /* ContentView.swift */,
 				4F5DAA8F2B03F9DE00A64D25 /* ExperimentalView.swift */,
+				4FAD50DB2BA0B18B008C12B5 /* AboutView.swift */,
+				4F5CE1942B436DA900945B37 /* StartView.swift */,
+				4F5CE1962B4377ED00945B37 /* GameView.swift */,
+				4FBBE5412B91FB6400DA0D51 /* InstructionView.swift */,
+				4F095F9F2B95DA10001F59E9 /* MakeKeyPressSilentView.swift */,
+				4F095FA32B95DFFD001F59E9 /* SurveyView.swift */,
+				4FB6770D2B9B656E006389AE /* ResultView.swift */,
+				4F6134C02BACCD0A00F04B98 /* EndView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -127,10 +165,10 @@
 		4FE0C3852B02A8EF00C82853 /* BreathActivity */ = {
 			isa = PBXGroup;
 			children = (
+				4F51A6AB2B55E79D00ED212A /* Engine & Model */,
 				4F11AADA2B0993B500C4F210 /* Essential */,
 				4F5DAA8C2B03F57100A64D25 /* Views */,
 				4FE0C3B22B02A9E300C82853 /* Python */,
-				4FE0C3B32B02A9E300C82853 /* SupportingFiles */,
 				4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */,
 				4FE0C38A2B02A8F000C82853 /* Assets.xcassets */,
 				4FE0C38F2B02A8F000C82853 /* BreathActivity.entitlements */,
@@ -231,7 +269,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1530;
 				TargetAttributes = {
 					4FE0C3822B02A8EF00C82853 = {
 						CreatedOnToolsVersion = 15.0;
@@ -276,7 +314,6 @@
 			files = (
 				4FE0C3B62B02A9E300C82853 /* Python in Resources */,
 				4FE0C38E2B02A8F000C82853 /* Preview Assets.xcassets in Resources */,
-				4FE0C3B72B02A9E300C82853 /* SupportingFiles in Resources */,
 				4FE0C38B2B02A8F000C82853 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -303,10 +340,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				4F11AAD92B09939D00C4F210 /* Extensions.swift in Sources */,
+				4F4390312B60672800247198 /* IOManager.swift in Sources */,
 				4F11AAD52B0984F700C4F210 /* TobiiTracker.swift in Sources */,
-				4FE0C3C52B02AF6D00C82853 /* ContentView.swift in Sources */,
+				4F095FA22B95DF21001F59E9 /* DataStorage.swift in Sources */,
+				4F5CE1952B436DA900945B37 /* StartView.swift in Sources */,
+				4FB6770E2B9B656E006389AE /* ResultView.swift in Sources */,
+				4F095FA02B95DA10001F59E9 /* MakeKeyPressSilentView.swift in Sources */,
+				4F095FA42B95DFFD001F59E9 /* SurveyView.swift in Sources */,
+				4F5CE1972B4377ED00945B37 /* GameView.swift in Sources */,
+				4FAD50DC2BA0B18B008C12B5 /* AboutView.swift in Sources */,
+				4F6134C12BACCD0A00F04B98 /* EndView.swift in Sources */,
 				4F5DAA902B03F9DE00A64D25 /* ExperimentalView.swift in Sources */,
+				4F51A6AA2B55E79200ED212A /* ExperimentalEngine.swift in Sources */,
 				4FE0C3872B02A8EF00C82853 /* BreathActivityApp.swift in Sources */,
+				4FFC9F172B28C82C00E70731 /* ImageStack.swift in Sources */,
+				4FBBE5422B91FB6400DA0D51 /* InstructionView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -377,6 +425,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -440,6 +489,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -470,12 +520,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"BreathActivity/Preview Content\"";
 				DEVELOPMENT_TEAM = TX9R26AVUZ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Breath Activity";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "To capture breathing.";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -500,12 +552,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"BreathActivity/Preview Content\"";
 				DEVELOPMENT_TEAM = TX9R26AVUZ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Breath Activity";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "To capture breathing.";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -527,6 +581,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = TX9R26AVUZ;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
@@ -546,6 +601,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = TX9R26AVUZ;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
@@ -564,6 +620,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = TX9R26AVUZ;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
@@ -581,6 +638,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = TX9R26AVUZ;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
