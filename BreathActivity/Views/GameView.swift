@@ -48,6 +48,10 @@ struct GameView: View {
   /// breath observer
   @Environment(BreathObsever.self) var observer: BreathObsever
   
+  @State var showAlert = false
+  
+  @State var alertContent = ""
+  
   var body: some View {
     ZStack {
       VStack {
@@ -101,6 +105,9 @@ struct GameView: View {
     .onReceive(engine.responseEvent, perform: handleResponse)
     .onReceive(observer.respiratoryRate, perform: handleRespiratoryRate)
     .onReceive(tobii.avgPupilSizeByFrequency, perform: handleTobiiSerialData)
+    .alert(isPresented: $showAlert) {
+      Alert(title: Text(alertContent))
+    }
   }
 }
 
@@ -145,6 +152,12 @@ extension GameView {
     
     // set the correction percentage to the data
     data.computeCorrectRate()
+    
+    guard !data.serialData.pupilSizes.isEmpty, !data.serialData.respiratoryRates.isEmpty else {
+      alertContent = "There is something wrong, there is no  serial data"
+      showAlert = true
+      return
+    }
     
     // save this stage data to storage
     storage.data.append(data)
