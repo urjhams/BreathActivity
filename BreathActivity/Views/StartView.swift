@@ -115,9 +115,11 @@ struct StartView: View {
       Toggle(isOn: $showAmplitude) {
         Label {
           Text("Show amplitudes 􀙫")
+            .font(.title3)
             .foregroundStyle(.gray)
         } icon: { Text("") }
       }
+      .toggleStyle(.switch)
       .onChange(of: showAmplitude) { oldValue, newValue in
         if newValue {
           try? observer.startAnalyzing()
