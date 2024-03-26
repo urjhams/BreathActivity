@@ -150,10 +150,12 @@ extension GameView {
     // set the correction percentage to the data
     data.computeCorrectRate()
     
-    guard !data.serialData.pupilSizes.isEmpty, !data.serialData.respiratoryRates.isEmpty else {
-      alertContent = "Uh Oh.... there is no serial data 🤔, call me (Quan) please!"
-      showAlert = true
-      return
+    if !isTrial {
+      guard !data.serialData.pupilSizes.isEmpty, !data.serialData.respiratoryRates.isEmpty else {
+        alertContent = "Uh Oh.... there is no serial data 🤔, call me (Quan) please!"
+        showAlert = true
+        return
+      }
     }
     
     // save this stage data to storage
