@@ -9,6 +9,7 @@ import SwiftUI
 import GameController
 import BreathObsever
 import AVFAudio
+import Combine
 
 struct GameView: View {
   
@@ -75,7 +76,8 @@ struct GameView: View {
         Spacer()
         
         if showAmplitude {
-          debugView()
+          debugView
+            .padding()
         }
         
         // work-around view to disable the "funk" error sound when click on keyboard on macOS
@@ -199,44 +201,45 @@ extension GameView {
   
   private var offSet: CGFloat { 1 }
   
-  @ViewBuilder
-  private func debugView() -> some View {
+  private var debugView: some View {
     VStack {
       Text(tobiiInfoText)
+        .onReceive(tobii.avgPupilDiameter) { tobiiData in
+          switch tobiiData {
+          case .message(let content):
+            self.tobiiInfoText = content
+          default:
+            break
+          }
+        }
       
-      amplitudeView
+      amplitudeView($amplitudes, subject: observer.amplitudeSubject.eraseToAnyPublisher())
         .frame(height: 80 * offSet)
         .scenePadding([.leading, .trailing])
         .padding()
     }
-    .onReceive(tobii.avgPupilDiameter) { tobiiData in
-      switch tobiiData {
-      case .message(let content):
-        self.tobiiInfoText = content
-      default:
-        break
-      }
-    }
-    .onReceive(observer.amplitudeSubject) { value in
-      amplitudes.append(value)
-      let amplitudesInOneSec = Int(Int(BreathObsever.sampleRate) / BreathObsever.samples)
-      // keep only data of 5 seconds of amplirudes
-      if amplitudes.count >= BreathObsever.windowTime * amplitudesInOneSec {
-        amplitudes.removeFirst()
-      }
-    }
-    .padding()
   }
   
-  private var amplitudeView: some View {
+  @ViewBuilder
+  private func amplitudeView(
+    _ amplitudes: Binding<[Float]>,
+    subject: AnyPublisher<Float, Never>
+  ) -> some View {
     HStack(spacing: 1) {
       ForEach(0..<amplitudes.count, id: \.self) { index in
         RoundedRectangle(cornerRadius: 2)
-          .frame(width: offSet, height: CGFloat(amplitudes[index]) / 10)
+          .frame(width: offSet, height: CGFloat(amplitudes[index].wrappedValue) / 10)
           .foregroundColor(.white)
       }
     }
-    .frame(height: 250)
+    .onReceive(subject) { value in
+      amplitudes.wrappedValue.append(value)
+      let amplitudesInOneSec = Int(Int(BreathObsever.sampleRate) / BreathObsever.samples)
+      // keep only data of 5 seconds of amplirudes
+      if amplitudes.count >= BreathObsever.windowTime * amplitudesInOneSec {
+        amplitudes.wrappedValue.removeFirst()
+      }
+    }
   }
 }
 
