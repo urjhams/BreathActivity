@@ -9,19 +9,24 @@ import SwiftUI
 import BreathObsever
 import Combine
 
+@Observable
+class StartViewModel {
+  var showAlert = false
+  
+  var alertContent = ""
+  
+  var currentAudioInput = ""
+  
+  var showAmplitude = false
+  
+  var amplitudes = [Float]()
+}
+
 struct StartView: View {
   
-  @State var showAlert = false
-  
-  @State var alertContent = ""
-  
-  @State var currentAudioInput = ""
-  
   @Binding var selection: Int
-          
-  @State var showAmplitude = false
   
-  @State private var amplitudes = [Float]()
+  @Bindable var viewModel = StartViewModel()
   
   // use an array to store, construct the respiratory rate from amplitudes
   @Bindable var storage: DataStorage
@@ -50,7 +55,7 @@ struct StartView: View {
         Text("Current audio source:")
           .font(.title2)
         
-        Text(currentAudioInput)
+        Text(viewModel.currentAudioInput)
           .font(.title)
           .foregroundStyle(.brown)
           .baselineOffset(8)
@@ -88,8 +93,8 @@ struct StartView: View {
         }
         Spacer()
       }
-      .alert(isPresented: $showAlert) {
-        Alert(title: Text(alertContent))
+      .alert(isPresented: $viewModel.showAlert) {
+        Alert(title: Text(viewModel.alertContent))
       }
       .padding()
       
@@ -101,18 +106,21 @@ struct StartView: View {
       .frame(maxWidth: 300)
       .pickerStyle(.menu)
       
-      if showAmplitude {
+      if viewModel.showAmplitude {
         Spacer()
-        amplitudeView($amplitudes, subject: observer.amplitudeSubject.eraseToAnyPublisher())
-          .frame(height: 80 * offSet)
-          .scenePadding([.leading, .trailing])
-          .padding()
+        amplitudeView(
+          $viewModel.amplitudes,
+          subject: observer.amplitudeSubject.eraseToAnyPublisher()
+        )
+        .frame(height: 80 * offSet)
+        .scenePadding([.leading, .trailing])
+        .padding()
         Spacer()
       } else {
         Spacer()
       }
       
-      Toggle(isOn: $showAmplitude) {
+      Toggle(isOn: $viewModel.showAmplitude) {
         Label {
           Text("Show amplitudes 􀙫")
             .font(.title3)
@@ -120,12 +128,12 @@ struct StartView: View {
         } icon: { Text("") }
       }
       .toggleStyle(.switch)
-      .onChange(of: showAmplitude) { oldValue, newValue in
+      .onChange(of: viewModel.showAmplitude) { oldValue, newValue in
         if newValue {
           try? observer.startAnalyzing()
         } else {
           observer.stopAnalyzing()
-          amplitudes = []
+          viewModel.amplitudes = []
         }
       }
       
@@ -174,13 +182,13 @@ extension StartView {
       storage.userData.age != "",
       storage.userData.age.isNumeric
     else {
-      alertContent = "Please Enter the correct information."
-      return showAlert = true
+      viewModel.alertContent = "Please Enter the correct information."
+      return viewModel.showAlert = true
     }
     
-    guard currentAudioInput == "􀪷" else {
-      alertContent = "Please make sure airPod is connected."
-      return showAlert = true
+    guard viewModel.currentAudioInput == "􀪷" else {
+      viewModel.alertContent = "Please make sure airPod is connected."
+      return viewModel.showAlert = true
     }
     
     storage.userData.levelTried = text(for: levelSequences[selection])
@@ -189,9 +197,9 @@ extension StartView {
   }
   
   private func trialClick() {
-    guard currentAudioInput == "􀪷" else {
-      alertContent = "Please make sure airPod is connected."
-      return showAlert = true
+    guard viewModel.currentAudioInput == "􀪷" else {
+      viewModel.alertContent = "Please make sure airPod is connected."
+      return viewModel.showAlert = true
     }
     
     trialButtonClick()
@@ -205,8 +213,8 @@ extension StartView {
     do {
       try IOManager.openDataFolder()
     } catch {
-      alertContent = "Cannot open Data folder.\n\(error.localizedDescription)"
-      showAlert = true
+      viewModel.alertContent = "Cannot open Data folder.\n\(error.localizedDescription)"
+      viewModel.showAlert = true
     }
   }
 }
@@ -253,13 +261,13 @@ extension StartView {
         
     switch current?.modelID {
     case "Digital Mic":
-      currentAudioInput = "􀟛"
+      viewModel.currentAudioInput = "􀟛"
     case "200e 4c": // 200e 4c is the modelID of airpod pro
-      currentAudioInput = "􀪷"
+      viewModel.currentAudioInput = "􀪷"
     case "iPhone Mic":
-      currentAudioInput = "􀬩"
+      viewModel.currentAudioInput = "􀬩"
     default:
-      currentAudioInput = "􀭉"
+      viewModel.currentAudioInput = "􀭉"
     }
   }
 }
