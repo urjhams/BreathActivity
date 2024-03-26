@@ -125,6 +125,7 @@ struct StartView: View {
           try? observer.startAnalyzing()
         } else {
           observer.stopAnalyzing()
+          amplitudes = []
         }
       }
       
