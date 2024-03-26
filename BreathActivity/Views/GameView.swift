@@ -71,6 +71,10 @@ struct GameView: View {
         
         Spacer()
         
+        if tobiiInfoText.last == "0" {
+          debugView
+        }
+        
         // work-around view to disable the "funk" error sound when click on keyboard on macOS
         MakeKeyPressSilentView()
           .frame(height: 0)
