@@ -154,7 +154,7 @@ extension GameView {
     data.computeCorrectRate()
     
     guard !data.serialData.pupilSizes.isEmpty, !data.serialData.respiratoryRates.isEmpty else {
-      alertContent = "There is something wrong, there is no  serial data"
+      alertContent = "Uh Oh.... there is no serial data 🤔, call me (Quan) please!"
       showAlert = true
       return
     }
@@ -173,7 +173,7 @@ extension GameView {
   private func setupKeyPress(from event: NSEvent) {
     switch event.keyCode {
     case 53:  // escape
-              // perform the stop action
+      // perform the stop action
       // erase the level sequence
       levelSequence = []
       
