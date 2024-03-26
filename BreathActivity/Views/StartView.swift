@@ -20,6 +20,8 @@ class StartViewModel {
   var showAmplitude = false
   
   var amplitudes = [Float]()
+  
+  let genders = ["Male", "Female", "Other"]
 }
 
 struct StartView: View {
@@ -35,8 +37,6 @@ struct StartView: View {
   @Environment(BreathObsever.self) var observer: BreathObsever
   
   var checkTimer = Timer.publish(every: 0.1, on: .current, in: .common).autoconnect()
-      
-  let genders = ["Male", "Female", "Other"]
     
   var startButtonClick: () -> Void
   
@@ -84,7 +84,7 @@ struct StartView: View {
             .clipShape(.rect(cornerRadius: 10))
           
           Picker("Gender", selection: $storage.userData.gender) {
-            ForEach(genders, id: \.self) { gender in
+            ForEach(viewModel.genders, id: \.self) { gender in
               Text(gender)
             }
           }
