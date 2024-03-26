@@ -11,22 +11,31 @@ import BreathObsever
 import AVFAudio
 import Combine
 
+@Observable
+class GameViewModel {
+  var screenBackground: Color = .background
+  
+  var running = false
+  
+  /// The flag to make sure we observe the data after the a bit of inital time
+  var processing = false
+  
+  /// debug text
+  var tobiiInfoText: String = ""
+  
+  var showAlert = false
+  
+  var alertContent = ""
+}
+
 struct GameView: View {
+  
+  @Bindable var viewModel = GameViewModel()
   
   let isTrial: Bool
   
   /// The experiment data of this current stage to store in `storage`
   @State var data: ExperimentalData
-      
-  @State var screenBackground: Color = .background
-  
-  @State var running = false
-  
-  /// The flag to make sure we observe the data after the a bit of inital time
-  @State var processing = false
-  
-  /// debug text
-  @State private var tobiiInfoText: String = ""
     
   // the engine that store the stack to check
   @State var engine: ExperimentalEngine
@@ -44,10 +53,6 @@ struct GameView: View {
   
   /// breath observer
   @Environment(BreathObsever.self) var observer: BreathObsever
-  
-  @State var showAlert = false
-  
-  @State var alertContent = ""
   
   var body: some View {
     ZStack {
@@ -71,7 +76,7 @@ struct GameView: View {
         
         Spacer()
         
-        if tobiiInfoText.last == "0" {
+        if viewModel.tobiiInfoText.last == "0" {
           debugView
         }
         
@@ -90,7 +95,7 @@ struct GameView: View {
       .onReceive(engine.analyzeTimer) { _ in handleAnalyzeTimer() }
       .padding()
     }
-    .background(screenBackground)
+    .background(viewModel.screenBackground)
     .onAppear {
       /// config tobii's custom frequency
       /// Here we set frequency to 1Hz which mean the custom data we receive with be each 1 second
@@ -102,8 +107,8 @@ struct GameView: View {
     .onReceive(engine.responseEvent, perform: handleResponse)
     .onReceive(observer.respiratoryRate, perform: handleRespiratoryRate)
     .onReceive(tobii.avgPupilSizeByFrequency, perform: handleTobiiSerialData)
-    .alert(isPresented: $showAlert) {
-      Alert(title: Text(alertContent))
+    .alert(isPresented: $viewModel.showAlert) {
+      Alert(title: Text(viewModel.alertContent))
     }
   }
 }
@@ -123,7 +128,7 @@ extension GameView {
         }
       }
     } catch {
-      running = false
+      viewModel.running = false
       return
     }
     
@@ -152,8 +157,8 @@ extension GameView {
     
     if !isTrial {
       guard !data.serialData.pupilSizes.isEmpty, !data.serialData.respiratoryRates.isEmpty else {
-        alertContent = "Uh Oh.... there is no serial data 🤔, call me (Quan) please!"
-        showAlert = true
+        viewModel.alertContent = "Uh Oh.... there is no serial data 🤔, call me (Quan) please!"
+        viewModel.showAlert = true
         return
       }
     }
@@ -198,11 +203,11 @@ extension GameView {
   
   private var debugView: some View {
     VStack {
-      Text(tobiiInfoText)
+      Text(viewModel.tobiiInfoText)
         .onReceive(tobii.avgPupilDiameter) { tobiiData in
           switch tobiiData {
           case .message(let content):
-            self.tobiiInfoText = content
+            viewModel.tobiiInfoText = content
           default:
             break
           }
@@ -268,19 +273,20 @@ extension GameView {
   }
   
   private func handleResponse(_ response: Response) {
-    Task {
-      if case .pressedSpace = response.reaction {
+    Task { @MainActor in
+      if case .pressedSpace = response.reaction,
+         ![.green, .red].contains(viewModel.screenBackground) {
         switch response.type {
         case .correct:
-          screenBackground = .green
+          viewModel.screenBackground = .green
         case .incorrect:
-          screenBackground = .red
+          viewModel.screenBackground = .red
         }
       }
             
       try? await Task.sleep(nanoseconds: 300_000_000)
       withAnimation(.easeInOut(duration: 0.2)) {
-        screenBackground = .background
+        viewModel.screenBackground = .background
       }
       
       data.response.append(response)
