@@ -40,9 +40,7 @@ struct ExperimentalView: View {
   @State var state: ExperimentalState = .start
   
   @Bindable var storage = DataStorage()
-  
-  @State var showAmplitude: Bool = false
-  
+    
   var body: some View {
     VStack {
       switch state {
@@ -51,7 +49,6 @@ struct ExperimentalView: View {
       case .start:
         StartView(
           selection: $selection,
-          showAmplitude: $showAmplitude,
           storage: storage,
           startButtonClick: startButtonClick,
           trialButtonClick: trialButtonClick, 
@@ -74,7 +71,6 @@ struct ExperimentalView: View {
           data: .init(level: level.name, response: [], collectedData: []),
           engine: ExperimentalEngine(level: level), 
           state: $state,
-          showAmplitude: $showAmplitude,
           levelSequence: $levelSequence,
           storage: storage
         )

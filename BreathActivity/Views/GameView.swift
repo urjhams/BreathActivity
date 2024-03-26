@@ -27,16 +27,12 @@ struct GameView: View {
   
   /// debug text
   @State private var tobiiInfoText: String = ""
-  
-  @State private var amplitudes = [Float]()
-  
+    
   // the engine that store the stack to check
   @State var engine: ExperimentalEngine
   
   @Binding var state: ExperimentalState
-  
-  @Binding var showAmplitude: Bool
-  
+    
   /// Container to store the current level and the next levels
   @Binding var levelSequence: [Level]
   
@@ -74,11 +70,6 @@ struct GameView: View {
         }
         
         Spacer()
-        
-        if showAmplitude {
-          debugView
-            .padding()
-        }
         
         // work-around view to disable the "funk" error sound when click on keyboard on macOS
         MakeKeyPressSilentView()
@@ -199,8 +190,6 @@ extension GameView {
 // MARK: setup view
 extension GameView {
   
-  private var offSet: CGFloat { 1 }
-  
   private var debugView: some View {
     VStack {
       Text(tobiiInfoText)
@@ -212,33 +201,6 @@ extension GameView {
             break
           }
         }
-      
-      amplitudeView($amplitudes, subject: observer.amplitudeSubject.eraseToAnyPublisher())
-        .frame(height: 80 * offSet)
-        .scenePadding([.leading, .trailing])
-        .padding()
-    }
-  }
-  
-  @ViewBuilder
-  private func amplitudeView(
-    _ amplitudes: Binding<[Float]>,
-    subject: AnyPublisher<Float, Never>
-  ) -> some View {
-    HStack(spacing: 1) {
-      ForEach(0..<amplitudes.count, id: \.self) { index in
-        RoundedRectangle(cornerRadius: 2)
-          .frame(width: offSet, height: CGFloat(amplitudes[index].wrappedValue) / 10)
-          .foregroundColor(.white)
-      }
-    }
-    .onReceive(subject) { value in
-      amplitudes.wrappedValue.append(value)
-      let amplitudesInOneSec = Int(Int(BreathObsever.sampleRate) / BreathObsever.samples)
-      // keep only data of 5 seconds of amplirudes
-      if amplitudes.count >= BreathObsever.windowTime * amplitudesInOneSec {
-        amplitudes.wrappedValue.removeFirst()
-      }
     }
   }
 }
@@ -257,6 +219,9 @@ extension GameView {
   
   /// Handle the received respiratory rate
   private func handleRespiratoryRate(_ rr: UInt8?) {
+    
+    print("🙆🏻", rr ?? "nil")
+    
     guard !isTrial else {
       return
     }
@@ -336,7 +301,7 @@ extension GameView {
 }
 
 #Preview {
-  @State var showAmplitude: Bool = true
+//  @State var showAmplitude: Bool = true
   @State var state: ExperimentalState = .running(level: .easy)
   @Bindable var engine = ExperimentalEngine(level: .easy)
   @Bindable var storage = DataStorage()
@@ -348,7 +313,7 @@ extension GameView {
     data: .init(level: engine.level.name, response: [], collectedData: []),
     engine: engine, 
     state: $state,
-    showAmplitude: $showAmplitude,
+//    showAmplitude: $showAmplitude,
     levelSequence: $sequence,
     storage: storage
   )

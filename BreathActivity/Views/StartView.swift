@@ -19,10 +19,15 @@ struct StartView: View {
   
   @Binding var selection: Int
           
-  @Binding var showAmplitude: Bool
+  @State var showAmplitude = false
+  
+  @State private var amplitudes = [Float]()
   
   // use an array to store, construct the respiratory rate from amplitudes
   @Bindable var storage: DataStorage
+  
+  /// breath observer
+  @Environment(BreathObsever.self) var observer: BreathObsever
   
   var checkTimer = Timer.publish(every: 0.1, on: .current, in: .common).autoconnect()
       
@@ -96,13 +101,29 @@ struct StartView: View {
       .frame(maxWidth: 300)
       .pickerStyle(.menu)
       
-      Spacer()
+      if showAmplitude {
+        Spacer()
+        amplitudeView($amplitudes, subject: observer.amplitudeSubject.eraseToAnyPublisher())
+          .frame(height: 80 * offSet)
+          .scenePadding([.leading, .trailing])
+          .padding()
+        Spacer()
+      } else {
+        Spacer()
+      }
       
       Toggle(isOn: $showAmplitude) {
         Label {
           Text("Show amplitudes 􀙫")
             .foregroundStyle(.gray)
         } icon: { Text("") }
+      }
+      .onChange(of: showAmplitude) { oldValue, newValue in
+        if newValue {
+          try? observer.startAnalyzing()
+        } else {
+          observer.stopAnalyzing()
+        }
       }
       
       HStack {
@@ -240,6 +261,33 @@ extension StartView {
   }
 }
 
+extension StartView {
+  
+  private var offSet: CGFloat { 1 }
+  
+  @ViewBuilder
+  private func amplitudeView(
+    _ amplitudes: Binding<[Float]>,
+    subject: AnyPublisher<Float, Never>
+  ) -> some View {
+    HStack(spacing: 1) {
+      ForEach(0..<amplitudes.count, id: \.self) { index in
+        RoundedRectangle(cornerRadius: 2)
+          .frame(width: offSet, height: CGFloat(amplitudes[index].wrappedValue) / 10)
+          .foregroundColor(.white)
+      }
+    }
+    .onReceive(subject) { value in
+      amplitudes.wrappedValue.append(value)
+      let amplitudesInOneSec = Int(Int(BreathObsever.sampleRate) / BreathObsever.samples)
+      // keep only data of 5 seconds of amplirudes
+      if amplitudes.count >= BreathObsever.windowTime * amplitudesInOneSec {
+        amplitudes.wrappedValue.removeFirst()
+      }
+    }
+  }
+}
+
 #Preview {
   @State var selection = 1
   @State var label: Bool = true
@@ -248,7 +296,6 @@ extension StartView {
   
   return StartView(
     selection: $selection,
-    showAmplitude: $showAmplitude,
     storage: storage,
     startButtonClick: {},
     trialButtonClick: {},
