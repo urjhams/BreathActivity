@@ -58,18 +58,8 @@ struct GameView: View {
     ZStack {
       VStack {
         if let currentImage = engine.current {
-          HStack {
-            Spacer()
-            Image(currentImage)
-              .resizable()
-              .aspectRatio(contentMode: .fit)
-              .frame(width: 400, height: 400)
-              .background(.clear)
-              .id(engine.currentImageId)
-              .transition(.scale.animation(.easeInOut))
-            Spacer()
-          }
-          .frame(maxHeight: .infinity, alignment: .center)
+          imageView(currentImage, id: engine.currentImageId)
+            .frame(maxHeight: .infinity, alignment: .center)
         } else {
           Color(.clear)
         }
@@ -83,33 +73,40 @@ struct GameView: View {
         // work-around view to disable the "funk" error sound when click on keyboard on macOS
         MakeKeyPressSilentView()
           .frame(height: 0)
-          .onAppear {
-            // key pressed notification register
-            NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
-              self.setupKeyPress(from: event)
-              return event
-            }
-          }
+          .onAppear(perform: keyEventSetUp)
       }
       .onReceive(engine.sessionTimer) { _ in handleSessionTimer() }
       .onReceive(engine.analyzeTimer) { _ in handleAnalyzeTimer() }
       .padding()
     }
     .background(viewModel.screenBackground)
-    .onAppear {
-      /// config tobii's custom frequency
-      /// Here we set frequency to 1Hz which mean the custom data we receive with be each 1 second
-      tobii.customFrequency = 1
-      
-      // start the session
-      startSession()
-    }
+    .onAppear(perform: viewAppear)
     .onReceive(engine.responseEvent, perform: handleResponse)
     .onReceive(observer.respiratoryRate, perform: handleRespiratoryRate)
     .onReceive(tobii.avgPupilSizeByFrequency, perform: handleTobiiSerialData)
     .alert(isPresented: $viewModel.showAlert) {
       Alert(title: Text(viewModel.alertContent))
     }
+  }
+}
+
+extension GameView {
+  
+  private func keyEventSetUp() {
+    // key pressed notification register
+    NSEvent.addLocalMonitorForEvents(matching: [.keyUp]) { event in
+      self.setupKeyPress(from: event)
+      return event
+    }
+  }
+  
+  private func viewAppear() {
+    /// config tobii's custom frequency
+    /// Here we set frequency to 1Hz which mean the custom data we receive with be each 1 second
+    tobii.customFrequency = 1
+    
+    // start the session
+    startSession()
   }
 }
 
@@ -212,6 +209,21 @@ extension GameView {
             break
           }
         }
+    }
+  }
+  
+  @ViewBuilder
+  private func imageView(_ name: String, id: UUID) -> some View {
+    HStack {
+      Spacer()
+      Image(name)
+        .resizable()
+        .aspectRatio(contentMode: .fit)
+        .frame(width: 400, height: 400)
+        .background(.clear)
+        .id(id)
+        .transition(.scale.animation(.easeInOut))
+      Spacer()
     }
   }
 }
@@ -325,7 +337,6 @@ extension GameView {
     data: .init(level: engine.level.name, response: [], collectedData: []),
     engine: engine, 
     state: $state,
-//    showAmplitude: $showAmplitude,
     levelSequence: $sequence,
     storage: storage
   )
