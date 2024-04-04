@@ -55,8 +55,8 @@ class StorageData:
     data: List[ExperimentalData]
     comment: str
 
-def read_json_files_from_folder(folder_path):
-    storage_data_list = []
+def readJsonFilesFromFolder(folder_path):
+    storageDataList = []
     try:
         # Iterate through each file in the folder
         for filename in os.listdir(folder_path):
@@ -64,37 +64,10 @@ def read_json_files_from_folder(folder_path):
             
             # Check if the file is a JSON file
             if filename.endswith('.json'):
-                with open(file_path, 'r') as file:
-                    # Parse JSON data
-                    json_data = json.load(file)
-                    
-                    # Extract data from JSON and create instances of ExperimentalData
-                    experimental_data_list = []
-                    for experimental_data_json in json_data['data']:
-                        responses = [Response(**response) for response in experimental_data_json['response']]
-                        collected_data = [CollectedData(**data) for data in experimental_data_json['collectedData']]
-                        experimental_data = ExperimentalData(
-                            level=experimental_data_json['level'],
-                            response=responses,
-                            collectedData=collected_data,
-                            serialData=SerialData(**experimental_data_json.get('serialData', {})),
-                            correctRate=experimental_data_json.get('correctRate'),
-                            surveyData=SurveyData(**experimental_data_json.get('surveyData', {}))
-                        )
-                        experimental_data_list.append(experimental_data)
+                storageData = readJsonFromFile(file_path)
+                storageDataList.append(storageData)
 
-                    # Create UserData instance
-                    user_data = UserData(**json_data['userData'])
-                    
-                    # Create StorageData instance
-                    storage_data = StorageData(
-                        userData=user_data,
-                        data=experimental_data_list,
-                        comment=json_data['comment']
-                    )
-                    storage_data_list.append(storage_data)
-
-        return storage_data_list
+        return storageDataList
 
     except OSError as e:
         print("Error accessing folder or file:", e)
@@ -103,9 +76,38 @@ def read_json_files_from_folder(folder_path):
         print("Error decoding JSON data:", e)
         return None
 
+def readJsonFromFile(filePath):
+    with open(filePath, 'r') as file:
+        # Parse JSON data
+        jsonData = json.load(file)
+        # Extract data from JSON and create instances of ExperimentalData
+        experimentalDataList = []
+        for experimentalData in jsonData['data']:
+            responses = [Response(**response) for response in experimentalData['response']]
+            collectedData = [CollectedData(**data) for data in experimentalData['collectedData']]
+            experimental_data = ExperimentalData(
+                level = experimentalData['level'],
+                response = responses,
+                collectedData = collectedData,
+                serialData = SerialData(**experimentalData.get('serialData', {})),
+                correctRate = experimentalData.get('correctRate'),
+                surveyData = SurveyData(**experimentalData.get('surveyData', {}))
+            )
+            experimentalDataList.append(experimental_data)
+
+        # Create UserData instance
+        userData = UserData(**jsonData['userData'])
+                
+        # Create StorageData instance
+        return StorageData(
+            userData = userData,
+            data = experimentalDataList,
+            comment = jsonData['comment']
+        )
+        
 # Example usage:
-folder_path = sys.argv[1]
-data = read_json_files_from_folder(folder_path)
+folderPath = sys.argv[1]
+data = readJsonFilesFromFolder(folderPath)
 if data:
     for storage_data in data:
         print(storage_data)
