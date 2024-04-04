@@ -48,11 +48,6 @@ class ExperimentalData:
     correctRate: Union[float, None] = None
     surveyData: Union[SurveyData, None] = None
 
-    def computeCorrectRate(self):
-        correct = sum(1 for r in self.response if isinstance(r.type, ResponseType) and r.type == ResponseType.correct)
-        total = len(self.response)
-        self.correctRate = (correct * 100) / total if total != 0 else None
-
 @dataclass
 class StorageData:
     userData: UserData
