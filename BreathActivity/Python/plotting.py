@@ -2,6 +2,7 @@ import os
 import json
 from dataclasses import dataclass
 from typing import List, Union
+import sys
 
 # Define Enums
 class ReactionType:
@@ -103,7 +104,7 @@ def read_json_files_from_folder(folder_path):
         return None
 
 # Example usage:
-folder_path = #"/path/to/your/folder"  # Replace this with the actual folder path
+folder_path = sys.argv[1]
 data = read_json_files_from_folder(folder_path)
 if data:
     for storage_data in data:
