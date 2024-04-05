@@ -88,7 +88,7 @@ def readJsonFromFile(filePath):
         experimentalDataList = []
         for experimentalData in jsonData['data']:
             responses = [Response(**response) for response in experimentalData['response']]
-            collectedData = [CollectedData(**data) for data in experimentalData['collectedData']]
+            collectedData = [CollectedData(pupilSize=pupilSize, respiratoryRate=respiratoryRate) for (pupilSize, respiratoryRate) in experimentalData['collectedData']]
             experimental_data = ExperimentalData(
                 level = experimentalData['level'],
                 response = responses,
