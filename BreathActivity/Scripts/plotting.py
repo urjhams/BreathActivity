@@ -3,6 +3,7 @@ import json
 from dataclasses import dataclass, field
 from typing import List, Union
 import sys
+import matplotlib.pyplot as plt
 
 # Define Enums
 class ReactionType:
@@ -56,7 +57,7 @@ class StorageData:
     comment: str
 
 def readJsonFilesFromFolder(path):
-    storageDataList = []
+    storageDataList:Union[StorageData, None] = []
     try:
         # Iterate through each file in the folder
         for filename in os.listdir(path):
@@ -66,10 +67,6 @@ def readJsonFilesFromFolder(path):
             if filename.endswith('.json'):
                 storageData = readJsonFromFile(filePath)
                 storageDataList.append(storageData)
-                print(storageData.userData.name)
-                for stageData in storageData.data:
-                    print(stageData.serialData.respiratoryRates)
-                    print(stageData.serialData.pupilSizes)
 
         return storageDataList
 
@@ -84,11 +81,12 @@ def readJsonFromFile(filePath):
     with open(filePath, 'r') as file:
         # Parse JSON data
         jsonData = json.load(file)
+                
         # Extract data from JSON and create instances of ExperimentalData
         experimentalDataList = []
         for experimentalData in jsonData['data']:
             responses = [Response(**response) for response in experimentalData['response']]
-            collectedData = [CollectedData(pupilSize=pupilSize, respiratoryRate=respiratoryRate) for (pupilSize, respiratoryRate) in experimentalData['collectedData']]
+            collectedData = [CollectedData(**data) for data in experimentalData['collectedData']]
             experimental_data = ExperimentalData(
                 level = experimentalData['level'],
                 response = responses,
@@ -112,6 +110,48 @@ def readJsonFromFile(filePath):
 folderPath = sys.argv[1]
 data = readJsonFilesFromFolder(folderPath)
 
+from scipy.signal import savgol_filter
+
+def drawPlot(storageData: StorageData):
+    index = 0
+    x = []
+    yPupilSize = []
+    yRespiratoryRate = []
+    
+    plt.title = storageData.userData.name
+    
+    for stage in storageData.data:
+        collumnName = stage.level
+        stage.collectedData
+    
+    for element in storageData.data[0].collectedData:
+       yPupilSize.append(element.pupilSize)
+       yRespiratoryRate.append(element.respiratoryRate)
+       index += 1
+       x.append(index) 
+       
+    smoothed_y = savgol_filter(yPupilSize, len(yPupilSize), 3)
+    
+    #TODO: draw :
+    # UserName
+    # Task_level(correction rate)   Task_level(correction rate)   Task_level(correction rate)
+    # Respiratory plot              Respiratory plot              Respiratory plot
+    # Pupil dialect + smooth plot   Pupil dialect + smooth plot   Pupil dialect + smooth plot
+    
+    figure, axis = plt.subplots(3, 1, constrained_layout = True) 
+    
+    axis[0].plot(x, yRespiratoryRate)
+    axis[0].set_title("respiratory rate")
+    
+    axis[1].plot(x, yPupilSize)
+    axis[1].set_title("Pupil size")
+    
+    axis[2].plot(x, smoothed_y)
+    axis[2].set_title("smoothed pupil size")
+    
+    #TODO: save the plot as a png
+    plt.show()
+
 if data:
-    for storage_data in data:
-        print(storage_data)
+    for storageData in data:
+        drawPlot(storageData)
