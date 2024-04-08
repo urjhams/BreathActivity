@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from typing import List, Union
 import sys
 import matplotlib.pyplot as plt
+from scipy.signal import resample
 
 # Define Enums
 class ReactionType:
@@ -107,51 +108,64 @@ def readJsonFromFile(filePath):
             comment = jsonData['comment']
         )
         
+from scipy.signal import savgol_filter
+import numpy as np
+
+def drawPlot(storageData: StorageData):
+    # index = 0
+    # x = []
+    # yPupilSize = []
+    # yRespiratoryRate = []
+    
+    figure, axis = plt.subplots(3, len(storageData.data), constrained_layout = True) 
+    
+    for stageIndex, stage in enumerate(storageData.data):
+        x = []
+        yPupilSize = []
+        yRespiratoryRate = []
+    
+        collumnName = f'{stage.level}, correct: {int(stage.correctRate)} %, feel difficult: {stage.surveyData.q1Answer}, stressful: {stage.surveyData.q2Answer}'
+        stage.collectedData
+    
+        rr_array = stage.serialData.respiratoryRates
+        rr_len = len(rr_array)
+        rr_indicies = np.linspace(0, rr_len - 1, num=rr_len)
+        iterpolated_indices = np.linspace(0, rr_len - 1, num=300)
+    
+        # interpolated respiratory rate to match with 5 minutes of data
+        rr = np.interp(iterpolated_indices, rr_indicies, rr_array)
+        
+        # resampled serial pupil sizes to match with 5 minutes of data
+        ps = resample(storageData.data[0].serialData.pupilSizes, 300)
+        
+        for index, value in enumerate(rr):
+            yPupilSize.append(ps[index])
+            yRespiratoryRate.append(value)
+            x.append(index)
+       
+        smoothed_y = savgol_filter(yPupilSize, len(yPupilSize), 100)
+        
+        axis[0, stageIndex].plot(x, yRespiratoryRate)
+        axis[0, stageIndex].set_ylabel('respiratory rate')
+        axis[0, stageIndex].set_xlabel('linear time')
+        axis[0, stageIndex].set_title(collumnName, size='large')
+        
+        axis[1, stageIndex].plot(x, yPupilSize)
+        axis[1, stageIndex].set_ylabel('pupil size')
+        axis[1, stageIndex].set_xlabel('linear time')
+        
+        axis[2, stageIndex].plot(x, smoothed_y)
+        axis[2, stageIndex].set_ylabel('smoothed pupil size')
+        axis[2, stageIndex].set_xlabel('linear time')
+    
+    #TODO: save the plot as a png
+    plt.suptitle(storageData.userData.name)
+    plt.show()
+
 folderPath = sys.argv[1]
 data = readJsonFilesFromFolder(folderPath)
 
-from scipy.signal import savgol_filter
-
-def drawPlot(storageData: StorageData):
-    index = 0
-    x = []
-    yPupilSize = []
-    yRespiratoryRate = []
-    
-    plt.title = storageData.userData.name
-    
-    for stage in storageData.data:
-        collumnName = stage.level
-        stage.collectedData
-    
-    for element in storageData.data[0].collectedData:
-       yPupilSize.append(element.pupilSize)
-       yRespiratoryRate.append(element.respiratoryRate)
-       index += 1
-       x.append(index) 
-       
-    smoothed_y = savgol_filter(yPupilSize, len(yPupilSize), 3)
-    
-    #TODO: draw :
-    # UserName
-    # Task_level(correction rate)   Task_level(correction rate)   Task_level(correction rate)
-    # Respiratory plot              Respiratory plot              Respiratory plot
-    # Pupil dialect + smooth plot   Pupil dialect + smooth plot   Pupil dialect + smooth plot
-    
-    figure, axis = plt.subplots(3, 1, constrained_layout = True) 
-    
-    axis[0].plot(x, yRespiratoryRate)
-    axis[0].set_title("respiratory rate")
-    
-    axis[1].plot(x, yPupilSize)
-    axis[1].set_title("Pupil size")
-    
-    axis[2].plot(x, smoothed_y)
-    axis[2].set_title("smoothed pupil size")
-    
-    #TODO: save the plot as a png
-    plt.show()
-
 if data:
-    for storageData in data:
-        drawPlot(storageData)
+    drawPlot(data[5])
+    # for storageData in data:
+    #     drawPlot(storageData)
