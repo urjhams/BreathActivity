@@ -6,6 +6,9 @@ import sys
 import matplotlib.pyplot as plt
 from scipy.signal import resample
 
+# parameters
+folderPath = sys.argv[1]
+
 # Define Enums
 class ReactionType:
     def __init__(self, reactionTime: float):
@@ -112,18 +115,14 @@ from scipy.signal import savgol_filter
 import numpy as np
 
 def drawPlot(storageData: StorageData):
-    # index = 0
-    # x = []
-    # yPupilSize = []
-    # yRespiratoryRate = []
     
-    figure, axis = plt.subplots(3, len(storageData.data), constrained_layout = True) 
+    fig, axis = plt.subplots(3, len(storageData.data), constrained_layout = True) 
+    
+    axis[0, 0].set_ylabel('respiratory rate')
+    axis[1, 0].set_ylabel('pupil size')
+    axis[2, 0].set_ylabel('smoothed pupil size')
     
     for stageIndex, stage in enumerate(storageData.data):
-        x = []
-        yPupilSize = []
-        yRespiratoryRate = []
-    
         collumnName = f'{stage.level}, correct: {int(stage.correctRate)} %, feel difficult: {stage.surveyData.q1Answer}, stressful: {stage.surveyData.q2Answer}'
         stage.collectedData
     
@@ -133,39 +132,39 @@ def drawPlot(storageData: StorageData):
         iterpolated_indices = np.linspace(0, rr_len - 1, num=300)
     
         # interpolated respiratory rate to match with 5 minutes of data
-        rr = np.interp(iterpolated_indices, rr_indicies, rr_array)
+        interpolated_respiratory_rate = np.interp(iterpolated_indices, rr_indicies, rr_array)
         
         # resampled serial pupil sizes to match with 5 minutes of data
-        ps = resample(storageData.data[0].serialData.pupilSizes, 300)
+        pupil_sizes = resample(storageData.data[0].serialData.pupilSizes, 300)
         
-        for index, value in enumerate(rr):
-            yPupilSize.append(ps[index])
-            yRespiratoryRate.append(value)
-            x.append(index)
+        time = np.arange(len(interpolated_respiratory_rate))
        
-        smoothed_y = savgol_filter(yPupilSize, len(yPupilSize), 100)
+        smoothed_y = savgol_filter(pupil_sizes, len(pupil_sizes), 100)
         
-        axis[0, stageIndex].plot(x, yRespiratoryRate)
-        axis[0, stageIndex].set_ylabel('respiratory rate')
-        axis[0, stageIndex].set_xlabel('linear time')
+        axis[0, stageIndex].plot(time, interpolated_respiratory_rate)
+        axis[0, stageIndex].set_xlabel('linear time (in sec)')
         axis[0, stageIndex].set_title(collumnName, size='large')
         
-        axis[1, stageIndex].plot(x, yPupilSize)
-        axis[1, stageIndex].set_ylabel('pupil size')
-        axis[1, stageIndex].set_xlabel('linear time')
+        axis[1, stageIndex].plot(time, pupil_sizes)
+        axis[1, stageIndex].set_xlabel('linear time (in sec)')
         
-        axis[2, stageIndex].plot(x, smoothed_y)
-        axis[2, stageIndex].set_ylabel('smoothed pupil size')
-        axis[2, stageIndex].set_xlabel('linear time')
+        axis[2, stageIndex].plot(time, smoothed_y)
+        axis[2, stageIndex].set_xlabel('linear time (in sec)')
     
-    #TODO: save the plot as a png
-    plt.suptitle(storageData.userData.name)
-    plt.show()
+    userData = storageData.userData
+    plt.suptitle(f'{userData.name} - {userData.gender} - {userData.age}')
+    
+    plots_dir = os.pardir.join(folderPath, 'plots')
+    os.makedirs(plots_dir, exist_ok=True)
+    plotName = os.pardir.join(plots_dir, f'{storageData.userData.name}.png')
+    plt.savefig(plotName)
+    plt.close()
+    # plt.show()
 
-folderPath = sys.argv[1]
+# ------------------ main -----------------
+
 data = readJsonFilesFromFolder(folderPath)
 
 if data:
-    drawPlot(data[5])
-    # for storageData in data:
-    #     drawPlot(storageData)
+    for storageData in data:
+        drawPlot(storageData)
