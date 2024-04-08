@@ -116,7 +116,11 @@ import numpy as np
 
 def drawPlot(storageData: StorageData):
     
-    fig, axis = plt.subplots(3, len(storageData.data), constrained_layout = True) 
+    width_inches = 1920 / 100  # 38.4 inches
+    height_inches = 1080 / 100  # 21.6 inches
+    size = (width_inches, height_inches)
+    
+    fig, axis = plt.subplots(3, len(storageData.data), figsize=size) 
     
     axis[0, 0].set_ylabel('respiratory rate')
     axis[1, 0].set_ylabel('pupil size')
@@ -135,29 +139,34 @@ def drawPlot(storageData: StorageData):
         interpolated_respiratory_rate = np.interp(iterpolated_indices, rr_indicies, rr_array)
         
         # resampled serial pupil sizes to match with 5 minutes of data
-        pupil_sizes = resample(storageData.data[0].serialData.pupilSizes, 300)
+        pupil_sizes = resample(stage.serialData.pupilSizes, 300)
         
         time = np.arange(len(interpolated_respiratory_rate))
        
         smoothed_y = savgol_filter(pupil_sizes, len(pupil_sizes), 100)
         
-        axis[0, stageIndex].plot(time, interpolated_respiratory_rate)
+        axis[0, stageIndex].plot(time, interpolated_respiratory_rate, color='red')
         axis[0, stageIndex].set_xlabel('linear time (in sec)')
         axis[0, stageIndex].set_title(collumnName, size='large')
         
-        axis[1, stageIndex].plot(time, pupil_sizes)
+        axis[1, stageIndex].plot(time, pupil_sizes, color='green')
         axis[1, stageIndex].set_xlabel('linear time (in sec)')
         
-        axis[2, stageIndex].plot(time, smoothed_y)
+        axis[2, stageIndex].plot(time, smoothed_y, color ='blue')
         axis[2, stageIndex].set_xlabel('linear time (in sec)')
     
     userData = storageData.userData
-    plt.suptitle(f'{userData.name} - {userData.gender} - {userData.age}')
+    plt.suptitle(f'{userData.name} - {userData.gender} - {userData.age}', fontweight = 'heavy', fontsize=20)
     
-    plots_dir = os.pardir.join(folderPath, 'plots')
+    # Adjust layout to prevent overlapping of labels
+    plt.tight_layout()
+    
+    plots_dir = f'{folderPath}/plots'
     os.makedirs(plots_dir, exist_ok=True)
-    plotName = os.pardir.join(plots_dir, f'{storageData.userData.name}.png')
-    plt.savefig(plotName)
+    plot = f'{plots_dir}/{storageData.userData.name}.png'
+    print(f'🙆🏻 saving {plot}')
+    
+    plt.savefig(plot)
     plt.close()
     # plt.show()
 
@@ -167,4 +176,7 @@ data = readJsonFilesFromFolder(folderPath)
 
 if data:
     for storageData in data:
-        drawPlot(storageData)
+        try:
+            drawPlot(storageData)
+        except:
+            print('🤷🏻‍♂️ cannot make plot of this')
