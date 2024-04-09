@@ -120,11 +120,12 @@ def drawPlot(storageData: StorageData):
     height_inches = 1080 / 100  # 21.6 inches
     size = (width_inches, height_inches)
     
-    fig, axis = plt.subplots(3, len(storageData.data), figsize=size) 
+    fig, axis = plt.subplots(4, len(storageData.data), figsize=size) 
     
     axis[0, 0].set_ylabel('respiratory rate')
     axis[1, 0].set_ylabel('pupil size')
-    axis[2, 0].set_ylabel('smoothed pupil size')
+    axis[2, 0].set_ylabel('smoothed respiratory rate')
+    axis[3, 0].set_ylabel('smoothed pupil size')
     
     for stageIndex, stage in enumerate(storageData.data):
         collumnName = f'{stage.level}, correct: {int(stage.correctRate)} %, feel difficult: {stage.surveyData.q1Answer}, stressful: {stage.surveyData.q2Answer}'
@@ -143,7 +144,8 @@ def drawPlot(storageData: StorageData):
         
         time = np.arange(len(interpolated_respiratory_rate))
        
-        smoothed_y = savgol_filter(pupil_sizes, len(pupil_sizes), 100)
+        smoothedPupil = savgol_filter(pupil_sizes, len(pupil_sizes), 100)
+        smoothedRespiratoryRate = savgol_filter(interpolated_respiratory_rate, len(interpolated_respiratory_rate), 100)
         
         axis[0, stageIndex].plot(time, interpolated_respiratory_rate, color='red')
         axis[0, stageIndex].set_xlabel('linear time (in sec)')
@@ -152,8 +154,11 @@ def drawPlot(storageData: StorageData):
         axis[1, stageIndex].plot(time, pupil_sizes, color='green')
         axis[1, stageIndex].set_xlabel('linear time (in sec)')
         
-        axis[2, stageIndex].plot(time, smoothed_y, color ='blue')
+        axis[2, stageIndex].plot(time, smoothedRespiratoryRate, color ='orange')
         axis[2, stageIndex].set_xlabel('linear time (in sec)')
+        
+        axis[3, stageIndex].plot(time, smoothedPupil, color ='blue')
+        axis[3, stageIndex].set_xlabel('linear time (in sec)')
     
     userData = storageData.userData
     plt.suptitle(f'{userData.name} - {userData.gender} - {userData.age}', fontweight = 'heavy', fontsize=20)
