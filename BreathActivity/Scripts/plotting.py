@@ -128,12 +128,13 @@ height_inches = 1080 / 100  # 21.6 inches
 size = (width_inches, height_inches)
         
 def drawPlot(storageData: StorageData):
+    print(f'🙆🏻 making plot of data from {storageData.userData.name}')
     fig, axis = plt.subplots(4, len(storageData.data), figsize=size)
         
     axis[0, 0].set_ylabel('respiratory rate (interpolated)')
     axis[1, 0].set_ylabel('pupil size (raw)')
-    axis[2, 0].set_ylabel('respiratory rate (trend)')
-    axis[3, 0].set_ylabel('pupil size (trend)')
+    axis[2, 0].set_ylabel('smoothed respiratory rate')
+    axis[3, 0].set_ylabel('smoothed pupil size')
     
     maxPupil = largest(list(map(lambda stage: largest(stage.serialData.pupilSizes), storageData.data)))
     minPupil = smallest(list(map(lambda stage: smallest(stage.serialData.pupilSizes), storageData.data)))
@@ -146,43 +147,44 @@ def drawPlot(storageData: StorageData):
         rr_array = stage.serialData.respiratoryRates
         rr_len = len(rr_array)
         rr_indicies = np.linspace(0, rr_len - 1, num=rr_len)
-        iterpolated_indices = np.linspace(0, rr_len - 1, num=120)
+        iterpolated_indices = np.linspace(0, rr_len - 1, num=300)
     
         # interpolated respiratory rate to match with 5 minutes of data
         interpolated_respiratory_rate = np.interp(iterpolated_indices, rr_indicies, rr_array)
         
         # down sample to around one value each 2.5 seconds
-        resampledPupil = resample(stage.serialData.pupilSizes, 120)
+        resampledPupil = resample(stage.serialData.pupilSizes, 300)
         
         # smoothing the array to see the trend
-        trendingPupil = savgol_filter(resampledPupil, len(resampledPupil), 80)
-        meanTrendingPupil = savgol_filter(resampledPupil, len(resampledPupil), 3)
-        trendingRR = savgol_filter(interpolated_respiratory_rate, len(interpolated_respiratory_rate), 80)
-        meanTrendingRR = savgol_filter(interpolated_respiratory_rate, len(interpolated_respiratory_rate), 3)
+        smoothed_pupil = savgol_filter(resampledPupil, len(resampledPupil), 16)
+        trend_pupil = savgol_filter(resampledPupil, len(resampledPupil), 4)
+        smoothed_rr = savgol_filter(interpolated_respiratory_rate, len(interpolated_respiratory_rate), 16)
+        trend_rr = savgol_filter(interpolated_respiratory_rate, len(interpolated_respiratory_rate), 4)
         
         time = np.arange(len(interpolated_respiratory_rate))
         markerSize = list(map(lambda x: 1, time))
-        mapped_time = list(map(lambda x: x * 5, time))
         
-        axis[0, stageIndex].plot(mapped_time, interpolated_respiratory_rate, color='red')
+        axis[0, stageIndex].plot(time, interpolated_respiratory_rate, color='red', label='Respiratoy rate')
+        axis[0, stageIndex].plot(time, trend_rr, color='green', label='trending respiratory rate')
         axis[0, stageIndex].set_ylim(minRR, maxRR)
         axis[0, stageIndex].set_xlabel('linear time')
         axis[0, stageIndex].set_title(collumnName, size='large')
+        axis[0, stageIndex].legend()
         
-        axis[1, stageIndex].plot(mapped_time, resampledPupil, color='green')
+        axis[1, stageIndex].plot(time, resampledPupil, color='brown', label='average pupil size')
+        axis[1, stageIndex].plot(time, trend_pupil, color='blue', label='trending avg pupil size')
         axis[1, stageIndex].set_ylim(minPupil, maxPupil)
         axis[1, stageIndex].set_xlabel('linear time')
+        axis[1, stageIndex].legend()
         
-        axis[2, stageIndex].plot(mapped_time, trendingRR, color='orange')
-        axis[2, stageIndex].set_ylim(minRR, maxRR)
-        # axis[2, stageIndex].get_yaxis().set_ticks([])
-        axis[2, stageIndex].scatter(mapped_time, meanTrendingRR, color='violet',s=markerSize)
+        axis[2, stageIndex].plot(time, smoothed_rr, color='orange', label='smoothed respiratory rate')
+        # axis[2, stageIndex].set_ylim(minRR, maxRR)
+        axis[2, stageIndex].get_yaxis().set_ticks([])
         axis[2, stageIndex].set_xlabel('linear time')
         
-        axis[3, stageIndex].plot(mapped_time, trendingPupil, color='brown')
-        axis[3, stageIndex].scatter(mapped_time, meanTrendingPupil, color='blue',s=markerSize)
-        # axis[3, stageIndex].get_yaxis().set_ticks([])
-        axis[3, stageIndex].set_ylim(minPupil, maxPupil)
+        axis[3, stageIndex].plot(time, smoothed_pupil, color='violet', label='smoothed avg pupil size')
+        axis[3, stageIndex].get_yaxis().set_ticks([])
+        # axis[3, stageIndex].set_ylim(minPupil, maxPupil)
         axis[3, stageIndex].set_xlabel('linear time')
         
     userData = storageData.userData
