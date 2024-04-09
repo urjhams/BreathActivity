@@ -114,11 +114,11 @@ def readJsonFromFile(filePath):
 from scipy.signal import savgol_filter
 import numpy as np
 
-def drawPlot(storageData: StorageData):
-    
-    width_inches = 1920 / 100  # 38.4 inches
-    height_inches = 1080 / 100  # 21.6 inches
-    size = (width_inches, height_inches)
+width_inches = 1920 / 100  # 38.4 inches
+height_inches = 1080 / 100  # 21.6 inches
+size = (width_inches, height_inches)
+
+def drawRawPlot(storageData: StorageData):
     
     fig, axis = plt.subplots(4, len(storageData.data), figsize=size) 
     
@@ -129,8 +129,49 @@ def drawPlot(storageData: StorageData):
     
     for stageIndex, stage in enumerate(storageData.data):
         collumnName = f'{stage.level}, correct: {int(stage.correctRate)} %, feel difficult: {stage.surveyData.q1Answer}, stressful: {stage.surveyData.q2Answer}'
-        stage.collectedData
     
+        rr_array = stage.serialData.respiratoryRates
+        rr_len = len(rr_array)
+        rr_indicies = np.linspace(0, rr_len - 1, num=rr_len)
+        iterpolated_indices = np.linspace(0, rr_len - 1, num=300)
+    
+        # interpolated respiratory rate to match with 5 minutes of data
+        interpolated_respiratory_rate = np.interp(iterpolated_indices, rr_indicies, rr_array)
+        
+        # resampled serial pupil sizes to match with 5 minutes of data
+        pupil_sizes = resample(stage.serialData.pupilSizes, 300)
+        
+        time = np.arange(len(interpolated_respiratory_rate))
+        
+        axis[0, stageIndex].plot(time, interpolated_respiratory_rate, color='red')
+        axis[0, stageIndex].set_xlabel('linear time (in sec)')
+        axis[0, stageIndex].set_title(collumnName, size='large')
+        
+        axis[1, stageIndex].plot(time, pupil_sizes, color='green')
+        axis[1, stageIndex].set_xlabel('linear time (in sec)')
+    
+    userData = storageData.userData
+    plt.suptitle(f'{userData.name} - {userData.gender} - {userData.age}', fontweight = 'heavy', fontsize=20)
+    
+    # Adjust layout to prevent overlapping of labels
+    plt.tight_layout()
+    
+    plots_dir = f'{folderPath}/plots/raw'
+    os.makedirs(plots_dir, exist_ok=True)
+    plot = f'{plots_dir}/{storageData.userData.name}.png'
+    print(f'🙆🏻 saving {plot}')
+    
+    plt.savefig(plot)
+    plt.close()
+
+def drawSmoothPlot(storageData: StorageData):
+    ig, axis = plt.subplots(2, len(storageData.data), figsize=size)
+    axis[0, 0].set_ylabel('respiratory rate (smoothed)')
+    axis[1, 0].set_ylabel('pupil size (smoothed)')
+    
+    for stageIndex, stage in enumerate(storageData.data):
+        collumnName = f'{stage.level}, correct: {int(stage.correctRate)}%, feel difficult: {stage.surveyData.q1Answer}, stressful: {stage.surveyData.q2Answer}'
+        
         rr_array = stage.serialData.respiratoryRates
         rr_len = len(rr_array)
         rr_indicies = np.linspace(0, rr_len - 1, num=rr_len)
@@ -147,34 +188,27 @@ def drawPlot(storageData: StorageData):
         smoothedPupil = savgol_filter(pupil_sizes, len(pupil_sizes), 100)
         smoothedRespiratoryRate = savgol_filter(interpolated_respiratory_rate, len(interpolated_respiratory_rate), 100)
         
-        axis[0, stageIndex].plot(time, interpolated_respiratory_rate, color='red')
+        axis[0, stageIndex].plot(time, smoothedRespiratoryRate, color='orange')
         axis[0, stageIndex].set_xlabel('linear time (in sec)')
         axis[0, stageIndex].set_title(collumnName, size='large')
         
-        axis[1, stageIndex].plot(time, pupil_sizes, color='green')
+        axis[1, stageIndex].plot(time, smoothedPupil, color='blue')
         axis[1, stageIndex].set_xlabel('linear time (in sec)')
         
-        axis[2, stageIndex].plot(time, smoothedRespiratoryRate, color ='orange')
-        axis[2, stageIndex].set_xlabel('linear time (in sec)')
-        
-        axis[3, stageIndex].plot(time, smoothedPupil, color ='blue')
-        axis[3, stageIndex].set_xlabel('linear time (in sec)')
-    
     userData = storageData.userData
     plt.suptitle(f'{userData.name} - {userData.gender} - {userData.age}', fontweight = 'heavy', fontsize=20)
     
     # Adjust layout to prevent overlapping of labels
     plt.tight_layout()
     
-    plots_dir = f'{folderPath}/plots'
+    plots_dir = f'{folderPath}/plots/smoothed'
     os.makedirs(plots_dir, exist_ok=True)
     plot = f'{plots_dir}/{storageData.userData.name}.png'
     print(f'🙆🏻 saving {plot}')
     
     plt.savefig(plot)
     plt.close()
-    # plt.show()
-
+        
 # ------------------ main -----------------
 
 data = readJsonFilesFromFolder(folderPath)
@@ -182,6 +216,7 @@ data = readJsonFilesFromFolder(folderPath)
 if data:
     for storageData in data:
         try:
-            drawPlot(storageData)
+            drawRawPlot(storageData)
+            drawSmoothPlot(storageData)
         except:
             print('🤷🏻‍♂️ cannot make plot of this')
