@@ -126,101 +126,12 @@ import numpy as np
 width_inches = 1920 / 100  # 38.4 inches
 height_inches = 1080 / 100  # 21.6 inches
 size = (width_inches, height_inches)
-
-def drawRawPlot(storageData: StorageData):
-    
-    fig, axis = plt.subplots(2, len(storageData.data), figsize=size) 
-    
-    axis[0, 0].set_ylabel('respiratory rate')
-    axis[1, 0].set_ylabel('pupil size')
-    
-    for stageIndex, stage in enumerate(storageData.data):
-        collumnName = f'{stage.level}, correct: {int(stage.correctRate)} %, feel difficult: {stage.surveyData.q1Answer}, stressful: {stage.surveyData.q2Answer}'
-    
-        rr_array = stage.serialData.respiratoryRates
-        rr_len = len(rr_array)
-        rr_indicies = np.linspace(0, rr_len - 1, num=rr_len)
-        iterpolated_indices = np.linspace(0, rr_len - 1, num=300)
-    
-        # interpolated respiratory rate to match with 5 minutes of data
-        interpolated_respiratory_rate = np.interp(iterpolated_indices, rr_indicies, rr_array)
         
-        # resampled serial pupil sizes to match with 5 minutes of data
-        pupil_sizes = resample(stage.serialData.pupilSizes, 300)
-        
-        time = np.arange(len(interpolated_respiratory_rate))
-        
-        axis[0, stageIndex].plot(time, interpolated_respiratory_rate, color='red')
-        axis[0, stageIndex].set_xlabel('linear time (in sec)')
-        axis[0, stageIndex].set_title(collumnName, size='large')
-        
-        axis[1, stageIndex].plot(time, pupil_sizes, color='green')
-        axis[1, stageIndex].set_xlabel('linear time (in sec)')
-    
-    userData = storageData.userData
-    plt.suptitle(f'{userData.name} - {userData.gender} - {userData.age}', fontweight = 'heavy', fontsize=20)
-    
-    # Adjust layout to prevent overlapping of labels
-    plt.tight_layout()
-    
-    plots_dir = f'{folderPath}/plots/raw'
-    os.makedirs(plots_dir, exist_ok=True)
-    plot = f'{plots_dir}/{storageData.userData.name}.png'
-    print(f'🙆🏻 saving {plot}')
-    
-    plt.savefig(plot)
-    plt.close()
-
-def drawSmoothPlot(storageData: StorageData):
-    ig, axis = plt.subplots(2, len(storageData.data), figsize=size)
-    axis[0, 0].set_ylabel('respiratory rate (smoothed)')
-    axis[1, 0].set_ylabel('pupil size (smoothed)')
-    
-    for stageIndex, stage in enumerate(storageData.data):
-        collumnName = f'{stage.level}, correct: {int(stage.correctRate)}%, feel difficult: {stage.surveyData.q1Answer}, stressful: {stage.surveyData.q2Answer}'
-        
-        rr_array = stage.serialData.respiratoryRates
-        rr_len = len(rr_array)
-        rr_indicies = np.linspace(0, rr_len - 1, num=rr_len)
-        iterpolated_indices = np.linspace(0, rr_len - 1, num=300)
-    
-        # interpolated respiratory rate to match with 5 minutes of data
-        interpolated_respiratory_rate = np.interp(iterpolated_indices, rr_indicies, rr_array)
-        
-        # resampled serial pupil sizes to match with 5 minutes of data
-        pupil_sizes = resample(stage.serialData.pupilSizes, 300)
-        
-        time = np.arange(len(interpolated_respiratory_rate))
-       
-        smoothedPupil = savgol_filter(pupil_sizes, len(pupil_sizes), 75)
-        smoothedRespiratoryRate = savgol_filter(interpolated_respiratory_rate, len(interpolated_respiratory_rate), 75)
-        
-        axis[0, stageIndex].plot(time, smoothedRespiratoryRate, color='orange')
-        axis[0, stageIndex].set_xlabel('linear time (in sec)')
-        axis[0, stageIndex].set_title(collumnName, size='large')
-        
-        axis[1, stageIndex].plot(time, smoothedPupil, color='blue')
-        axis[1, stageIndex].set_xlabel('linear time (in sec)')
-        
-    userData = storageData.userData
-    plt.suptitle(f'{userData.name} - {userData.gender} - {userData.age}', fontweight = 'heavy', fontsize=20)
-    
-    # Adjust layout to prevent overlapping of labels
-    plt.tight_layout()
-    
-    plots_dir = f'{folderPath}/plots/smoothed'
-    os.makedirs(plots_dir, exist_ok=True)
-    plot = f'{plots_dir}/{storageData.userData.name}.png'
-    print(f'🙆🏻 saving {plot}')
-    
-    plt.savefig(plot)
-    plt.close()
-        
-def drawResampledPlot(storageData: StorageData):
+def drawPlot(storageData: StorageData):
     fig, axis = plt.subplots(4, len(storageData.data), figsize=size)
         
-    axis[0, 0].set_ylabel('respiratory rate (down-sampled)')
-    axis[1, 0].set_ylabel('pupil size (down-sampled)')
+    axis[0, 0].set_ylabel('respiratory rate (interpolated)')
+    axis[1, 0].set_ylabel('pupil size (raw)')
     axis[2, 0].set_ylabel('respiratory rate (trend)')
     axis[3, 0].set_ylabel('pupil size (trend)')
     
@@ -229,29 +140,31 @@ def drawResampledPlot(storageData: StorageData):
     maxRR = 25
     minRR = 0
     
-    print(f' min pupil: {minPupil}')
-    print(f'max pupil: {maxPupil}')
-    
     for stageIndex, stage in enumerate(storageData.data):
         collumnName = f'{stage.level}, correct: {int(stage.correctRate)}%, feel difficult: {stage.surveyData.q1Answer}, stressful: {stage.surveyData.q2Answer}'
         
         rr_array = stage.serialData.respiratoryRates
+        rr_len = len(rr_array)
+        rr_indicies = np.linspace(0, rr_len - 1, num=rr_len)
+        iterpolated_indices = np.linspace(0, rr_len - 1, num=120)
+    
+        # interpolated respiratory rate to match with 5 minutes of data
+        interpolated_respiratory_rate = np.interp(iterpolated_indices, rr_indicies, rr_array)
         
-        # down sample to around one value each 5 seconds
-        resampledPupil = resample(stage.serialData.pupilSizes, 60)
-        resampledRespiratoryRate = resample(rr_array, 60)
+        # down sample to around one value each 2.5 seconds
+        resampledPupil = resample(stage.serialData.pupilSizes, 120)
         
-        # trending
-        trendingPupil = savgol_filter(resampledPupil, len(resampledPupil), 30)
+        # smoothing the array to see the trend
+        trendingPupil = savgol_filter(resampledPupil, len(resampledPupil), 80)
         meanTrendingPupil = savgol_filter(resampledPupil, len(resampledPupil), 3)
-        trendingRR = savgol_filter(resampledRespiratoryRate, len(resampledRespiratoryRate), 30)
-        meanTrendingRR = savgol_filter(resampledRespiratoryRate, len(resampledRespiratoryRate), 3)
+        trendingRR = savgol_filter(interpolated_respiratory_rate, len(interpolated_respiratory_rate), 80)
+        meanTrendingRR = savgol_filter(interpolated_respiratory_rate, len(interpolated_respiratory_rate), 3)
         
-        time = np.arange(len(resampledPupil))
+        time = np.arange(len(interpolated_respiratory_rate))
         markerSize = list(map(lambda x: 1, time))
         mapped_time = list(map(lambda x: x * 5, time))
         
-        axis[0, stageIndex].plot(mapped_time, resampledRespiratoryRate, color='red')
+        axis[0, stageIndex].plot(mapped_time, interpolated_respiratory_rate, color='red')
         axis[0, stageIndex].set_ylim(minRR, maxRR)
         axis[0, stageIndex].set_xlabel('linear time')
         axis[0, stageIndex].set_title(collumnName, size='large')
@@ -262,23 +175,25 @@ def drawResampledPlot(storageData: StorageData):
         
         axis[2, stageIndex].plot(mapped_time, trendingRR, color='orange')
         axis[2, stageIndex].set_ylim(minRR, maxRR)
+        # axis[2, stageIndex].get_yaxis().set_ticks([])
         axis[2, stageIndex].scatter(mapped_time, meanTrendingRR, color='violet',s=markerSize)
         axis[2, stageIndex].set_xlabel('linear time')
         
         axis[3, stageIndex].plot(mapped_time, trendingPupil, color='brown')
         axis[3, stageIndex].scatter(mapped_time, meanTrendingPupil, color='blue',s=markerSize)
+        # axis[3, stageIndex].get_yaxis().set_ticks([])
         axis[3, stageIndex].set_ylim(minPupil, maxPupil)
         axis[3, stageIndex].set_xlabel('linear time')
         
     userData = storageData.userData
-    plt.suptitle(f'{userData.name} - {userData.gender} - {userData.age}', fontweight = 'heavy', fontsize=20)
+    plt.suptitle(f'{userData.gender} - {userData.age}', fontweight = 'bold', fontsize=18)
     
     # Adjust layout to prevent overlapping of labels
     plt.tight_layout()
     
-    plots_dir = f'{folderPath}/plots/trend'
+    plots_dir = f'{folderPath}/plots'
     os.makedirs(plots_dir, exist_ok=True)
-    plot = f'{plots_dir}/{storageData.userData.name}.png'
+    plot = f'{plots_dir}/{storageData.userData.name} ({storageData.userData.levelTried}).png'
     print(f'🙆🏻 saving {plot}')
     
     plt.savefig(plot)
@@ -289,16 +204,8 @@ def drawResampledPlot(storageData: StorageData):
 data = readJsonFilesFromFolder(folderPath)
 
 if data:
-    # try:
-        # drawRawPlot(data[5])
-        # drawSmoothPlot(data[5])
-        # drawResampledPlot(data[17])
-    # except:
-    #     print('🤷🏻‍♂️')
     for storageData in data:
         try:
-            # drawRawPlot(storageData)
-            # drawSmoothPlot(storageData)
-            drawResampledPlot(storageData)
+            drawPlot(storageData)
         except:
             print('🤷🏻‍♂️ cannot make plot of this')
