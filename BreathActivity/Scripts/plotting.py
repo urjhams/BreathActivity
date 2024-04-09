@@ -111,6 +111,15 @@ def readJsonFromFile(filePath):
             comment = jsonData['comment']
         )
         
+from functools import reduce
+ 
+def largest(arr):
+    # Sort the array
+    return reduce(max, arr)
+
+def smallest(arr):
+    return reduce(min, arr)
+        
 from scipy.signal import savgol_filter
 import numpy as np
 
@@ -120,12 +129,10 @@ size = (width_inches, height_inches)
 
 def drawRawPlot(storageData: StorageData):
     
-    fig, axis = plt.subplots(4, len(storageData.data), figsize=size) 
+    fig, axis = plt.subplots(2, len(storageData.data), figsize=size) 
     
     axis[0, 0].set_ylabel('respiratory rate')
     axis[1, 0].set_ylabel('pupil size')
-    axis[2, 0].set_ylabel('smoothed respiratory rate')
-    axis[3, 0].set_ylabel('smoothed pupil size')
     
     for stageIndex, stage in enumerate(storageData.data):
         collumnName = f'{stage.level}, correct: {int(stage.correctRate)} %, feel difficult: {stage.surveyData.q1Answer}, stressful: {stage.surveyData.q2Answer}'
@@ -185,8 +192,8 @@ def drawSmoothPlot(storageData: StorageData):
         
         time = np.arange(len(interpolated_respiratory_rate))
        
-        smoothedPupil = savgol_filter(pupil_sizes, len(pupil_sizes), 100)
-        smoothedRespiratoryRate = savgol_filter(interpolated_respiratory_rate, len(interpolated_respiratory_rate), 100)
+        smoothedPupil = savgol_filter(pupil_sizes, len(pupil_sizes), 75)
+        smoothedRespiratoryRate = savgol_filter(interpolated_respiratory_rate, len(interpolated_respiratory_rate), 75)
         
         axis[0, stageIndex].plot(time, smoothedRespiratoryRate, color='orange')
         axis[0, stageIndex].set_xlabel('linear time (in sec)')
@@ -209,14 +216,89 @@ def drawSmoothPlot(storageData: StorageData):
     plt.savefig(plot)
     plt.close()
         
+def drawResampledPlot(storageData: StorageData):
+    fig, axis = plt.subplots(4, len(storageData.data), figsize=size)
+        
+    axis[0, 0].set_ylabel('respiratory rate (down-sampled)')
+    axis[1, 0].set_ylabel('pupil size (down-sampled)')
+    axis[2, 0].set_ylabel('respiratory rate (trend)')
+    axis[3, 0].set_ylabel('pupil size (trend)')
+    
+    maxPupil = largest(list(map(lambda stage: largest(stage.serialData.pupilSizes), storageData.data)))
+    minPupil = smallest(list(map(lambda stage: smallest(stage.serialData.pupilSizes), storageData.data)))
+    maxRR = 25
+    minRR = 0
+    
+    print(f' min pupil: {minPupil}')
+    print(f'max pupil: {maxPupil}')
+    
+    for stageIndex, stage in enumerate(storageData.data):
+        collumnName = f'{stage.level}, correct: {int(stage.correctRate)}%, feel difficult: {stage.surveyData.q1Answer}, stressful: {stage.surveyData.q2Answer}'
+        
+        rr_array = stage.serialData.respiratoryRates
+        
+        # down sample to around one value each 5 seconds
+        resampledPupil = resample(stage.serialData.pupilSizes, 60)
+        resampledRespiratoryRate = resample(rr_array, 60)
+        
+        # trending
+        trendingPupil = savgol_filter(resampledPupil, len(resampledPupil), 30)
+        meanTrendingPupil = savgol_filter(resampledPupil, len(resampledPupil), 3)
+        trendingRR = savgol_filter(resampledRespiratoryRate, len(resampledRespiratoryRate), 30)
+        meanTrendingRR = savgol_filter(resampledRespiratoryRate, len(resampledRespiratoryRate), 3)
+        
+        time = np.arange(len(resampledPupil))
+        markerSize = list(map(lambda x: 1, time))
+        mapped_time = list(map(lambda x: x * 5, time))
+        
+        axis[0, stageIndex].plot(mapped_time, resampledRespiratoryRate, color='red')
+        axis[0, stageIndex].set_ylim(minRR, maxRR)
+        axis[0, stageIndex].set_xlabel('linear time')
+        axis[0, stageIndex].set_title(collumnName, size='large')
+        
+        axis[1, stageIndex].plot(mapped_time, resampledPupil, color='green')
+        axis[1, stageIndex].set_ylim(minPupil, maxPupil)
+        axis[1, stageIndex].set_xlabel('linear time')
+        
+        axis[2, stageIndex].plot(mapped_time, trendingRR, color='orange')
+        axis[2, stageIndex].set_ylim(minRR, maxRR)
+        axis[2, stageIndex].scatter(mapped_time, meanTrendingRR, color='violet',s=markerSize)
+        axis[2, stageIndex].set_xlabel('linear time')
+        
+        axis[3, stageIndex].plot(mapped_time, trendingPupil, color='brown')
+        axis[3, stageIndex].scatter(mapped_time, meanTrendingPupil, color='blue',s=markerSize)
+        axis[3, stageIndex].set_ylim(minPupil, maxPupil)
+        axis[3, stageIndex].set_xlabel('linear time')
+        
+    userData = storageData.userData
+    plt.suptitle(f'{userData.name} - {userData.gender} - {userData.age}', fontweight = 'heavy', fontsize=20)
+    
+    # Adjust layout to prevent overlapping of labels
+    plt.tight_layout()
+    
+    plots_dir = f'{folderPath}/plots/trend'
+    os.makedirs(plots_dir, exist_ok=True)
+    plot = f'{plots_dir}/{storageData.userData.name}.png'
+    print(f'🙆🏻 saving {plot}')
+    
+    plt.savefig(plot)
+    plt.close()
+    
 # ------------------ main -----------------
 
 data = readJsonFilesFromFolder(folderPath)
 
 if data:
+    # try:
+        # drawRawPlot(data[5])
+        # drawSmoothPlot(data[5])
+        # drawResampledPlot(data[17])
+    # except:
+    #     print('🤷🏻‍♂️')
     for storageData in data:
         try:
-            drawRawPlot(storageData)
-            drawSmoothPlot(storageData)
+            # drawRawPlot(storageData)
+            # drawSmoothPlot(storageData)
+            drawResampledPlot(storageData)
         except:
             print('🤷🏻‍♂️ cannot make plot of this')
