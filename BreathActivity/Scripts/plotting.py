@@ -129,15 +129,31 @@ import numpy as np
 width_inches = 1920 / 100  # 38.4 inches
 height_inches = 1080 / 100  # 21.6 inches
 size = (width_inches, height_inches)
+
+def convert_to_diff_array(arr):
+        diff_array = [0]
+        for index in range(1, len(arr)):
+            # Calculate the difference between the current element and the previous one
+            diff = arr[index] - arr[index - 1]
+            # Append the difference to the new array
+            diff_array.append(diff)
+        return diff_array
+    
+def normalized(value, bottom_threshold, top_threshold):
+    if value < bottom_threshold:
+        return bottom_threshold
+    elif value > top_threshold:
+        return top_threshold
+    else:
+        return value
         
 def drawPlot(storageData: StorageData):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
-    fig, axis = plt.subplots(4, len(storageData.data), figsize=size)
+    fig, axis = plt.subplots(3, len(storageData.data), figsize=size)
         
     axis[0, 0].set_ylabel('respiratory rate (interpolated)')
     axis[1, 0].set_ylabel('pupil size (raw)')
-    axis[2, 0].set_ylabel('smoothed respiratory rate')
-    axis[3, 0].set_ylabel('mean pupil size')
+    axis[2, 0].set_ylabel('increase/decrase comaprison (nomalized)')
     
     maxPupil = largest(list(map(lambda stage: largest(stage.serialData.pupilSizes), storageData.data)))
     minPupil = smallest(list(map(lambda stage: smallest(stage.serialData.pupilSizes), storageData.data)))
@@ -158,11 +174,17 @@ def drawPlot(storageData: StorageData):
         # down sample to around one value each 2.5 seconds
         resampledPupil = resample(stage.serialData.pupilSizes, 300)
         
-        # smoothing the array to see the trend
-        smoothed_pupil = savgol_filter(resampledPupil, len(resampledPupil), 17)
-        trend_pupil = savgol_filter(resampledPupil, len(resampledPupil), 3)
-        smoothed_rr = savgol_filter(interpolated_respiratory_rate, len(interpolated_respiratory_rate), 17)
-        trend_rr = savgol_filter(interpolated_respiratory_rate, len(interpolated_respiratory_rate), 3)
+        pupil_diff = convert_to_diff_array(resampledPupil)
+        rr_diff = convert_to_diff_array(interpolated_respiratory_rate)
+        
+        smoothed_pupil = savgol_filter(pupil_diff, len(pupil_diff), 17)
+        smoothed_rr = savgol_filter(rr_diff, len(rr_diff), 17)
+        baseline =  [0] * len(pupil_diff)
+        
+        normalized_pupil_diff = list(map(lambda x: normalized(x, -1, 1), smoothed_pupil))
+        normalized_rr_diff = list(map(lambda x: normalized(x, -1, 1), smoothed_rr))
+        
+        normalized_pupil_diff = list(map(lambda x: x * 10, smoothed_pupil))
         
         time = np.arange(len(interpolated_respiratory_rate))
         
@@ -175,15 +197,13 @@ def drawPlot(storageData: StorageData):
         axis[1, stageIndex].set_ylim(minPupil, maxPupil)
         axis[1, stageIndex].set_xlabel('linear time')
         
-        axis[2, stageIndex].plot(time, smoothed_rr, color='orange', label='smoothed respiratory rate')
+        axis[2, stageIndex].plot(time, normalized_pupil_diff, color='orange', label='pupil size increase/decrease')
+        axis[2, stageIndex].plot(time, normalized_rr_diff, color='blue', label='respiratory rate increase/decrease')
+        axis[2,stageIndex].plot(time, baseline, color='green', label='baseline')
         axis[2, stageIndex].get_yaxis().set_ticks([])
         axis[2, stageIndex].set_xlabel('linear time')
-        
-        axis[3, stageIndex].plot(time, smoothed_pupil, color='blue', label='mean pupil size')
-        axis[3, stageIndex].get_yaxis().set_ticks([])
-        axis[3, stageIndex].set_ylim(minPupil, maxPupil)
-        axis[3, stageIndex].set_xlabel('linear time')
-        
+        axis[2, stageIndex].legend()
+
     userData = storageData.userData
     plt.suptitle(f'{userData.gender} - {userData.age}', fontweight = 'bold', fontsize=18)
     
