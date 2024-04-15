@@ -21,6 +21,8 @@
 		4FAD50DC2BA0B18B008C12B5 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FAD50DB2BA0B18B008C12B5 /* AboutView.swift */; };
 		4FB6770E2B9B656E006389AE /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB6770D2B9B656E006389AE /* ResultView.swift */; };
 		4FBBE5422B91FB6400DA0D51 /* InstructionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FBBE5412B91FB6400DA0D51 /* InstructionView.swift */; };
+		4FDC902B2BCD80F000D2E584 /* plotting.py in Resources */ = {isa = PBXBuildFile; fileRef = 4FDC90282BCD80F000D2E584 /* plotting.py */; };
+		4FDC902C2BCD80F000D2E584 /* script.py in Resources */ = {isa = PBXBuildFile; fileRef = 4FDC90292BCD80F000D2E584 /* script.py */; };
 		4FE0C3872B02A8EF00C82853 /* BreathActivityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */; };
 		4FE0C38B2B02A8F000C82853 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C38A2B02A8F000C82853 /* Assets.xcassets */; };
 		4FE0C38E2B02A8F000C82853 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C38D2B02A8F000C82853 /* Preview Assets.xcassets */; };
@@ -64,6 +66,8 @@
 		4FAD50DB2BA0B18B008C12B5 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		4FB6770D2B9B656E006389AE /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
 		4FBBE5412B91FB6400DA0D51 /* InstructionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionView.swift; sourceTree = "<group>"; };
+		4FDC90282BCD80F000D2E584 /* plotting.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = plotting.py; sourceTree = "<group>"; };
+		4FDC90292BCD80F000D2E584 /* script.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = script.py; sourceTree = "<group>"; };
 		4FE0C3832B02A8EF00C82853 /* BreathActivity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BreathActivity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathActivityApp.swift; sourceTree = "<group>"; };
 		4FE0C38A2B02A8F000C82853 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -140,6 +144,15 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		4FDC902A2BCD80F000D2E584 /* Scripts */ = {
+			isa = PBXGroup;
+			children = (
+				4FDC90282BCD80F000D2E584 /* plotting.py */,
+				4FDC90292BCD80F000D2E584 /* script.py */,
+			);
+			path = Scripts;
+			sourceTree = "<group>";
+		};
 		4FE0C37A2B02A8EF00C82853 = {
 			isa = PBXGroup;
 			children = (
@@ -164,6 +177,7 @@
 		4FE0C3852B02A8EF00C82853 /* BreathActivity */ = {
 			isa = PBXGroup;
 			children = (
+				4FDC902A2BCD80F000D2E584 /* Scripts */,
 				4F6134C22BADEBE100F04B98 /* Info.plist */,
 				4F51A6AB2B55E79D00ED212A /* Engine & Model */,
 				4F11AADA2B0993B500C4F210 /* Essential */,
@@ -312,7 +326,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				4FE0C38E2B02A8F000C82853 /* Preview Assets.xcassets in Resources */,
+				4FDC902C2BCD80F000D2E584 /* script.py in Resources */,
 				4FE0C38B2B02A8F000C82853 /* Assets.xcassets in Resources */,
+				4FDC902B2BCD80F000D2E584 /* plotting.py in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
