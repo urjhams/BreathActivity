@@ -151,7 +151,7 @@ def drawPlot(storageData: StorageData):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
     fig, axis = plt.subplots(3, len(storageData.data), figsize=size)
         
-    axis[0, 0].set_ylabel('respiratory rate (interpolated)')
+    axis[0, 0].set_ylabel('estimaterd respiratory rate')
     axis[1, 0].set_ylabel('pupil size (raw)')
     axis[2, 0].set_ylabel('increase/decrase comaprison (nomalized)')
     
@@ -161,7 +161,6 @@ def drawPlot(storageData: StorageData):
     minRR = 0
     
     for stageIndex, stage in enumerate(storageData.data):
-        collumnName = f'{stage.level}, correct: {int(stage.correctRate)}%, feel difficult: {stage.surveyData.q1Answer}, stressful: {stage.surveyData.q2Answer}'
         
         rr_array = stage.serialData.respiratoryRates
         rr_len = len(rr_array)
@@ -171,12 +170,13 @@ def drawPlot(storageData: StorageData):
         # interpolated respiratory rate to match with 5 minutes of data
         interpolated_respiratory_rate = np.interp(iterpolated_indices, rr_indicies, rr_array)
         
-        # down sample to around one value each 2.5 seconds
+        # resample the pupil size to match with 5 minutes of data (the raw data is around 298 anyway)
         resampledPupil = resample(stage.serialData.pupilSizes, 300)
         
         pupil_diff = convert_to_diff_array(resampledPupil)
         rr_diff = convert_to_diff_array(interpolated_respiratory_rate)
         
+        # smooth the data using Savitzky-Golay-Filter
         smoothed_pupil = savgol_filter(pupil_diff, len(pupil_diff), 17)
         smoothed_rr = savgol_filter(rr_diff, len(rr_diff), 17)
         baseline =  [0] * len(pupil_diff)
@@ -185,6 +185,14 @@ def drawPlot(storageData: StorageData):
         normalized_pupil_diff = list(map(lambda x: normalized(x * 10, -1, 1), smoothed_pupil))  # scale the pupil size to 10 also
         
         time = np.arange(len(interpolated_respiratory_rate))
+        
+        #TODO: get the rate of opposite pairs between the two signals (pupil size and respiratory rate) and add it to collumnName
+        
+        level = stage.level
+        correct = int(stage.correctRate)
+        q1 = stage.surveyData.q1Answer
+        q2 = stage.surveyData.q2Answer
+        collumnName = f'{level}, correct: {correct}%, feel difficult: {q1}, stressful: {q2}'
         
         axis[0, stageIndex].plot(time, interpolated_respiratory_rate, color='red', label='Respiratoy rate')
         axis[0, stageIndex].set_ylim(minRR, maxRR)
