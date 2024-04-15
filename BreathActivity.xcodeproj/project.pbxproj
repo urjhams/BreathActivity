@@ -65,7 +65,6 @@
 		4FB6770D2B9B656E006389AE /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
 		4FBBE5412B91FB6400DA0D51 /* InstructionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionView.swift; sourceTree = "<group>"; };
 		4FDC90282BCD80F000D2E584 /* plotting.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = plotting.py; sourceTree = "<group>"; };
-		4FDC90312BCD838200D2E584 /* TobiiEyeTrackerSilicon */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = TobiiEyeTrackerSilicon; path = ../TobiiEyeTrackerSilicon; sourceTree = "<group>"; };
 		4FE0C3832B02A8EF00C82853 /* BreathActivity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BreathActivity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathActivityApp.swift; sourceTree = "<group>"; };
 		4FE0C38A2B02A8F000C82853 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -76,7 +75,6 @@
 		4FE0C39E2B02A8F000C82853 /* BreathActivityUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BreathActivityUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FE0C3A22B02A8F000C82853 /* BreathActivityUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathActivityUITests.swift; sourceTree = "<group>"; };
 		4FE0C3A42B02A8F000C82853 /* BreathActivityUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathActivityUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		4FE0C3C32B02AF4100C82853 /* BreathObsever */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = BreathObsever; path = ../BreathObsever; sourceTree = "<group>"; };
 		4FFC9F162B28C82C00E70731 /* ImageStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageStack.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -153,8 +151,6 @@
 		4FE0C37A2B02A8EF00C82853 = {
 			isa = PBXGroup;
 			children = (
-				4FDC90312BCD838200D2E584 /* TobiiEyeTrackerSilicon */,
-				4FE0C3C32B02AF4100C82853 /* BreathObsever */,
 				4FE0C3852B02A8EF00C82853 /* BreathActivity */,
 				4FE0C3972B02A8F000C82853 /* BreathActivityTests */,
 				4FE0C3A12B02A8F000C82853 /* BreathActivityUITests */,
