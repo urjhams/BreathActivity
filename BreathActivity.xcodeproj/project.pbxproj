@@ -10,7 +10,6 @@
 		4F095FA02B95DA10001F59E9 /* MakeKeyPressSilentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F095F9F2B95DA10001F59E9 /* MakeKeyPressSilentView.swift */; };
 		4F095FA22B95DF21001F59E9 /* DataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F095FA12B95DF21001F59E9 /* DataStorage.swift */; };
 		4F095FA42B95DFFD001F59E9 /* SurveyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F095FA32B95DFFD001F59E9 /* SurveyView.swift */; };
-		4F11AAD52B0984F700C4F210 /* TobiiTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */; };
 		4F11AAD92B09939D00C4F210 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F11AAD82B09939D00C4F210 /* Extensions.swift */; };
 		4F4390312B60672800247198 /* IOManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4390302B60672800247198 /* IOManager.swift */; };
 		4F51A6AA2B55E79200ED212A /* ExperimentalEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F51A6A92B55E79200ED212A /* ExperimentalEngine.swift */; };
@@ -22,7 +21,7 @@
 		4FB6770E2B9B656E006389AE /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB6770D2B9B656E006389AE /* ResultView.swift */; };
 		4FBBE5422B91FB6400DA0D51 /* InstructionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FBBE5412B91FB6400DA0D51 /* InstructionView.swift */; };
 		4FDC902B2BCD80F000D2E584 /* plotting.py in Resources */ = {isa = PBXBuildFile; fileRef = 4FDC90282BCD80F000D2E584 /* plotting.py */; };
-		4FDC902C2BCD80F000D2E584 /* script.py in Resources */ = {isa = PBXBuildFile; fileRef = 4FDC90292BCD80F000D2E584 /* script.py */; };
+		4FDC90302BCD835D00D2E584 /* TobiiEyeTrackerSilicon in Frameworks */ = {isa = PBXBuildFile; productRef = 4FDC902F2BCD835D00D2E584 /* TobiiEyeTrackerSilicon */; };
 		4FE0C3872B02A8EF00C82853 /* BreathActivityApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */; };
 		4FE0C38B2B02A8F000C82853 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C38A2B02A8F000C82853 /* Assets.xcassets */; };
 		4FE0C38E2B02A8F000C82853 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4FE0C38D2B02A8F000C82853 /* Preview Assets.xcassets */; };
@@ -54,7 +53,6 @@
 		4F095F9F2B95DA10001F59E9 /* MakeKeyPressSilentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeKeyPressSilentView.swift; sourceTree = "<group>"; };
 		4F095FA12B95DF21001F59E9 /* DataStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStorage.swift; sourceTree = "<group>"; };
 		4F095FA32B95DFFD001F59E9 /* SurveyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyView.swift; sourceTree = "<group>"; };
-		4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TobiiTracker.swift; sourceTree = "<group>"; };
 		4F11AAD82B09939D00C4F210 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		4F4390302B60672800247198 /* IOManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOManager.swift; sourceTree = "<group>"; };
 		4F51A6A92B55E79200ED212A /* ExperimentalEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentalEngine.swift; sourceTree = "<group>"; };
@@ -67,7 +65,7 @@
 		4FB6770D2B9B656E006389AE /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
 		4FBBE5412B91FB6400DA0D51 /* InstructionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionView.swift; sourceTree = "<group>"; };
 		4FDC90282BCD80F000D2E584 /* plotting.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = plotting.py; sourceTree = "<group>"; };
-		4FDC90292BCD80F000D2E584 /* script.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = script.py; sourceTree = "<group>"; };
+		4FDC90312BCD838200D2E584 /* TobiiEyeTrackerSilicon */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = TobiiEyeTrackerSilicon; path = ../TobiiEyeTrackerSilicon; sourceTree = "<group>"; };
 		4FE0C3832B02A8EF00C82853 /* BreathActivity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BreathActivity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FE0C3862B02A8EF00C82853 /* BreathActivityApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathActivityApp.swift; sourceTree = "<group>"; };
 		4FE0C38A2B02A8F000C82853 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -88,6 +86,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4FE0C3BE2B02AB6500C82853 /* BreathObsever in Frameworks */,
+				4FDC90302BCD835D00D2E584 /* TobiiEyeTrackerSilicon in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,7 +120,6 @@
 			isa = PBXGroup;
 			children = (
 				4FFC9F162B28C82C00E70731 /* ImageStack.swift */,
-				4F11AAD42B0984F700C4F210 /* TobiiTracker.swift */,
 				4F51A6A92B55E79200ED212A /* ExperimentalEngine.swift */,
 				4F095FA12B95DF21001F59E9 /* DataStorage.swift */,
 			);
@@ -148,7 +146,6 @@
 			isa = PBXGroup;
 			children = (
 				4FDC90282BCD80F000D2E584 /* plotting.py */,
-				4FDC90292BCD80F000D2E584 /* script.py */,
 			);
 			path = Scripts;
 			sourceTree = "<group>";
@@ -156,6 +153,7 @@
 		4FE0C37A2B02A8EF00C82853 = {
 			isa = PBXGroup;
 			children = (
+				4FDC90312BCD838200D2E584 /* TobiiEyeTrackerSilicon */,
 				4FE0C3C32B02AF4100C82853 /* BreathObsever */,
 				4FE0C3852B02A8EF00C82853 /* BreathActivity */,
 				4FE0C3972B02A8F000C82853 /* BreathActivityTests */,
@@ -233,6 +231,7 @@
 			name = BreathActivity;
 			packageProductDependencies = (
 				4FE0C3BD2B02AB6500C82853 /* BreathObsever */,
+				4FDC902F2BCD835D00D2E584 /* TobiiEyeTrackerSilicon */,
 			);
 			productName = BreathActivity;
 			productReference = 4FE0C3832B02A8EF00C82853 /* BreathActivity.app */;
@@ -308,6 +307,7 @@
 			mainGroup = 4FE0C37A2B02A8EF00C82853;
 			packageReferences = (
 				4FE0C3BC2B02AB6500C82853 /* XCRemoteSwiftPackageReference "BreathObsever" */,
+				4FDC902E2BCD835D00D2E584 /* XCRemoteSwiftPackageReference "TobiiEyeTrackerSilicon" */,
 			);
 			productRefGroup = 4FE0C3842B02A8EF00C82853 /* Products */;
 			projectDirPath = "";
@@ -326,7 +326,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				4FE0C38E2B02A8F000C82853 /* Preview Assets.xcassets in Resources */,
-				4FDC902C2BCD80F000D2E584 /* script.py in Resources */,
 				4FE0C38B2B02A8F000C82853 /* Assets.xcassets in Resources */,
 				4FDC902B2BCD80F000D2E584 /* plotting.py in Resources */,
 			);
@@ -355,7 +354,6 @@
 			files = (
 				4F11AAD92B09939D00C4F210 /* Extensions.swift in Sources */,
 				4F4390312B60672800247198 /* IOManager.swift in Sources */,
-				4F11AAD52B0984F700C4F210 /* TobiiTracker.swift in Sources */,
 				4F095FA22B95DF21001F59E9 /* DataStorage.swift in Sources */,
 				4F5CE1952B436DA900945B37 /* StartView.swift in Sources */,
 				4FB6770E2B9B656E006389AE /* ResultView.swift in Sources */,
@@ -708,6 +706,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		4FDC902E2BCD835D00D2E584 /* XCRemoteSwiftPackageReference "TobiiEyeTrackerSilicon" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:urjhams/TobiiEyeTrackerSilicon.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		4FE0C3BC2B02AB6500C82853 /* XCRemoteSwiftPackageReference "BreathObsever" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:urjhams/BreathObsever.git";
@@ -719,6 +725,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		4FDC902F2BCD835D00D2E584 /* TobiiEyeTrackerSilicon */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4FDC902E2BCD835D00D2E584 /* XCRemoteSwiftPackageReference "TobiiEyeTrackerSilicon" */;
+			productName = TobiiEyeTrackerSilicon;
+		};
 		4FE0C3BD2B02AB6500C82853 /* BreathObsever */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4FE0C3BC2B02AB6500C82853 /* XCRemoteSwiftPackageReference "BreathObsever" */;

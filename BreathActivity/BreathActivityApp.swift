@@ -9,6 +9,7 @@ import SwiftUI
 import Foundation
 import Combine
 import BreathObsever
+import TobiiEyeTrackerSilicon
 
 private struct TobiiKey: EnvironmentKey {
   static let defaultValue = TobiiTracker()

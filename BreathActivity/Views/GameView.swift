@@ -10,6 +10,7 @@ import GameController
 import BreathObsever
 import AVFAudio
 import Combine
+import TobiiEyeTrackerSilicon
 
 @Observable
 class GameViewModel {
