@@ -181,10 +181,8 @@ def drawPlot(storageData: StorageData):
         smoothed_rr = savgol_filter(rr_diff, len(rr_diff), 17)
         baseline =  [0] * len(pupil_diff)
         
-        normalized_pupil_diff = list(map(lambda x: normalized(x, -1, 1), smoothed_pupil))
         normalized_rr_diff = list(map(lambda x: normalized(x, -1, 1), smoothed_rr))
-        
-        normalized_pupil_diff = list(map(lambda x: x * 10, smoothed_pupil))
+        normalized_pupil_diff = list(map(lambda x: normalized(x * 10, -1, 1), smoothed_pupil))  # scale the pupil size to 10 also
         
         time = np.arange(len(interpolated_respiratory_rate))
         
