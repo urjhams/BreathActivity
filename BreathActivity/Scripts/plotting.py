@@ -119,6 +119,9 @@ def largest(arr):
 
 def smallest(arr):
     return reduce(min, arr)
+
+def split_list(lst, chunk_size):
+    return list(zip(*[iter(lst)] * chunk_size))
         
 from scipy.signal import savgol_filter
 import numpy as np
@@ -134,7 +137,7 @@ def drawPlot(storageData: StorageData):
     axis[0, 0].set_ylabel('respiratory rate (interpolated)')
     axis[1, 0].set_ylabel('pupil size (raw)')
     axis[2, 0].set_ylabel('smoothed respiratory rate')
-    axis[3, 0].set_ylabel('smoothed pupil size')
+    axis[3, 0].set_ylabel('mean pupil size')
     
     maxPupil = largest(list(map(lambda stage: largest(stage.serialData.pupilSizes), storageData.data)))
     minPupil = smallest(list(map(lambda stage: smallest(stage.serialData.pupilSizes), storageData.data)))
@@ -148,7 +151,7 @@ def drawPlot(storageData: StorageData):
         rr_len = len(rr_array)
         rr_indicies = np.linspace(0, rr_len - 1, num=rr_len)
         iterpolated_indices = np.linspace(0, rr_len - 1, num=300)
-    
+        
         # interpolated respiratory rate to match with 5 minutes of data
         interpolated_respiratory_rate = np.interp(iterpolated_indices, rr_indicies, rr_array)
         
@@ -156,35 +159,29 @@ def drawPlot(storageData: StorageData):
         resampledPupil = resample(stage.serialData.pupilSizes, 300)
         
         # smoothing the array to see the trend
-        smoothed_pupil = savgol_filter(resampledPupil, len(resampledPupil), 16)
-        trend_pupil = savgol_filter(resampledPupil, len(resampledPupil), 4)
-        smoothed_rr = savgol_filter(interpolated_respiratory_rate, len(interpolated_respiratory_rate), 16)
-        trend_rr = savgol_filter(interpolated_respiratory_rate, len(interpolated_respiratory_rate), 4)
+        smoothed_pupil = savgol_filter(resampledPupil, len(resampledPupil), 17)
+        trend_pupil = savgol_filter(resampledPupil, len(resampledPupil), 3)
+        smoothed_rr = savgol_filter(interpolated_respiratory_rate, len(interpolated_respiratory_rate), 17)
+        trend_rr = savgol_filter(interpolated_respiratory_rate, len(interpolated_respiratory_rate), 3)
         
         time = np.arange(len(interpolated_respiratory_rate))
-        markerSize = list(map(lambda x: 1, time))
         
         axis[0, stageIndex].plot(time, interpolated_respiratory_rate, color='red', label='Respiratoy rate')
-        axis[0, stageIndex].plot(time, trend_rr, color='green', label='trending respiratory rate')
         axis[0, stageIndex].set_ylim(minRR, maxRR)
         axis[0, stageIndex].set_xlabel('linear time')
         axis[0, stageIndex].set_title(collumnName, size='large')
-        axis[0, stageIndex].legend()
         
         axis[1, stageIndex].plot(time, resampledPupil, color='brown', label='average pupil size')
-        axis[1, stageIndex].plot(time, trend_pupil, color='blue', label='trending avg pupil size')
         axis[1, stageIndex].set_ylim(minPupil, maxPupil)
         axis[1, stageIndex].set_xlabel('linear time')
-        axis[1, stageIndex].legend()
         
         axis[2, stageIndex].plot(time, smoothed_rr, color='orange', label='smoothed respiratory rate')
-        # axis[2, stageIndex].set_ylim(minRR, maxRR)
         axis[2, stageIndex].get_yaxis().set_ticks([])
         axis[2, stageIndex].set_xlabel('linear time')
         
-        axis[3, stageIndex].plot(time, smoothed_pupil, color='violet', label='smoothed avg pupil size')
+        axis[3, stageIndex].plot(time, smoothed_pupil, color='blue', label='mean pupil size')
         axis[3, stageIndex].get_yaxis().set_ticks([])
-        # axis[3, stageIndex].set_ylim(minPupil, maxPupil)
+        axis[3, stageIndex].set_ylim(minPupil, maxPupil)
         axis[3, stageIndex].set_xlabel('linear time')
         
     userData = storageData.userData
@@ -206,6 +203,7 @@ def drawPlot(storageData: StorageData):
 data = readJsonFilesFromFolder(folderPath)
 
 if data:
+    # drawPlot(data[0])
     for storageData in data:
         try:
             drawPlot(storageData)
