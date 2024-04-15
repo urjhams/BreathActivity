@@ -187,6 +187,7 @@ def drawPlot(storageData: StorageData):
         time = np.arange(len(interpolated_respiratory_rate))
         
         #TODO: get the rate of opposite pairs between the two signals (pupil size and respiratory rate) and add it to collumnName
+        # the rate of opposite pairs is the number of pairs that one signal is positive while the other is negative
         
         level = stage.level
         correct = int(stage.correctRate)
