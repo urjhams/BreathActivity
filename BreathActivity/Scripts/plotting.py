@@ -153,7 +153,8 @@ def drawPlot(storageData: StorageData):
         
     axis[0, 0].set_ylabel('estimaterd respiratory rate')
     axis[1, 0].set_ylabel('pupil size (raw)')
-    axis[2, 0].set_ylabel('increase/decrase comaprison (nomalized)')
+    # axis[2, 0].set_ylabel('smoothed respiratory rate')
+    axis[2, 0].set_ylabel('increase/decrase pupil size (nomalized)')
     
     maxPupil = largest(list(map(lambda stage: largest(stage.serialData.pupilSizes), storageData.data)))
     minPupil = smallest(list(map(lambda stage: smallest(stage.serialData.pupilSizes), storageData.data)))
@@ -178,10 +179,9 @@ def drawPlot(storageData: StorageData):
         
         # smooth the data using Savitzky-Golay-Filter
         smoothed_pupil = savgol_filter(pupil_diff, len(pupil_diff), 17)
-        smoothed_rr = savgol_filter(rr_diff, len(rr_diff), 17)
+        # smoothed_rr = savgol_filter(interpolated_respiratory_rate, len(interpolated_respiratory_rate), 17)
         baseline =  [0] * len(pupil_diff)
         
-        normalized_rr_diff = list(map(lambda x: normalized(x, -1, 1), smoothed_rr))
         normalized_pupil_diff = list(map(lambda x: normalized(x * 10, -1, 1), smoothed_pupil))  # scale the pupil size to 10 also
         
         time = np.arange(len(interpolated_respiratory_rate))
@@ -204,12 +204,15 @@ def drawPlot(storageData: StorageData):
         axis[1, stageIndex].set_ylim(minPupil, maxPupil)
         axis[1, stageIndex].set_xlabel('linear time')
         
+        # axis[2, stageIndex].plot(time, smoothed_rr, color='green', label='smoothed respiratory rate')
+        # axis[2, stageIndex].set_ylim(minRR, maxRR)
+        # axis[2, stageIndex].set_xlabel('linear time')
+        
         axis[2, stageIndex].plot(time, normalized_pupil_diff, color='orange', label='pupil size increase/decrease')
-        axis[2, stageIndex].plot(time, normalized_rr_diff, color='blue', label='respiratory rate increase/decrease')
-        axis[2,stageIndex].plot(time, baseline, color='green', label='baseline')
+        axis[2, stageIndex].plot(time, baseline, color='black', label='baseline')
         axis[2, stageIndex].get_yaxis().set_ticks([])
         axis[2, stageIndex].set_xlabel('linear time')
-        axis[2, stageIndex].legend()
+        axis[2, stageIndex].legend(loc='upper right')
 
     userData = storageData.userData
     plt.suptitle(f'{userData.gender} - {userData.age}', fontweight = 'bold', fontsize=18)
