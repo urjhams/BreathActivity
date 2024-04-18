@@ -112,6 +112,30 @@ def readJsonFromFile(filePath):
         )
         
 from functools import reduce
+import pandas as pd
+
+# Function to process raw average pupil size data and return normalized dilation values
+def process_raw_data(average_pupil_sizes):
+    # Step 1: Calculate the absolute standard deviation from the median
+    mad_1 = np.median(np.abs(average_pupil_sizes - np.median(average_pupil_sizes)))
+
+    # Step 2: Set lower and upper bounds from the median
+    threshold_1 = np.median(average_pupil_sizes) + 3 * mad_1
+    threshold_1l = np.median(average_pupil_sizes) - 3 * mad_1
+
+    # Step 3: Filter data based on bounds
+    filtered_data = average_pupil_sizes[(average_pupil_sizes < threshold_1) & (average_pupil_sizes > threshold_1l)]
+
+    # Step 4: Smooth the data
+    smoothed_data = pd.Series(filtered_data).rolling(window=3, min_periods=1).mean()
+
+    # Step 5: Calculate a single baseline value
+    baseline_value = np.median(smoothed_data.head(10))
+
+    # Subtract baseline value from each data point to get normalized dilation values
+    normalized_dilation = smoothed_data - baseline_value
+
+    return list(normalized_dilation)
  
 def largest(arr):
     # Sort the array
@@ -153,8 +177,7 @@ def drawPlot(storageData: StorageData):
         
     axis[0, 0].set_ylabel('estimaterd respiratory rate')
     axis[1, 0].set_ylabel('pupil size (raw)')
-    # axis[2, 0].set_ylabel('smoothed respiratory rate')
-    axis[2, 0].set_ylabel('increase/decrase pupil size (nomalized)')
+    axis[2, 0].set_ylabel('normalized dilation values')
     
     maxPupil = largest(list(map(lambda stage: largest(stage.serialData.pupilSizes), storageData.data)))
     minPupil = smallest(list(map(lambda stage: smallest(stage.serialData.pupilSizes), storageData.data)))
@@ -174,16 +197,8 @@ def drawPlot(storageData: StorageData):
         # resample the pupil size to match with 5 minutes of data (the raw data is around 298 anyway)
         resampledPupil = resample(stage.serialData.pupilSizes, 300)
         
-        pupil_diff = convert_to_diff_array(resampledPupil)
-        rr_diff = convert_to_diff_array(interpolated_respiratory_rate)
-        
-        # smooth the data using Savitzky-Golay-Filter
-        smoothed_pupil = savgol_filter(pupil_diff, len(pupil_diff), 17)
-        # smoothed_rr = savgol_filter(interpolated_respiratory_rate, len(interpolated_respiratory_rate), 17)
-        baseline =  [0] * len(pupil_diff)
-        
-        normalized_pupil_diff = list(map(lambda x: normalized(x * 10, -1, 1), smoothed_pupil))  # scale the pupil size to 10 also
-        
+        normalized_pupil = resample(process_raw_data(resampledPupil), 300)
+                
         time = np.arange(len(interpolated_respiratory_rate))
         
         #TODO: get the rate of opposite pairs between the two signals (pupil size and respiratory rate) and add it to collumnName
@@ -204,16 +219,9 @@ def drawPlot(storageData: StorageData):
         axis[1, stageIndex].set_ylim(minPupil, maxPupil)
         axis[1, stageIndex].set_xlabel('linear time')
         
-        # axis[2, stageIndex].plot(time, smoothed_rr, color='green', label='smoothed respiratory rate')
-        # axis[2, stageIndex].set_ylim(minRR, maxRR)
-        # axis[2, stageIndex].set_xlabel('linear time')
-        
-        axis[2, stageIndex].plot(time, normalized_pupil_diff, color='orange', label='pupil size increase/decrease')
-        axis[2, stageIndex].plot(time, baseline, color='black', label='baseline')
-        axis[2, stageIndex].get_yaxis().set_ticks([])
+        axis[2, stageIndex].plot(time, normalized_pupil, color='orange', label='normalized pupil size')
         axis[2, stageIndex].set_xlabel('linear time')
-        axis[2, stageIndex].legend(loc='upper right')
-
+        
     userData = storageData.userData
     plt.suptitle(f'{userData.gender} - {userData.age}', fontweight = 'bold', fontsize=18)
     

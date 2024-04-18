@@ -11,6 +11,7 @@
 		4F095FA22B95DF21001F59E9 /* DataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F095FA12B95DF21001F59E9 /* DataStorage.swift */; };
 		4F095FA42B95DFFD001F59E9 /* SurveyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F095FA32B95DFFD001F59E9 /* SurveyView.swift */; };
 		4F11AAD92B09939D00C4F210 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F11AAD82B09939D00C4F210 /* Extensions.swift */; };
+		4F1FC9922BD13C630059516D /* BreathObsever in Frameworks */ = {isa = PBXBuildFile; productRef = 4F1FC9912BD13C630059516D /* BreathObsever */; };
 		4F4390312B60672800247198 /* IOManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4390302B60672800247198 /* IOManager.swift */; };
 		4F51A6AA2B55E79200ED212A /* ExperimentalEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F51A6A92B55E79200ED212A /* ExperimentalEngine.swift */; };
 		4F5CE1952B436DA900945B37 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5CE1942B436DA900945B37 /* StartView.swift */; };
@@ -28,7 +29,6 @@
 		4FE0C3992B02A8F000C82853 /* BreathActivityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3982B02A8F000C82853 /* BreathActivityTests.swift */; };
 		4FE0C3A32B02A8F000C82853 /* BreathActivityUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3A22B02A8F000C82853 /* BreathActivityUITests.swift */; };
 		4FE0C3A52B02A8F000C82853 /* BreathActivityUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE0C3A42B02A8F000C82853 /* BreathActivityUITestsLaunchTests.swift */; };
-		4FE0C3BE2B02AB6500C82853 /* BreathObsever in Frameworks */ = {isa = PBXBuildFile; productRef = 4FE0C3BD2B02AB6500C82853 /* BreathObsever */; };
 		4FFC9F172B28C82C00E70731 /* ImageStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FFC9F162B28C82C00E70731 /* ImageStack.swift */; };
 /* End PBXBuildFile section */
 
@@ -83,8 +83,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4FE0C3BE2B02AB6500C82853 /* BreathObsever in Frameworks */,
 				4FDC90302BCD835D00D2E584 /* TobiiEyeTrackerSilicon in Frameworks */,
+				4F1FC9922BD13C630059516D /* BreathObsever in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,8 +226,8 @@
 			);
 			name = BreathActivity;
 			packageProductDependencies = (
-				4FE0C3BD2B02AB6500C82853 /* BreathObsever */,
 				4FDC902F2BCD835D00D2E584 /* TobiiEyeTrackerSilicon */,
+				4F1FC9912BD13C630059516D /* BreathObsever */,
 			);
 			productName = BreathActivity;
 			productReference = 4FE0C3832B02A8EF00C82853 /* BreathActivity.app */;
@@ -302,8 +302,8 @@
 			);
 			mainGroup = 4FE0C37A2B02A8EF00C82853;
 			packageReferences = (
-				4FE0C3BC2B02AB6500C82853 /* XCRemoteSwiftPackageReference "BreathObsever" */,
 				4FDC902E2BCD835D00D2E584 /* XCRemoteSwiftPackageReference "TobiiEyeTrackerSilicon" */,
+				4F1FC9902BD13C630059516D /* XCRemoteSwiftPackageReference "BreathObsever" */,
 			);
 			productRefGroup = 4FE0C3842B02A8EF00C82853 /* Products */;
 			projectDirPath = "";
@@ -702,6 +702,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		4F1FC9902BD13C630059516D /* XCRemoteSwiftPackageReference "BreathObsever" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:urjhams/BreathObsever.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		4FDC902E2BCD835D00D2E584 /* XCRemoteSwiftPackageReference "TobiiEyeTrackerSilicon" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "git@github.com:urjhams/TobiiEyeTrackerSilicon.git";
@@ -710,26 +718,18 @@
 				kind = branch;
 			};
 		};
-		4FE0C3BC2B02AB6500C82853 /* XCRemoteSwiftPackageReference "BreathObsever" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:urjhams/BreathObsever.git";
-			requirement = {
-				branch = feature/original;
-				kind = branch;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		4F1FC9912BD13C630059516D /* BreathObsever */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4F1FC9902BD13C630059516D /* XCRemoteSwiftPackageReference "BreathObsever" */;
+			productName = BreathObsever;
+		};
 		4FDC902F2BCD835D00D2E584 /* TobiiEyeTrackerSilicon */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4FDC902E2BCD835D00D2E584 /* XCRemoteSwiftPackageReference "TobiiEyeTrackerSilicon" */;
 			productName = TobiiEyeTrackerSilicon;
-		};
-		4FE0C3BD2B02AB6500C82853 /* BreathObsever */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 4FE0C3BC2B02AB6500C82853 /* XCRemoteSwiftPackageReference "BreathObsever" */;
-			productName = BreathObsever;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
