@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from typing import List, Union
 import sys
 import matplotlib.pyplot as plt
-from scipy.signal import resample
+from scipy.signal import resample, find_peaks
 
 # parameters
 folderPath = sys.argv[1]
@@ -117,14 +117,14 @@ import pandas as pd
 # Function to process raw average pupil size data and return normalized dilation values
 def process_raw_data(average_pupil_sizes):
     # Step 1: Calculate the absolute standard deviation from the median
-    mad_1 = np.median(np.abs(average_pupil_sizes - np.median(average_pupil_sizes)))
+    mad = np.median(np.abs(average_pupil_sizes - np.median(average_pupil_sizes)))
 
     # Step 2: Set lower and upper bounds from the median
-    threshold_1 = np.median(average_pupil_sizes) + 3 * mad_1
-    threshold_1l = np.median(average_pupil_sizes) - 3 * mad_1
+    up_threshold = np.median(average_pupil_sizes) + 3 * mad
+    low_threshold = np.median(average_pupil_sizes) - 3 * mad
 
     # Step 3: Filter data based on bounds
-    filtered_data = average_pupil_sizes[(average_pupil_sizes < threshold_1) & (average_pupil_sizes > threshold_1l)]
+    filtered_data = average_pupil_sizes[(average_pupil_sizes < up_threshold) & (average_pupil_sizes > low_threshold)]
 
     # Step 4: Smooth the data
     smoothed_data = pd.Series(filtered_data).rolling(window=3, min_periods=1).mean()
@@ -185,7 +185,6 @@ def drawPlot(storageData: StorageData):
     minRR = 0
     
     for stageIndex, stage in enumerate(storageData.data):
-        
         rr_array = stage.serialData.respiratoryRates
         rr_len = len(rr_array)
         rr_indicies = np.linspace(0, rr_len - 1, num=rr_len)
@@ -201,14 +200,21 @@ def drawPlot(storageData: StorageData):
                 
         time = np.arange(len(interpolated_respiratory_rate))
         
-        #TODO: get the rate of opposite pairs between the two signals (pupil size and respiratory rate) and add it to collumnName
-        # the rate of opposite pairs is the number of pairs that one signal is positive while the other is negative
+        peakIndexs, property = find_peaks(interpolated_respiratory_rate)
+        
+        # the peaks with the corresponding pupil size, to see the correlation between when the respiratory rate
+        # raised up, does the pupil size decrease or increase (in percentage)
+        peaksWithPair = list(map(lambda index: (interpolated_respiratory_rate[index], normalized_pupil[index]), peakIndexs))
+        
+        # filter peaksWithPair to get the pairs that have negavive pupil value
+        negativePupilPairs = list(filter(lambda pair: pair[1] < -0.1, peaksWithPair))
+        negativePupilPairPercentage = int(len(negativePupilPairs)/ len(peaksWithPair) * 100)
         
         level = stage.level
         correct = int(stage.correctRate)
         q1 = stage.surveyData.q1Answer
         q2 = stage.surveyData.q2Answer
-        collumnName = f'{level}, correct: {correct}%, feel difficult: {q1}, stressful: {q2}'
+        collumnName = f'{level}, correct: {correct}%, feel difficult: {q1}, stressful: {q2}, {negativePupilPairPercentage}%'
         
         axis[0, stageIndex].plot(time, interpolated_respiratory_rate, color='red', label='Respiratoy rate')
         axis[0, stageIndex].set_ylim(minRR, maxRR)
