@@ -207,7 +207,7 @@ def drawPlot(storageData: StorageData):
         peaksWithPair = list(map(lambda index: (interpolated_respiratory_rate[index], normalized_pupil[index]), peakIndexs))
         
         # filter peaksWithPair to get the pairs that have negavive pupil value
-        negativePupilPairs = list(filter(lambda pair: pair[1] < -0.1, peaksWithPair))
+        negativePupilPairs = list(filter(lambda pair: pair[1] < 0, peaksWithPair))
         negativePupilPairPercentage = int(len(negativePupilPairs)/ len(peaksWithPair) * 100)
         
         level = stage.level
