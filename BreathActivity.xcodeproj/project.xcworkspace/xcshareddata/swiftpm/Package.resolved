@@ -1,0 +1,24 @@
+{
+  "originHash" : "792c223a6f1112aa375d043964ce00f7551938af68e084ae11bb9affd8d333c5",
+  "pins" : [
+    {
+      "identity" : "breathobsever",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:urjhams/BreathObsever.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "1f065e4bbb1d7f507c88a0ae573d473aae144d37"
+      }
+    },
+    {
+      "identity" : "tobiieyetrackersilicon",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:urjhams/TobiiEyeTrackerSilicon.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "01bb4cc91b7bb5265b8f03446c8908ada93ef695"
+      }
+    }
+  ],
+  "version" : 3
+}

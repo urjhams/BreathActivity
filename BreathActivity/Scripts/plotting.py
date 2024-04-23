@@ -186,9 +186,6 @@ def drawPlot(storageData: StorageData):
         # resample the pupil size to match with 5 minutes of data (the raw data is around 298 anyway)
         resampledPupil = resample(stage.serialData.pupilSizes, 300)
         
-        #get the average value of resampledPupil
-        avg_pupil = sum(stage.serialData.pupilSizes) / len(stage.serialData.pupilSizes)
-        
         normalized_pupil = savgol_filter(resampledPupil, 60, 3)
         
         dilation_values = resample(process_raw_data(resampledPupil), 300)
@@ -223,7 +220,6 @@ def drawPlot(storageData: StorageData):
         axis[1, stageIndex].plot(time, normalized_pupil, color='black', label='normalized pupil size')
         axis[1, stageIndex].set_ylim(minPupil, maxPupil)
         axis[1, stageIndex].set_xlabel('time (s)')
-        axis[1, stageIndex].set_title(f'average pupil size: {avg_pupil}', size='large')
         
         axis[2, stageIndex].plot(time, dilation_values, color='orange', label='pupil dilation values')        
         axis[2, stageIndex].set_xlabel('time (s)')
@@ -249,7 +245,7 @@ data = readJsonFilesFromFolder(folderPath)
 if data:
     # drawPlot(data[0])
     for storageData in data:
-        try:
+        # try:
             drawPlot(storageData)
-        except:
-            print('🤷🏻‍♂️ cannot make plot of this')
+        # except:
+        #     print('🤷🏻‍♂️ cannot make plot of this')
