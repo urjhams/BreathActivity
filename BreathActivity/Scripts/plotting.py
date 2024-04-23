@@ -114,6 +114,7 @@ def readJsonFromFile(filePath):
 from functools import reduce
 import pandas as pd
 
+#cite: Preprocessing pupil size data: Guidelines and code - Mariska E. Kret, Elio E. Sjak-Shie
 # Function to process raw average pupil size data and return normalized dilation values
 def process_raw_data(average_pupil_sizes):
     # Step 1: Calculate the absolute standard deviation from the median
@@ -166,7 +167,7 @@ def drawPlot(storageData: StorageData):
         
     axis[0, 0].set_ylabel('estimaterd respiratory rate')
     axis[1, 0].set_ylabel('pupil size (raw)')
-    axis[2, 0].set_ylabel('normalized dilation values')
+    axis[2, 0].set_ylabel('dilation values')
     
     maxPupil = largest(list(map(lambda stage: largest(stage.serialData.pupilSizes), storageData.data)))
     minPupil = smallest(list(map(lambda stage: smallest(stage.serialData.pupilSizes), storageData.data)))
@@ -185,19 +186,27 @@ def drawPlot(storageData: StorageData):
         # resample the pupil size to match with 5 minutes of data (the raw data is around 298 anyway)
         resampledPupil = resample(stage.serialData.pupilSizes, 300)
         
-        normalized_pupil = resample(process_raw_data(resampledPupil), 300)
-                
+        #get the average value of resampledPupil
+        avg_pupil = sum(stage.serialData.pupilSizes) / len(stage.serialData.pupilSizes)
+        
+        normalized_pupil = savgol_filter(resampledPupil, 60, 3)
+        
+        dilation_values = resample(process_raw_data(resampledPupil), 300)
+        
         time = np.arange(len(interpolated_respiratory_rate))
         
         peakIndexs, property = find_peaks(interpolated_respiratory_rate)
         
         # the peaks with the corresponding pupil size, to see the correlation between when the respiratory rate
         # raised up, does the pupil size decrease or increase (in percentage)
-        peaksWithPair = list(map(lambda index: (interpolated_respiratory_rate[index], normalized_pupil[index]), peakIndexs))
+        peaksWithPair = list(map(lambda index: (interpolated_respiratory_rate[index], dilation_values[index]), peakIndexs))
         
         # filter peaksWithPair to get the pairs that have negavive pupil value
         negativePupilPairs = list(filter(lambda pair: pair[1] < 0, peaksWithPair))
-        negativePupilPairPercentage = int(len(negativePupilPairs)/ len(peaksWithPair) * 100)
+        if len(peaksWithPair) == 0:
+            negativePupilPairPercentage = 0
+        else:
+            negativePupilPairPercentage = int(len(negativePupilPairs)/ len(peaksWithPair) * 100)
         
         level = stage.level
         correct = int(stage.correctRate)
@@ -207,15 +216,17 @@ def drawPlot(storageData: StorageData):
         
         axis[0, stageIndex].plot(time, interpolated_respiratory_rate, color='red', label='Respiratoy rate')
         axis[0, stageIndex].set_ylim(minRR, maxRR)
-        axis[0, stageIndex].set_xlabel('linear time')
+        axis[0, stageIndex].set_xlabel('time (s)')
         axis[0, stageIndex].set_title(collumnName, size='large')
         
         axis[1, stageIndex].plot(time, resampledPupil, color='brown', label='average pupil size')
+        axis[1, stageIndex].plot(time, normalized_pupil, color='black', label='normalized pupil size')
         axis[1, stageIndex].set_ylim(minPupil, maxPupil)
-        axis[1, stageIndex].set_xlabel('linear time')
+        axis[1, stageIndex].set_xlabel('time (s)')
+        axis[1, stageIndex].set_title(f'average pupil size: {avg_pupil}', size='large')
         
-        axis[2, stageIndex].plot(time, normalized_pupil, color='orange', label='normalized pupil size')
-        axis[2, stageIndex].set_xlabel('linear time')
+        axis[2, stageIndex].plot(time, dilation_values, color='orange', label='pupil dilation values')        
+        axis[2, stageIndex].set_xlabel('time (s)')
         
     userData = storageData.userData
     plt.suptitle(f'{userData.gender} - {userData.age}', fontweight = 'bold', fontsize=18)
