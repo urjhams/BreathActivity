@@ -154,22 +154,11 @@ width_inches = 1920 / 100  # 38.4 inches
 height_inches = 1080 / 100  # 21.6 inches
 size = (width_inches, height_inches)
 
-def convert_to_diff_array(arr):
-        diff_array = [0]
-        for index in range(1, len(arr)):
-            # Calculate the difference between the current element and the previous one
-            diff = arr[index] - arr[index - 1]
-            # Append the difference to the new array
-            diff_array.append(diff)
-        return diff_array
-    
-def normalized(value, bottom_threshold, top_threshold):
-    if value < bottom_threshold:
-        return bottom_threshold
-    elif value > top_threshold:
-        return top_threshold
+def standardlized(rr, threshold):
+    if rr > threshold:
+        return rr
     else:
-        return value
+        return threshold
         
 def drawPlot(storageData: StorageData):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
@@ -185,7 +174,7 @@ def drawPlot(storageData: StorageData):
     minRR = 0
     
     for stageIndex, stage in enumerate(storageData.data):
-        rr_array = stage.serialData.respiratoryRates
+        rr_array = list(map(lambda rr: standardlized(rr, 12), stage.serialData.respiratoryRates))
         rr_len = len(rr_array)
         rr_indicies = np.linspace(0, rr_len - 1, num=rr_len)
         iterpolated_indices = np.linspace(0, rr_len - 1, num=300)
