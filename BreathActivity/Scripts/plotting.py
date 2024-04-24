@@ -160,6 +160,66 @@ def standardlized(rr, threshold):
         return rr
     else:
         return threshold
+
+#Andrew T. Duchowski, Krzysztof Krejtz, Izabela Krejtz, Cezary Biele, Anna Niedzielska, Peter Kiefer, Martin Raubal, and Ioannis Giannopoulos (2018). The Index of Pupillary Activity: Measuring Cognitive Load vis-à-vis Task Difficulty with Pupil Oscillation. In Proceedings of the 2018 CHI Conference on Human Factors in Computing Systems (CHI '18). Association for Computing Machinery, New York, NY, USA, Paper 282, 1–13. https://doi.org/10.1145/3173574.3173856
+import math , pywt , numpy as np
+
+def modmax(d):
+	# compute signal modulus
+	m = [0.0] * len(d)
+	for i in range(len(d)):
+		m[i] = math.fabs(d[i])
+
+	# if value is larger than both neighbours , and strictly
+	# larger than either , then it is a local maximum
+	t = [0.0]*len(d)
+
+	for i in range(len(d)):
+		ll = m[i-1] if i >= 1 else m[i]
+		oo = m[i]
+		rr = m[i+1] if i < len(d)-2 else m[i]
+
+		if (ll <= oo and oo >= rr) and (ll < oo or oo > rr):
+			# compute magnitude
+			t[i] = math.sqrt(d[i]**2)
+		else:
+			t[i] = 0.0
+
+	return t
+
+def ipa(d):
+	# obtain 2-level DWT of pupil diameter signal d
+	try:
+		(cA2,cD2,cD1) = pywt.wavedec(d, 'sym16', 'per', level=2)
+	except ValueError:
+		return
+
+	# get signal duration (in seconds)
+	tt = d[-1].timestamp - d[0].timestamp
+
+	# normalize by 1=2j , j = 2 for 2-level DWT
+	cA2[:] = [x / math.sqrt(4.0) for x in cA2]
+	cD1[:] = [x / math.sqrt(2.0) for x in cD1]
+	cD2[:] = [x / math.sqrt(4.0) for x in cD2]
+
+	# detect modulus maxima , see Listing 2
+	cD2m = modmax(cD2)
+
+	# threshold using universal threshold lambda_univ = s*sqrt(p(2 log n))
+	lambda_univ = np.std(cD2m) * math.sqrt(2.0 * np.log2(len(cD2m)))
+	# where s is the standard deviation of the noise
+	cD2t = pywt.threshold(cD2m ,lambda_univ, mode="hard")
+
+	# compute IPA
+	ctr = 0
+	for i in range(len(cD2t)):
+		# print(cD2t[i])
+		if math.fabs(cD2t[i]) > 0:
+			ctr += 1
+
+	IPA = float(ctr)/tt
+
+	return IPA
         
 def drawPlot(storageData: StorageData):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
@@ -175,7 +235,8 @@ def drawPlot(storageData: StorageData):
     minRR = 0
     
     for stageIndex, stage in enumerate(storageData.data):
-        rr_array = list(map(lambda rr: standardlized(rr, 12), stage.serialData.respiratoryRates))
+        # rr_array = list(map(lambda rr: standardlized(rr, 12), stage.serialData.respiratoryRates))
+        rr_array = stage.serialData.respiratoryRates
         rr_len = len(rr_array)
         rr_indicies = np.linspace(0, rr_len - 1, num=rr_len)
         iterpolated_indices = np.linspace(0, rr_len - 1, num=300)
