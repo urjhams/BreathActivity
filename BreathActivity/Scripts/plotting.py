@@ -184,11 +184,15 @@ def drawPlot(storageData: StorageData):
         interpolated_respiratory_rate = np.interp(iterpolated_indices, rr_indicies, rr_array)
         
         # resample the pupil size to match with 5 minutes of data (the raw data is around 298 anyway)
-        resampledPupil = resample(stage.serialData.pupilSizes, 300)
+        resampled_pupil = resample(stage.serialData.pupilSizes, 300)
         
-        normalized_pupil = savgol_filter(resampledPupil, 60, 3)
+        normalized_pupil = savgol_filter(resampled_pupil, 60, 3)
         
-        dilation_values = resample(process_raw_data(resampledPupil), 300)
+        raw_dilation_values = process_raw_data(resampled_pupil)
+        if len(raw_dilation_values) == 0:
+            resampled_dilation_values = [0] * 300
+        else:
+            resampled_dilation_values = resample(raw_dilation_values, 300)
         
         time = np.arange(len(interpolated_respiratory_rate))
         
@@ -196,7 +200,7 @@ def drawPlot(storageData: StorageData):
         
         # the peaks with the corresponding pupil size, to see the correlation between when the respiratory rate
         # raised up, does the pupil size decrease or increase (in percentage)
-        peaksWithPair = list(map(lambda index: (interpolated_respiratory_rate[index], dilation_values[index]), peakIndexs))
+        peaksWithPair = list(map(lambda index: (interpolated_respiratory_rate[index], resampled_dilation_values[index]), peakIndexs))
         
         # filter peaksWithPair to get the pairs that have negavive pupil value
         negativePupilPairs = list(filter(lambda pair: pair[1] < 0, peaksWithPair))
@@ -216,12 +220,12 @@ def drawPlot(storageData: StorageData):
         axis[0, stageIndex].set_xlabel('time (s)')
         axis[0, stageIndex].set_title(collumnName, size='large')
         
-        axis[1, stageIndex].plot(time, resampledPupil, color='brown', label='average pupil size')
+        axis[1, stageIndex].plot(time, resampled_pupil, color='brown', label='average pupil size')
         axis[1, stageIndex].plot(time, normalized_pupil, color='black', label='normalized pupil size')
         axis[1, stageIndex].set_ylim(minPupil, maxPupil)
         axis[1, stageIndex].set_xlabel('time (s)')
         
-        axis[2, stageIndex].plot(time, dilation_values, color='orange', label='pupil dilation values')        
+        axis[2, stageIndex].plot(time, resampled_dilation_values, color='orange', label='pupil dilation values')        
         axis[2, stageIndex].set_xlabel('time (s)')
         
     userData = storageData.userData
