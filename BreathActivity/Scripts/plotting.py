@@ -228,9 +228,9 @@ def drawPlot(storageData: StorageData):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
     fig, axis = plt.subplots(3, len(storageData.data), figsize=size)
         
-    axis[0, 0].set_ylabel('estimaterd respiratory rate')
-    axis[1, 0].set_ylabel('pupil size (raw)')
-    axis[2, 0].set_ylabel('Index of Pupillary Activity (Hz)')
+    axis[0, 0].set_ylabel('pupil size (raw)')
+    axis[1, 0].set_ylabel('Index of Pupillary Activity (Hz)')
+    axis[2, 0].set_ylabel('estimaterd respiratory rate')
     
     maxPupil = largest(list(map(lambda stage: largest(stage.serialData.pupilSizes), storageData.data)))
     minPupil = smallest(list(map(lambda stage: smallest(stage.serialData.pupilSizes), storageData.data)))
@@ -238,7 +238,6 @@ def drawPlot(storageData: StorageData):
     minRR = 0
     
     for stageIndex, stage in enumerate(storageData.data):
-        # rr_array = list(map(lambda rr: standardlized(rr, 12), stage.serialData.respiratoryRates))
         rr_array = stage.serialData.respiratoryRates
         rr_len = len(rr_array)
         rr_indicies = np.linspace(0, rr_len - 1, num=rr_len)
@@ -287,18 +286,18 @@ def drawPlot(storageData: StorageData):
         q2 = stage.surveyData.q2Answer
         collumnName = f'{level}, correct: {correct}%, feel difficult: {q1}, stressful: {q2}, {negativePupilPairPercentage}%'
         
-        axis[0, stageIndex].plot(time, interpolated_respiratory_rate, color='red', label='Respiratoy rate')
-        axis[0, stageIndex].set_ylim(minRR, maxRR)
-        axis[0, stageIndex].set_xlabel('time (s)')
+        axis[2, stageIndex].plot(time, interpolated_respiratory_rate, color='red', label='Respiratoy rate')
+        axis[2, stageIndex].set_ylim(minRR, maxRR)
+        axis[2, stageIndex].set_xlabel('time (s)')
         axis[0, stageIndex].set_title(collumnName, size='large')
         
-        axis[1, stageIndex].plot(pupil_raw_time, resampled_raw_pupil, color='brown', label='average pupil size')
-        axis[1, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized pupil size')
-        axis[1, stageIndex].set_ylim(minPupil, maxPupil)
-        axis[1, stageIndex].set_xlabel('time (s)')
+        axis[0, stageIndex].plot(pupil_raw_time, resampled_raw_pupil, color='brown', label='average pupil size')
+        axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized pupil size')
+        axis[0, stageIndex].set_ylim(minPupil, maxPupil)
+        axis[0, stageIndex].set_xlabel('time (s)')
         
-        axis[2, stageIndex].plot(ipa_time_blocks, smoothed_ipa_values, color='orange', label='IPA')        
-        axis[2, stageIndex].set_xlabel('time (s)')
+        axis[1, stageIndex].plot(ipa_time_blocks, smoothed_ipa_values, color='orange', label='IPA')        
+        axis[1, stageIndex].set_xlabel('time (s)')
         
     userData = storageData.userData
     plt.suptitle(f'{userData.gender} - {userData.age}', fontweight = 'bold', fontsize=18)
