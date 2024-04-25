@@ -163,6 +163,10 @@ def standardlized(rr, threshold):
 
 #Andrew T. Duchowski, Krzysztof Krejtz, Izabela Krejtz, Cezary Biele, Anna Niedzielska, Peter Kiefer, Martin Raubal, and Ioannis Giannopoulos (2018). The Index of Pupillary Activity: Measuring Cognitive Load vis-à-vis Task Difficulty with Pupil Oscillation. In Proceedings of the 2018 CHI Conference on Human Factors in Computing Systems (CHI '18). Association for Computing Machinery, New York, NY, USA, Paper 282, 1–13. https://doi.org/10.1145/3173574.3173856
 import math , pywt , numpy as np
+class PupilData(float):
+	def __init__(self, diameter):
+		self.X = diameter
+		self.timestamp = 0
 
 def modmax(d):
 	# compute signal modulus
@@ -173,21 +177,19 @@ def modmax(d):
 	# if value is larger than both neighbours , and strictly
 	# larger than either , then it is a local maximum
 	t = [0.0]*len(d)
-
 	for i in range(len(d)):
 		ll = m[i-1] if i >= 1 else m[i]
 		oo = m[i]
 		rr = m[i+1] if i < len(d)-2 else m[i]
-
 		if (ll <= oo and oo >= rr) and (ll < oo or oo > rr):
 			# compute magnitude
 			t[i] = math.sqrt(d[i]**2)
 		else:
 			t[i] = 0.0
-
 	return t
 
-def ipa(d):
+#
+def ipa(d: list[float]):
 	# obtain 2-level DWT of pupil diameter signal d
 	try:
 		(cA2,cD2,cD1) = pywt.wavedec(d, 'sym16', 'per', level=2)
@@ -195,7 +197,7 @@ def ipa(d):
 		return
 
 	# get signal duration (in seconds)
-	tt = d[-1].timestamp - d[0].timestamp
+	tt = len(d)
 
 	# normalize by 1=2j , j = 2 for 2-level DWT
 	cA2[:] = [x / math.sqrt(4.0) for x in cA2]
@@ -208,18 +210,20 @@ def ipa(d):
 	# threshold using universal threshold lambda_univ = s*sqrt(p(2 log n))
 	lambda_univ = np.std(cD2m) * math.sqrt(2.0 * np.log2(len(cD2m)))
 	# where s is the standard deviation of the noise
-	cD2t = pywt.threshold(cD2m ,lambda_univ, mode="hard")
+	cD2t = pywt.threshold(cD2m ,lambda_univ, mode='hard')
 
 	# compute IPA
 	ctr = 0
 	for i in range(len(cD2t)):
-		# print(cD2t[i])
 		if math.fabs(cD2t[i]) > 0:
 			ctr += 1
+	ipa = float(ctr)/tt
+	return ipa
 
-	IPA = float(ctr)/tt
-
-	return IPA
+def createPupulData(x, timestamp):
+    pupilData = PupilData(x)
+    pupilData.timestamp = timestamp
+    return pupilData
         
 def drawPlot(storageData: StorageData):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
@@ -227,7 +231,7 @@ def drawPlot(storageData: StorageData):
         
     axis[0, 0].set_ylabel('estimaterd respiratory rate')
     axis[1, 0].set_ylabel('pupil size (raw)')
-    axis[2, 0].set_ylabel('dilation values')
+    axis[2, 0].set_ylabel('Index of Pupillary Activity (Hz)')
     
     maxPupil = largest(list(map(lambda stage: largest(stage.serialData.pupilSizes), storageData.data)))
     minPupil = smallest(list(map(lambda stage: smallest(stage.serialData.pupilSizes), storageData.data)))
@@ -239,25 +243,33 @@ def drawPlot(storageData: StorageData):
         rr_array = stage.serialData.respiratoryRates
         rr_len = len(rr_array)
         rr_indicies = np.linspace(0, rr_len - 1, num=rr_len)
-        iterpolated_indices = np.linspace(0, rr_len - 1, num=300)
+        iterpolated_indices = np.linspace(0, rr_len - 1, num=60)
         
         # interpolated respiratory rate to match with 5 minutes of data
         interpolated_respiratory_rate = np.interp(iterpolated_indices, rr_indicies, rr_array)
         
         # resample the pupil size to match with 5 minutes of data (the raw data is around 298 anyway)
-        resampled_pupil = resample(stage.serialData.pupilSizes, 300)
+        resampled_raw_pupil = resample(stage.serialData.pupilSizes, 300)
         
-        normalized_pupil = savgol_filter(resampled_pupil, 60, 3)
+        normalized_pupil = savgol_filter(resampled_raw_pupil, 60, 3)
         
-        raw_dilation_values = process_raw_data(resampled_pupil)
+        # mapping the pupilData to IPA, `resampled_raw_pupil`` contains each element for each second already
+        splited = split_list(resampled_raw_pupil, 5)
+        ipa_values = list(map(lambda data: ipa(data), splited))
+        smoothed_ipa_values = savgol_filter(ipa_values, 10, 2)
+        ipa_time_blocks = list(map(lambda index: index * 5, range(len(ipa_values))))
+        
+        raw_dilation_values = process_raw_data(resampled_raw_pupil)
         if len(raw_dilation_values) == 0:
             resampled_dilation_values = [0] * 300
         else:
             resampled_dilation_values = resample(raw_dilation_values, 300)
         
-        time = np.arange(len(interpolated_respiratory_rate))
+        time = list(map(lambda index: index * 5, range(len(interpolated_respiratory_rate))))
         
-        peakIndexs, property = find_peaks(interpolated_respiratory_rate)
+        pupil_raw_time = np.arange(len(resampled_raw_pupil))
+        
+        peakIndexs, _ = find_peaks(interpolated_respiratory_rate)
         
         # the peaks with the corresponding pupil size, to see the correlation between when the respiratory rate
         # raised up, does the pupil size decrease or increase (in percentage)
@@ -281,12 +293,12 @@ def drawPlot(storageData: StorageData):
         axis[0, stageIndex].set_xlabel('time (s)')
         axis[0, stageIndex].set_title(collumnName, size='large')
         
-        axis[1, stageIndex].plot(time, resampled_pupil, color='brown', label='average pupil size')
-        axis[1, stageIndex].plot(time, normalized_pupil, color='black', label='normalized pupil size')
+        axis[1, stageIndex].plot(pupil_raw_time, resampled_raw_pupil, color='brown', label='average pupil size')
+        axis[1, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized pupil size')
         axis[1, stageIndex].set_ylim(minPupil, maxPupil)
         axis[1, stageIndex].set_xlabel('time (s)')
         
-        axis[2, stageIndex].plot(time, resampled_dilation_values, color='orange', label='pupil dilation values')        
+        axis[2, stageIndex].plot(ipa_time_blocks, smoothed_ipa_values, color='orange', label='IPA')        
         axis[2, stageIndex].set_xlabel('time (s)')
         
     userData = storageData.userData
