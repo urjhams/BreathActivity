@@ -188,7 +188,46 @@ def modmax(d):
 			t[i] = 0.0
 	return t
 
-#
+def lhipa (d: list[float]):
+    # find max decomposition level
+    w = pywt.Wavelet('sym16')
+    maxlevel = pywt.dwt_max_level(len(d), filter_len=w.dec_len)
+    
+    # set high and low frequency band indeces
+    hif, lof = 1, int(maxlevel /2)
+    
+    # get detail coefficients of pupil diameter signal d
+    cD_H = pywt.downcoef('d', d,'sym16', 'per', level=hif)
+    cD_L = pywt.downcoef('d', d,'sym16', 'per', level=lof)
+    
+    # normalize by 1/ sqrt(2j)
+    cD_H[:] = [x / math.sqrt(2** hif) for x in cD_H]
+    cD_L[:] = [x / math.sqrt(2** lof) for x in cD_L]
+    
+    # obtain the LH:HF ratio
+    cD_LH = cD_L
+    for i in range (len(cD_L)):
+        cD_LH[i] = cD_L[i] / cD_H[((2** lof)/(2** hif))*i]
+    
+    # detect modulus maxima
+    cD_LHm = modmax(cD_LH)
+    
+    # threshold using universal threshold λuniv = σ * sqrt(2logn)
+    # where σ is the standard deviation of the noise
+    λuniv = np.std(cD_LHm) * math.sqrt(2.0 * np.log2(len(cD_LHm)))
+    cD_LHt = pywt.threshold(cD_LHm ,λuniv ,mode ='less')
+    
+    # get signal duration (in seconds)
+    tt = len(d)
+    
+    # compute LHIPA
+    ctr = 0
+    for i in range (len(cD_LHt)):
+        if math.fabs (cD_LHt[i]) > 0: 
+            ctr += 1
+    LHIPA = float(ctr) / tt
+    return LHIPA
+
 def ipa(d: list[float]):
 	# obtain 2-level DWT of pupil diameter signal d
 	try:
@@ -255,7 +294,7 @@ def drawPlot(storageData: StorageData):
         
         # mapping the pupilData to IPA, `resampled_raw_pupil`` contains each element for each second already
         splited = split_list(resampled_raw_pupil, 5)
-        ipa_values = list(map(lambda data: ipa(data), splited))
+        ipa_values = list(map(lambda data: lhipa(data), splited))
         smoothed_ipa_values = savgol_filter(ipa_values, 10, 2)
         ipa_time_blocks = list(map(lambda index: index * 5, range(len(ipa_values))))
         
