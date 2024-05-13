@@ -6,6 +6,7 @@ import sys
 import matplotlib.pyplot as plt
 from scipy.signal import resample, find_peaks
 from scipy.stats import median_abs_deviation as mad
+from numpy import median
 
 # parameters
 folderPath = sys.argv[1]
@@ -254,7 +255,16 @@ def drawPlot(storageData: StorageData):
         mad_pupil = mad(resampled_raw_pupil)
         print(f'MAD of pupil size: {mad_pupil}')
         
-        # TODO: from mad_pupil, we can set the thresholds to filter out the outliers from the resampled pupil size using map function
+        #median of resampled pupil size
+        meddian_pupil = median(resampled_raw_pupil)
+        print(f'median value is {meddian_pupil}')
+        
+        # Christophe Leys et al. Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median
+        m_value = 2.5   # moderately conservative
+        upper_boundary = meddian_pupil + m_value * mad_pupil
+        lower_boundary = meddian_pupil - m_value * mad_pupil
+        
+        # TODO: use mapping with the boundary to set the outliers to the boundary values instead of removing them.
         
         normalized_pupil = savgol_filter(resampled_raw_pupil, 60, 1)
         
