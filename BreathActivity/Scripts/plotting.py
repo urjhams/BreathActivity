@@ -115,28 +115,35 @@ def readJsonFromFile(filePath):
             comment = jsonData['comment']
         )
 
-def normalized(value, upper, lower):
+def normalized(value, upper, lower, replacement = None):
     if value > upper:
         return upper
     elif value < lower:
         return lower
     else:
+        if replacement:
+            return replacement
         return value
 
 #cite: Preprocessing pupil size data: Guidelines and code - Mariska E. Kret, Elio E. Sjak-Shie 
-def normalized_outliers_pupil_diameters(raw_pupil_diameter):
+def normalized_outliers_pupil_diameters(raw_pupil_diameter, useMedian = False):
     # Calculate the median absolute deviation from the median
     mad = median_abs_deviation(raw_pupil_diameter)
+    
+    med = median(raw_pupil_diameter)
     
     m_value = 2.5   # moderately conservative
 
     # Set lower and upper bounds from the median
     # cite: Christophe Leys et al. Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median
-    up_threshold = median(raw_pupil_diameter) + m_value * mad
-    low_threshold = median(raw_pupil_diameter) - m_value * mad
+    up_threshold = med + m_value * mad
+    low_threshold = med - m_value * mad
 
     # Filter data based on bounds
-    normalized_pupil_diameter = list(map(lambda x: normalized(x, up_threshold, low_threshold), raw_pupil_diameter))
+    if useMedian:
+        normalized_pupil_diameter = list(map(lambda x: normalized(x, up_threshold, low_threshold, replacement=med), raw_pupil_diameter))
+    else:
+         normalized_pupil_diameter = list(map(lambda x: normalized(x, up_threshold, low_threshold), raw_pupil_diameter))
 
     return normalized_pupil_diameter
 
@@ -276,6 +283,7 @@ def drawPlot(storageData: StorageData):
         
         # filtered the outlier and replace them with the upper and lower boundary based on Median Absolute Deviation
         filtered_outlier_pupil = normalized_outliers_pupil_diameters(resampled_raw_pupil)
+        #TODO: apply the savgol filter to the filtered_outlier_pupil
         
         normalized_pupil = savgol_filter(resampled_raw_pupil, 60, 1)
         
