@@ -5,6 +5,7 @@ from typing import List, Union
 import sys
 import matplotlib.pyplot as plt
 from scipy.signal import resample, find_peaks
+from scipy.stats import median_abs_deviation as mad
 
 # parameters
 folderPath = sys.argv[1]
@@ -249,6 +250,12 @@ def drawPlot(storageData: StorageData):
         # resample the pupil size to match with 5 minutes of data (the raw data is around 298 anyway)
         resampled_raw_pupil = resample(stage.serialData.pupilSizes, 300)
         
+        # MAD of resampled pupil size
+        mad_pupil = mad(resampled_raw_pupil)
+        print(f'MAD of pupil size: {mad_pupil}')
+        
+        # TODO: from mad_pupil, we can set the thresholds to filter out the outliers from the resampled pupil size using map function
+        
         normalized_pupil = savgol_filter(resampled_raw_pupil, 60, 1)
         
         # mapping the pupilData to IPA, `resampled_raw_pupil` contains each element for each second already
@@ -276,20 +283,11 @@ def drawPlot(storageData: StorageData):
         # raised up, does the pupil size decrease or increase (in percentage)
         peaksWithPair = list(map(lambda index: (interpolated_respiratory_rate[index], resampled_dilation_values[index]), peakIndexs))
         
-        # filter peaksWithPair to get the pairs that have negavive pupil value
-        negativePupilPairs = list(filter(lambda pair: pair[1] < 0, peaksWithPair))
-        if len(peaksWithPair) == 0:
-            negativePupilPairPercentage = 0
-        else:
-            negativePupilPairPercentage = int(len(negativePupilPairs)/ len(peaksWithPair) * 100)
-        
         # reactionTime = np.mean(list(map(lambda response: response.reaction.reactionTime, stage.response)))
         reactionTimes = []
         for response in stage.response:
-            print(response.reaction)
             if 'pressedSpace' in response.reaction:
                 reactionTimes.append(response.reaction['pressedSpace']['reactionTime'])
-                # print(response.reaction['pressedSpace']['reactionTime'])
         
         mean_reaction_time = np.mean(reactionTimes)
         
