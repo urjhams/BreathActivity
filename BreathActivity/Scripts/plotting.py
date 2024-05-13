@@ -257,6 +257,9 @@ def drawPlot(storageData: StorageData):
         smoothed_ipa_values = savgol_filter(ipa_values, 12, 1)
         ipa_time_blocks = list(map(lambda index: index * 5, range(len(ipa_values))))
         
+        mean_ipa = np.mean(ipa_values)
+        mean_ipa_list = [mean_ipa] * len(ipa_values)
+        
         raw_dilation_values = process_raw_data(resampled_raw_pupil)
         if len(raw_dilation_values) == 0:
             resampled_dilation_values = [0] * 300
@@ -280,24 +283,36 @@ def drawPlot(storageData: StorageData):
         else:
             negativePupilPairPercentage = int(len(negativePupilPairs)/ len(peaksWithPair) * 100)
         
+        # reactionTime = np.mean(list(map(lambda response: response.reaction.reactionTime, stage.response)))
+        reactionTimes = []
+        for response in stage.response:
+            print(response.reaction)
+            if 'pressedSpace' in response.reaction:
+                reactionTimes.append(response.reaction['pressedSpace']['reactionTime'])
+                # print(response.reaction['pressedSpace']['reactionTime'])
+        
+        mean_reaction_time = np.mean(reactionTimes)
+        
         level = stage.level
         correct = int(stage.correctRate)
         q1 = stage.surveyData.q1Answer
         q2 = stage.surveyData.q2Answer
-        collumnName = f'{level}, correct: {correct}%, feel difficult: {q1}, stressful: {q2}, {negativePupilPairPercentage}%'
-        
-        axis[2, stageIndex].plot(time, interpolated_respiratory_rate, color='red', label='Respiratoy rate')
-        axis[2, stageIndex].set_ylim(minRR, maxRR)
-        axis[2, stageIndex].set_xlabel('time (s)')
-        axis[0, stageIndex].set_title(collumnName, size='large')
+        collumnName = f'{level}, correct: {correct}%, feel difficult: {q1}, stressful: {q2}, {mean_reaction_time}s'
         
         axis[0, stageIndex].plot(pupil_raw_time, resampled_raw_pupil, color='brown', label='average pupil size')
         axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized pupil size')
         axis[0, stageIndex].set_ylim(minPupil, maxPupil)
         axis[0, stageIndex].set_xlabel('time (s)')
+        axis[0, stageIndex].set_title(collumnName, size='large')
         
-        axis[1, stageIndex].plot(ipa_time_blocks, smoothed_ipa_values, color='orange', label='IPA')        
-        axis[1, stageIndex].set_xlabel('time (s)')
+        axis[1, stageIndex].plot(ipa_time_blocks, smoothed_ipa_values, color='orange', label='IPA')
+        axis[1, stageIndex].plot(ipa_time_blocks, mean_ipa_list, color='black', label='mean IPA')
+        axis[1, stageIndex].set_ylim(0, 0.2)
+        axis[1, stageIndex].set_xlabel('time (every 5s)')
+        
+        axis[2, stageIndex].plot(time, interpolated_respiratory_rate, color='red', label='Respiratoy rate')
+        axis[2, stageIndex].set_ylim(minRR, maxRR)
+        axis[2, stageIndex].set_xlabel('time (every 5s)')
         
     userData = storageData.userData
     plt.suptitle(f'{userData.gender} - {userData.age}', fontweight = 'bold', fontsize=18)
@@ -318,9 +333,9 @@ def drawPlot(storageData: StorageData):
 data = readJsonFilesFromFolder(folderPath)
 
 if data:
-    # drawPlot(data[1])
-    for storageData in data:
-        try:
-            drawPlot(storageData)
-        except:
-            print('🤷🏻‍♂️ cannot make plot of this')
+    drawPlot(data[1])
+    # for storageData in data:
+    #     try:
+    #         drawPlot(storageData)
+    #     except:
+    #         print('🤷🏻‍♂️ cannot make plot of this')
