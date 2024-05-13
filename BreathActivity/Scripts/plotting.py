@@ -4,9 +4,11 @@ from dataclasses import dataclass, field
 from typing import List, Union
 import sys
 import matplotlib.pyplot as plt
-from scipy.signal import resample, find_peaks
-from scipy.stats import median_abs_deviation as mad
+from scipy.signal import resample
+from scipy.stats import median_abs_deviation
 from numpy import median
+from functools import reduce
+import math , pywt , numpy as np
 
 # parameters
 folderPath = sys.argv[1]
@@ -112,33 +114,55 @@ def readJsonFromFile(filePath):
             data = experimentalDataList,
             comment = jsonData['comment']
         )
-        
-from functools import reduce
-import pandas as pd
 
-#cite: Preprocessing pupil size data: Guidelines and code - Mariska E. Kret, Elio E. Sjak-Shie
+def normalized(value, upper, lower):
+    if value > upper:
+        return upper
+    elif value < lower:
+        return lower
+    else:
+        return value
+
+#cite: Preprocessing pupil size data: Guidelines and code - Mariska E. Kret, Elio E. Sjak-Shie 
+def normalized_outliers_pupil_diameters(raw_pupil_diameter):
+    # Calculate the median absolute deviation from the median
+    mad = median_abs_deviation(raw_pupil_diameter)
+    
+    m_value = 2.5   # moderately conservative
+
+    # Set lower and upper bounds from the median
+    # cite: Christophe Leys et al. Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median
+    up_threshold = median(raw_pupil_diameter) + m_value * mad
+    low_threshold = median(raw_pupil_diameter) - m_value * mad
+
+    # Filter data based on bounds
+    normalized_pupil_diameter = list(map(lambda x: normalized(x, up_threshold, low_threshold), raw_pupil_diameter))
+
+    return normalized_pupil_diameter
+
+#cite: Preprocessing pupil size data: Guidelines and code - Mariska E. Kret, Elio E. Sjak-Shie 
 # Function to process raw average pupil size data and return normalized dilation values
-def process_raw_data(average_pupil_sizes):
-    # Step 1: Calculate the absolute standard deviation from the median
-    mad = np.median(np.abs(average_pupil_sizes - np.median(average_pupil_sizes)))
+# def process_raw_data(average_pupil_sizes):
+#     # Step 1: Calculate the absolute standard deviation from the median
+#     mad = np.median(np.abs(average_pupil_sizes - np.median(average_pupil_sizes)))
 
-    # Step 2: Set lower and upper bounds from the median
-    up_threshold = np.median(average_pupil_sizes) + 3 * mad
-    low_threshold = np.median(average_pupil_sizes) - 3 * mad
+#     # Step 2: Set lower and upper bounds from the median
+#     up_threshold = np.median(average_pupil_sizes) + 3 * mad
+#     low_threshold = np.median(average_pupil_sizes) - 3 * mad
 
-    # Step 3: Filter data based on bounds
-    filtered_data = average_pupil_sizes[(average_pupil_sizes < up_threshold) & (average_pupil_sizes > low_threshold)]
+#     # Step 3: Filter data based on bounds
+#     filtered_data = average_pupil_sizes[(average_pupil_sizes < up_threshold) & (average_pupil_sizes > low_threshold)]
 
-    # Step 4: Smooth the data
-    smoothed_data = pd.Series(filtered_data).rolling(window=3, min_periods=1).mean()
+#     # Step 4: Smooth the data
+#     smoothed_data = pd.Series(filtered_data).rolling(window=3, min_periods=1).mean()
 
-    # Step 5: Calculate a single baseline value
-    baseline_value = np.median(smoothed_data.head(10))
+#     # Step 5: Calculate a single baseline value
+#     baseline_value = np.median(smoothed_data.head(10))
 
-    # Subtract baseline value from each data point to get normalized dilation values
-    normalized_dilation = smoothed_data - baseline_value
+#     # Subtract baseline value from each data point to get normalized dilation values
+#     normalized_dilation = smoothed_data - baseline_value
 
-    return list(normalized_dilation)
+#     return list(normalized_dilation)
  
 def largest(arr):
     # Sort the array
@@ -164,7 +188,6 @@ def standardlized(rr, threshold):
         return threshold
 
 #Andrew T. Duchowski, Krzysztof Krejtz, Izabela Krejtz, Cezary Biele, Anna Niedzielska, Peter Kiefer, Martin Raubal, and Ioannis Giannopoulos (2018). The Index of Pupillary Activity: Measuring Cognitive Load vis-à-vis Task Difficulty with Pupil Oscillation. In Proceedings of the 2018 CHI Conference on Human Factors in Computing Systems (CHI '18). Association for Computing Machinery, New York, NY, USA, Paper 282, 1–13. https://doi.org/10.1145/3173574.3173856
-import math , pywt , numpy as np
 class PupilData(float):
 	def __init__(self, diameter):
 		self.X = diameter
@@ -228,7 +251,7 @@ def createPupulData(x, timestamp):
         
 def drawPlot(storageData: StorageData):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
-    fig, axis = plt.subplots(3, len(storageData.data), figsize=size)
+    fig, axis = plt.subplots(4, len(storageData.data), figsize=size)
         
     axis[0, 0].set_ylabel('pupil size (raw)')
     axis[1, 0].set_ylabel('Index of Pupillary Activity (Hz)')
@@ -251,20 +274,8 @@ def drawPlot(storageData: StorageData):
         # resample the pupil size to match with 5 minutes of data (the raw data is around 298 anyway)
         resampled_raw_pupil = resample(stage.serialData.pupilSizes, 300)
         
-        # MAD of resampled pupil size
-        mad_pupil = mad(resampled_raw_pupil)
-        print(f'MAD of pupil size: {mad_pupil}')
-        
-        #median of resampled pupil size
-        meddian_pupil = median(resampled_raw_pupil)
-        print(f'median value is {meddian_pupil}')
-        
-        # Christophe Leys et al. Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median
-        m_value = 2.5   # moderately conservative
-        upper_boundary = meddian_pupil + m_value * mad_pupil
-        lower_boundary = meddian_pupil - m_value * mad_pupil
-        
-        # TODO: use mapping with the boundary to set the outliers to the boundary values instead of removing them.
+        # filtered the outlier and replace them with the upper and lower boundary based on Median Absolute Deviation
+        filtered_outlier_pupil = normalized_outliers_pupil_diameters(resampled_raw_pupil)
         
         normalized_pupil = savgol_filter(resampled_raw_pupil, 60, 1)
         
@@ -277,21 +288,10 @@ def drawPlot(storageData: StorageData):
         mean_ipa = np.mean(ipa_values)
         mean_ipa_list = [mean_ipa] * len(ipa_values)
         
-        raw_dilation_values = process_raw_data(resampled_raw_pupil)
-        if len(raw_dilation_values) == 0:
-            resampled_dilation_values = [0] * 300
-        else:
-            resampled_dilation_values = resample(raw_dilation_values, 300)
         
         time = list(map(lambda index: index * 5, range(len(interpolated_respiratory_rate))))
         
         pupil_raw_time = np.arange(len(resampled_raw_pupil))
-        
-        peakIndexs, _ = find_peaks(interpolated_respiratory_rate)
-        
-        # the peaks with the corresponding pupil size, to see the correlation between when the respiratory rate
-        # raised up, does the pupil size decrease or increase (in percentage)
-        peaksWithPair = list(map(lambda index: (interpolated_respiratory_rate[index], resampled_dilation_values[index]), peakIndexs))
         
         # reactionTime = np.mean(list(map(lambda response: response.reaction.reactionTime, stage.response)))
         reactionTimes = []
@@ -307,20 +307,25 @@ def drawPlot(storageData: StorageData):
         q2 = stage.surveyData.q2Answer
         collumnName = f'{level}, correct: {correct}%, feel difficult: {q1}, stressful: {q2}, {mean_reaction_time}s'
         
-        axis[0, stageIndex].plot(pupil_raw_time, resampled_raw_pupil, color='brown', label='average pupil size')
-        axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized pupil size')
+        axis[0, stageIndex].plot(pupil_raw_time, resampled_raw_pupil, color='brown', label='average pupil diameter')
+        axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized pupil diameter')
         axis[0, stageIndex].set_ylim(minPupil, maxPupil)
         axis[0, stageIndex].set_xlabel('time (s)')
         axis[0, stageIndex].set_title(collumnName, size='large')
         
-        axis[1, stageIndex].plot(ipa_time_blocks, smoothed_ipa_values, color='orange', label='IPA')
-        axis[1, stageIndex].plot(ipa_time_blocks, mean_ipa_list, color='black', label='mean IPA')
-        axis[1, stageIndex].set_ylim(0, 0.2)
-        axis[1, stageIndex].set_xlabel('time (every 5s)')
+        axis[1, stageIndex].plot(pupil_raw_time, filtered_outlier_pupil, color='blue', label='filtered outlier pupil diameter')
+        axis[1, stageIndex].set_ylim(2, 3)
+        axis[1, stageIndex].set_xlabel('time (s)')
         
-        axis[2, stageIndex].plot(time, interpolated_respiratory_rate, color='red', label='Respiratoy rate')
-        axis[2, stageIndex].set_ylim(minRR, maxRR)
+        # TODO: check again the IPA calculation
+        axis[2, stageIndex].plot(ipa_time_blocks, smoothed_ipa_values, color='orange', label='IPA')
+        axis[2, stageIndex].plot(ipa_time_blocks, mean_ipa_list, color='black', label='mean IPA')
+        axis[2, stageIndex].set_ylim(0, 0.2)
         axis[2, stageIndex].set_xlabel('time (every 5s)')
+        
+        axis[3, stageIndex].plot(time, interpolated_respiratory_rate, color='red', label='Respiratoy rate')
+        axis[3, stageIndex].set_ylim(minRR, maxRR)
+        axis[3, stageIndex].set_xlabel('time (every 5s)')
         
     userData = storageData.userData
     plt.suptitle(f'{userData.gender} - {userData.age}', fontweight = 'bold', fontsize=18)
@@ -341,9 +346,9 @@ def drawPlot(storageData: StorageData):
 data = readJsonFilesFromFolder(folderPath)
 
 if data:
-    drawPlot(data[1])
-    # for storageData in data:
-    #     try:
-    #         drawPlot(storageData)
-    #     except:
-    #         print('🤷🏻‍♂️ cannot make plot of this')
+    # drawPlot(data[1])
+    for storageData in data:
+        try:
+            drawPlot(storageData)
+        except:
+            print('🤷🏻‍♂️ cannot make plot of this')
