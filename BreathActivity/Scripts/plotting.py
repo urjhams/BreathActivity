@@ -315,6 +315,8 @@ def drawPlot(storageData: StorageData):
         )
     )
     
+    # TODO: create the grand average of the pupil size and respiratory rate
+    
     # sort the stages based on the level
     experimentals.sort(key=lambda stage: stage.level_as_number())
     
@@ -369,7 +371,7 @@ def drawPlot(storageData: StorageData):
         
         collumnName = f'level: {level}, errors: {error_number} time, accuracy rate: {f_accuracy}%\n'
         collumnName += f'feel difficult: {q1}, stressful: {q2}\n'
-        collumnName += f'avg reactiontime: {f_reaction_time} s, mean pupil diameter: {f_mean_pupil} mm'
+        collumnName += f'avg reaction time: {f_reaction_time} s, mean pupil diameter: {f_mean_pupil} mm'
         
         axis[0, stageIndex].plot(pupil_raw_time, configured_pupils, color='brown', label='filtered outlier pupil diameter')
         axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized')
