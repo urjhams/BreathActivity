@@ -233,6 +233,31 @@ def ipa(d: list[float]):
 	IPA = float(ctr)/tt
     
 	return IPA
+
+def configured(stage: ExperimentalData):
+    original_rr = stage.serialData.respiratoryRates
+    original_pupils = stage.serialData.pupilSizes
+        
+    ### apply the interpolated in whole the experimentals's respiratory rate and replace to its serialData.respiratoryRates
+    rr_len = len(original_rr)
+    rr_indicies = np.linspace(0, rr_len - 1, num=rr_len)
+    iterpolated_indices = np.linspace(0, rr_len - 1, num=60)
+        
+    # interpolated respiratory rate to match with 5 minutes of data and apply it back to the original respiratory rate data
+    stage.serialData.respiratoryRates = np.interp(iterpolated_indices, rr_indicies, original_rr)
+        
+    ### apply the resampled and remove the outlier in whole the experimentals's pupilSizes and replace to its serialData.pupilSizes
+        
+    # resample the pupil size to match with 5 minutes of data (the raw data is around 298 anyway)
+    resampled_raw_pupil = resample(original_pupils, 300)
+        
+    # filtered the outlier and replace them with the upper and lower boundary based on Median Absolute Deviation
+    (filtered_outlier_pupil, filtered_max , filtered_min) = normalized_outliers_pupil_diameters(resampled_raw_pupil)
+        
+    # apply the filtered to original pupil data
+    stage.serialData.pupilSizes = filtered_outlier_pupil
+    
+    return stage
         
 def drawPlot(storageData: StorageData):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
@@ -248,38 +273,33 @@ def drawPlot(storageData: StorageData):
     minRR = 0
     
     experimentals = storageData.data
+    
+    # configure the respiratory rate and pupil size data
+    for stage in experimentals:
+        stage = configured(stage)
+    
     # sort the stages based on the level
     experimentals.sort(key=lambda stage: stage.level_as_number())
     
+    # iterate through each stage and draw the plot
     for stageIndex, stage in enumerate(experimentals):
-        rr_array = stage.serialData.respiratoryRates
-        rr_len = len(rr_array)
-        rr_indicies = np.linspace(0, rr_len - 1, num=rr_len)
-        iterpolated_indices = np.linspace(0, rr_len - 1, num=60)
-        
-        # interpolated respiratory rate to match with 5 minutes of data
-        interpolated_respiratory_rate = np.interp(iterpolated_indices, rr_indicies, rr_array)
-        
-        # resample the pupil size to match with 5 minutes of data (the raw data is around 298 anyway)
-        resampled_raw_pupil = resample(stage.serialData.pupilSizes, 300)
-        
-        # filtered the outlier and replace them with the upper and lower boundary based on Median Absolute Deviation
-        (filtered_outlier_pupil, filtered_max , filtered_min) = normalized_outliers_pupil_diameters(resampled_raw_pupil)
+        configured_rr = stage.serialData.respiratoryRates
+        configured_pupils = stage.serialData.pupilSizes
         
         # apply savgol filter to smooth the pupil data in a window of 60 samples (which mean 60 seconds)
-        normalized_pupil = savgol_filter(filtered_outlier_pupil, 60, 1)
+        normalized_pupil = savgol_filter(configured_pupils, 60, 1)
         
         # mean pupil diameter
-        mean_pupil = np.mean(filtered_outlier_pupil)
+        mean_pupil = np.mean(configured_pupils)
         
         # mapping the pupilData to IPA, `resampled_raw_pupil` contains each element for each second already
-        splited = split_list(filtered_outlier_pupil, 5)
+        splited = split_list(configured_pupils, 5)
         
         # here we calculate the IPA in each section of 5 seconds.
         ipa_values = list(map(lambda data: ipa(data), splited))
         
         # calculate the grand IPA of the whole task
-        grand_ipa = ipa(filtered_outlier_pupil)
+        grand_ipa = ipa(configured_pupils)
         
         # smoothing the IPA values
         smoothed_ipa_values = savgol_filter(ipa_values, 12, 1)
@@ -287,9 +307,9 @@ def drawPlot(storageData: StorageData):
         # the time blocks for IPA calculation (each 5 seconds)
         ipa_time_blocks = list(map(lambda index: index * 5, range(len(ipa_values))))
         
-        time = list(map(lambda index: index * 5, range(len(interpolated_respiratory_rate))))
+        time = list(map(lambda index: index * 5, range(len(configured_rr))))
         
-        pupil_raw_time = np.arange(len(resampled_raw_pupil))
+        pupil_raw_time = np.arange(len(configured_pupils))
         
         # calculate the mean reaction time
         reactionTimes = []
@@ -311,7 +331,7 @@ def drawPlot(storageData: StorageData):
         collumnName = f'{level}, performance: {correct}/100, feel difficult: {q1}, stressful: {q2}'
         collumnName += f'\n average reactiontime: {f_reaction_time} s, mean pupil diameter: {f_mean_pupil} mm'
         
-        axis[0, stageIndex].plot(pupil_raw_time, filtered_outlier_pupil, color='brown', label='filtered outlier pupil diameter')
+        axis[0, stageIndex].plot(pupil_raw_time, configured_pupils, color='brown', label='filtered outlier pupil diameter')
         axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized')
         axis[0, stageIndex].set_ylim(minPupil, maxPupil)
         axis[0, stageIndex].set_xlabel('time (s)')
@@ -322,7 +342,7 @@ def drawPlot(storageData: StorageData):
         axis[1, stageIndex].set_xlabel('time (every 5s)')
         axis[1, stageIndex].set_title(f'Task IPA: {"{:.3f}".format(grand_ipa)}Hz')
         
-        axis[2, stageIndex].plot(time, interpolated_respiratory_rate, color='red', label='Respiratoy rate')
+        axis[2, stageIndex].plot(time, configured_rr, color='red', label='Respiratoy rate')
         axis[2, stageIndex].set_ylim(minRR, maxRR)
         axis[2, stageIndex].set_xlabel('time (every 5s)')
         
