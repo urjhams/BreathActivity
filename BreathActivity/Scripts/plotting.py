@@ -162,10 +162,7 @@ height_inches = 1080 / 100  # 21.6 inches
 size = (width_inches, height_inches)
 
 def standardlized(rr, threshold):
-    if rr > threshold:
-        return rr
-    else:
-        return threshold
+    return rr if rr > threshold else threshold
 
 # Andrew T. Duchowski, Krzysztof Krejtz, Izabela Krejtz, Cezary Biele, Anna Niedzielska, Peter Kiefer, Martin Raubal, and Ioannis Giannopoulos (2018). 
 # The Index of Pupillary Activity: Measuring Cognitive Load vis-à-vis Task Difficulty with Pupil Oscillation. 
@@ -196,6 +193,7 @@ def modmax(d):
 			t[i] = 0.0
 	return t
 
+# requirement: d is a list of float that represent the signal samples every one second.
 def ipa(d: list[float]):
 	# obtain 2-level DWT of pupil diameter signal d
 	try:
@@ -203,7 +201,7 @@ def ipa(d: list[float]):
 	except ValueError:
 		return
 
-	# get signal duration (in seconds)
+	# get signal duration (IN SECONDS)
 	tt = len(d)
 
 	# normalize by 1=2j , j = 2 for 2-level DWT
@@ -211,7 +209,7 @@ def ipa(d: list[float]):
 	cD1[:] = [x / math.sqrt(2.0) for x in cD1]
 	cD2[:] = [x / math.sqrt(4.0) for x in cD2]
 
-	# detect modulus maxima , see Listing 2
+	# detect modulus maxima
 	cD2m = modmax(cD2)
 
 	# threshold using universal threshold lambda_univ = s*sqrt(p(2 log n))
@@ -222,10 +220,11 @@ def ipa(d: list[float]):
 	# compute IPA
 	ctr = 0
 	for i in range(len(cD2t)):
-		if math.fabs(cD2t[i]) > 0:
-			ctr += 1
-	ipa = float(ctr)/tt
-	return ipa
+		if math.fabs(cD2t[i]) > 0: ctr += 1
+  
+	IPA = float(ctr)/tt
+    
+	return IPA
 
 def createPupulData(x, timestamp):
     pupilData = PupilData(x)
