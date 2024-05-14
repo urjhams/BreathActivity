@@ -6,7 +6,6 @@ import sys
 import matplotlib.pyplot as plt
 from scipy.signal import resample
 from scipy.stats import median_abs_deviation
-from numpy import median
 from functools import reduce
 import math , pywt , numpy as np
 
@@ -123,25 +122,26 @@ def normalized(value, upper, lower, replacement = None):
     else:
         if replacement:
             return replacement
-        return value
+        else:
+            return value
 
 #cite: Preprocessing pupil size data: Guidelines and code - Mariska E. Kret, Elio E. Sjak-Shie 
 def normalized_outliers_pupil_diameters(raw_pupil_diameter, useMedian = False):
     # Calculate the median absolute deviation from the median
     mad = median_abs_deviation(raw_pupil_diameter)
     
-    med = median(raw_pupil_diameter)
+    median = np.median(raw_pupil_diameter)
     
     m_value = 2.5   # moderately conservative
 
     # Set lower and upper bounds from the median
     # cite: Christophe Leys et al. Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median
-    up_threshold = med + m_value * mad
-    low_threshold = med - m_value * mad
+    up_threshold = median + m_value * mad
+    low_threshold = median - m_value * mad
 
     # Filter data based on bounds
     if useMedian:
-        normalized_pupil_diameter = list(map(lambda x: normalized(x, up_threshold, low_threshold, replacement=med), raw_pupil_diameter))
+        normalized_pupil_diameter = list(map(lambda x: normalized(x, up_threshold, low_threshold, replacement=median), raw_pupil_diameter))
     else:
          normalized_pupil_diameter = list(map(lambda x: normalized(x, up_threshold, low_threshold), raw_pupil_diameter))
 
@@ -194,7 +194,10 @@ def standardlized(rr, threshold):
     else:
         return threshold
 
-#Andrew T. Duchowski, Krzysztof Krejtz, Izabela Krejtz, Cezary Biele, Anna Niedzielska, Peter Kiefer, Martin Raubal, and Ioannis Giannopoulos (2018). The Index of Pupillary Activity: Measuring Cognitive Load vis-à-vis Task Difficulty with Pupil Oscillation. In Proceedings of the 2018 CHI Conference on Human Factors in Computing Systems (CHI '18). Association for Computing Machinery, New York, NY, USA, Paper 282, 1–13. https://doi.org/10.1145/3173574.3173856
+# Andrew T. Duchowski, Krzysztof Krejtz, Izabela Krejtz, Cezary Biele, Anna Niedzielska, Peter Kiefer, Martin Raubal, and Ioannis Giannopoulos (2018). 
+# The Index of Pupillary Activity: Measuring Cognitive Load vis-à-vis Task Difficulty with Pupil Oscillation. 
+# In Proceedings of the 2018 CHI Conference on Human Factors in Computing Systems (CHI '18). 
+# Association for Computing Machinery, New York, NY, USA, Paper 282, 1–13. https://doi.org/10.1145/3173574.3173856
 class PupilData(float):
 	def __init__(self, diameter):
 		self.X = diameter
@@ -258,11 +261,11 @@ def createPupulData(x, timestamp):
         
 def drawPlot(storageData: StorageData):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
-    fig, axis = plt.subplots(4, len(storageData.data), figsize=size)
+    fig, axis = plt.subplots(3, len(storageData.data), figsize=size)
         
-    axis[0, 0].set_ylabel('pupil size (raw)')
+    axis[0, 0].set_ylabel('pupil diameter (resampled and outliners filtered - in mm)')
     axis[1, 0].set_ylabel('Index of Pupillary Activity (Hz)')
-    axis[2, 0].set_ylabel('estimaterd respiratory rate')
+    axis[2, 0].set_ylabel('estimaterd respiratory rate (breaths per minute)')
     
     maxPupil = largest(list(map(lambda stage: largest(stage.serialData.pupilSizes), storageData.data)))
     minPupil = smallest(list(map(lambda stage: smallest(stage.serialData.pupilSizes), storageData.data)))
@@ -283,58 +286,51 @@ def drawPlot(storageData: StorageData):
         
         # filtered the outlier and replace them with the upper and lower boundary based on Median Absolute Deviation
         (filtered_outlier_pupil, filtered_max , filtered_min) = normalized_outliers_pupil_diameters(resampled_raw_pupil)
-        #TODO: apply the savgol filter to the filtered_outlier_pupil
-        #TODO: calculate the IPA (or RIPA) based on filtered_outlier_pupil
         
-        normalized_pupil = savgol_filter(resampled_raw_pupil, 60, 1)
+        normalized_pupil = savgol_filter(filtered_outlier_pupil, 60, 1)
         
         # mapping the pupilData to IPA, `resampled_raw_pupil` contains each element for each second already
-        splited = split_list(resampled_raw_pupil, 5)
+        splited = split_list(filtered_outlier_pupil, 5)
+        
+        # here we calculate the IPA in each section of 5 seconds.
         ipa_values = list(map(lambda data: ipa(data), splited))
+        
+        # smoothing the IPA values
         smoothed_ipa_values = savgol_filter(ipa_values, 12, 1)
+        
+        # the time blocks for IPA calculation (each 5 seconds)
         ipa_time_blocks = list(map(lambda index: index * 5, range(len(ipa_values))))
-        
-        mean_ipa = np.mean(ipa_values)
-        mean_ipa_list = [mean_ipa] * len(ipa_values)
-        
         
         time = list(map(lambda index: index * 5, range(len(interpolated_respiratory_rate))))
         
         pupil_raw_time = np.arange(len(resampled_raw_pupil))
         
-        # reactionTime = np.mean(list(map(lambda response: response.reaction.reactionTime, stage.response)))
+        # calculate the mean reaction time
         reactionTimes = []
         for response in stage.response:
             if 'pressedSpace' in response.reaction:
                 reactionTimes.append(response.reaction['pressedSpace']['reactionTime'])
-        
         mean_reaction_time = np.mean(reactionTimes)
         
         level = stage.level
         correct = int(stage.correctRate)
         q1 = stage.surveyData.q1Answer
         q2 = stage.surveyData.q2Answer
-        collumnName = f'{level}, correct: {correct}%, feel difficult: {q1}, stressful: {q2}, {mean_reaction_time}s'
+        collumnName = f'{level}, correct: {correct}%, feel difficult: {q1}, stressful: {q2}, reaction: {"{:.2f}".format(mean_reaction_time)}s'
         
-        axis[0, stageIndex].plot(pupil_raw_time, resampled_raw_pupil, color='brown', label='average pupil diameter')
-        axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized pupil diameter')
+        axis[0, stageIndex].plot(pupil_raw_time, filtered_outlier_pupil, color='brown', label='filtered outlier pupil diameter')
+        axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized')
         axis[0, stageIndex].set_ylim(minPupil, maxPupil)
         axis[0, stageIndex].set_xlabel('time (s)')
         axis[0, stageIndex].set_title(collumnName, size='large')
         
-        axis[1, stageIndex].plot(pupil_raw_time, filtered_outlier_pupil, color='blue', label='filtered outlier pupil diameter')
-        axis[1, stageIndex].set_ylim(2.0, 4.0)
-        axis[1, stageIndex].set_xlabel('time (s)')
+        axis[1, stageIndex].plot(ipa_time_blocks, smoothed_ipa_values, color='orange', label='IPA')
+        axis[1, stageIndex].set_ylim(0, 0.2)
+        axis[1, stageIndex].set_xlabel('time (every 5s)')
         
-        # TODO: check again the IPA calculation
-        axis[2, stageIndex].plot(ipa_time_blocks, smoothed_ipa_values, color='orange', label='IPA')
-        axis[2, stageIndex].plot(ipa_time_blocks, mean_ipa_list, color='black', label='mean IPA')
-        axis[2, stageIndex].set_ylim(0, 0.2)
+        axis[2, stageIndex].plot(time, interpolated_respiratory_rate, color='red', label='Respiratoy rate')
+        axis[2, stageIndex].set_ylim(minRR, maxRR)
         axis[2, stageIndex].set_xlabel('time (every 5s)')
-        
-        axis[3, stageIndex].plot(time, interpolated_respiratory_rate, color='red', label='Respiratoy rate')
-        axis[3, stageIndex].set_ylim(minRR, maxRR)
-        axis[3, stageIndex].set_xlabel('time (every 5s)')
         
     userData = storageData.userData
     plt.suptitle(f'{userData.gender} - {userData.age}', fontweight = 'bold', fontsize=18)
