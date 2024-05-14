@@ -114,16 +114,14 @@ def readJsonFromFile(filePath):
             comment = jsonData['comment']
         )
 
+# normalize a list based on upper and lower bounds
 def normalized(value, upper, lower, replacement = None):
     if value > upper:
         return upper
     elif value < lower:
         return lower
     else:
-        if replacement:
-            return replacement
-        else:
-            return value
+        return replacement if replacement else value
 
 #cite: Preprocessing pupil size data: Guidelines and code - Mariska E. Kret, Elio E. Sjak-Shie 
 def normalized_outliers_pupil_diameters(raw_pupil_diameter, useMedian = False):
@@ -145,12 +143,15 @@ def normalized_outliers_pupil_diameters(raw_pupil_diameter, useMedian = False):
 
     return (normalized_pupil_diameter, upper, lower)
  
+ # find maximum value in a list
 def largest(arr):
     return reduce(max, arr)
 
+# find minimum value in a list
 def smallest(arr):
     return reduce(min, arr)
 
+# split a list into chunks of size `chunk_size`
 def split_list(lst, chunk_size):
     return list(zip(*[iter(lst)] * chunk_size))
         
@@ -225,11 +226,6 @@ def ipa(d: list[float]):
 	IPA = float(ctr)/tt
     
 	return IPA
-
-def createPupulData(x, timestamp):
-    pupilData = PupilData(x)
-    pupilData.timestamp = timestamp
-    return pupilData
         
 def drawPlot(storageData: StorageData):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
