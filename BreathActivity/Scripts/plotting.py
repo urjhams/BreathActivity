@@ -143,36 +143,11 @@ def normalized_outliers_pupil_diameters(raw_pupil_diameter, useMedian = False):
     if useMedian:
         normalized_pupil_diameter = list(map(lambda x: normalized(x, up_threshold, low_threshold, replacement=median), raw_pupil_diameter))
     else:
-         normalized_pupil_diameter = list(map(lambda x: normalized(x, up_threshold, low_threshold), raw_pupil_diameter))
+        normalized_pupil_diameter = list(map(lambda x: normalized(x, up_threshold, low_threshold), raw_pupil_diameter))
 
     return (normalized_pupil_diameter, up_threshold, low_threshold)
-
-#cite: Preprocessing pupil size data: Guidelines and code - Mariska E. Kret, Elio E. Sjak-Shie 
-# Function to process raw average pupil size data and return normalized dilation values
-# def process_raw_data(average_pupil_sizes):
-#     # Step 1: Calculate the absolute standard deviation from the median
-#     mad = np.median(np.abs(average_pupil_sizes - np.median(average_pupil_sizes)))
-
-#     # Step 2: Set lower and upper bounds from the median
-#     up_threshold = np.median(average_pupil_sizes) + 3 * mad
-#     low_threshold = np.median(average_pupil_sizes) - 3 * mad
-
-#     # Step 3: Filter data based on bounds
-#     filtered_data = average_pupil_sizes[(average_pupil_sizes < up_threshold) & (average_pupil_sizes > low_threshold)]
-
-#     # Step 4: Smooth the data
-#     smoothed_data = pd.Series(filtered_data).rolling(window=3, min_periods=1).mean()
-
-#     # Step 5: Calculate a single baseline value
-#     baseline_value = np.median(smoothed_data.head(10))
-
-#     # Subtract baseline value from each data point to get normalized dilation values
-#     normalized_dilation = smoothed_data - baseline_value
-
-#     return list(normalized_dilation)
  
 def largest(arr):
-    # Sort the array
     return reduce(max, arr)
 
 def smallest(arr):
@@ -263,7 +238,7 @@ def drawPlot(storageData: StorageData):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
     fig, axis = plt.subplots(3, len(storageData.data), figsize=size)
         
-    axis[0, 0].set_ylabel('pupil diameter (resampled and outliners filtered - in mm)')
+    axis[0, 0].set_ylabel('pupil diameter (resampled & outliners filtered-in mm)')
     axis[1, 0].set_ylabel('Index of Pupillary Activity (Hz)')
     axis[2, 0].set_ylabel('estimaterd respiratory rate (breaths per minute)')
     
@@ -295,6 +270,9 @@ def drawPlot(storageData: StorageData):
         # here we calculate the IPA in each section of 5 seconds.
         ipa_values = list(map(lambda data: ipa(data), splited))
         
+        # calculate the grand IPA of the whole task
+        grand_ipa = ipa(filtered_outlier_pupil)
+        
         # smoothing the IPA values
         smoothed_ipa_values = savgol_filter(ipa_values, 12, 1)
         
@@ -316,7 +294,8 @@ def drawPlot(storageData: StorageData):
         correct = int(stage.correctRate)
         q1 = stage.surveyData.q1Answer
         q2 = stage.surveyData.q2Answer
-        collumnName = f'{level}, correct: {correct}%, feel difficult: {q1}, stressful: {q2}, reaction: {"{:.2f}".format(mean_reaction_time)}s'
+        collumnName = f'{level}, performance: {correct}/100, feel difficult: {q1}, stressful: {q2}'
+        collumnName += f'\n reaction: {"{:.2f}".format(mean_reaction_time)}s'
         
         axis[0, stageIndex].plot(pupil_raw_time, filtered_outlier_pupil, color='brown', label='filtered outlier pupil diameter')
         axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized')
@@ -327,6 +306,7 @@ def drawPlot(storageData: StorageData):
         axis[1, stageIndex].plot(ipa_time_blocks, smoothed_ipa_values, color='orange', label='IPA')
         axis[1, stageIndex].set_ylim(0, 0.2)
         axis[1, stageIndex].set_xlabel('time (every 5s)')
+        axis[1, stageIndex].set_title(f'Task IPA: {"{:.3f}".format(grand_ipa)}Hz')
         
         axis[2, stageIndex].plot(time, interpolated_respiratory_rate, color='red', label='Respiratoy rate')
         axis[2, stageIndex].set_ylim(minRR, maxRR)
