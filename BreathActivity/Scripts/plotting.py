@@ -66,6 +66,14 @@ class ExperimentalData:
             return 3
         else:
             return 2
+        
+    def mean_reaction_time(self):
+        # calculate the mean reaction time
+        reactionTimes = []
+        for response in self.response:
+            if 'pressedSpace' in response.reaction:
+                reactionTimes.append(response.reaction['pressedSpace']['reactionTime'])
+        return np.mean(reactionTimes)
 
 @dataclass
 class StorageData:
@@ -323,13 +331,6 @@ def drawPlot(storageData: StorageData):
         
         pupil_raw_time = np.arange(len(configured_pupils))
         
-        # calculate the mean reaction time
-        reactionTimes = []
-        for response in stage.response:
-            if 'pressedSpace' in response.reaction:
-                reactionTimes.append(response.reaction['pressedSpace']['reactionTime'])
-        mean_reaction_time = np.mean(reactionTimes)
-        
         # format the mean pupil diameter and mean reaction time
         f_reaction_time = "{:.2f}".format(mean_reaction_time)
         f_mean_pupil = "{:.2f}".format(mean_pupil)
@@ -339,6 +340,7 @@ def drawPlot(storageData: StorageData):
         correct = int(stage.correctRate)
         q1 = stage.surveyData.q1Answer
         q2 = stage.surveyData.q2Answer
+        mean_reaction_time = stage.mean_reaction_time()
         
         collumnName = f'{level}, performance: {correct}/100, feel difficult: {q1}, stressful: {q2}'
         collumnName += f'\n average reactiontime: {f_reaction_time} s, mean pupil diameter: {f_mean_pupil} mm'
