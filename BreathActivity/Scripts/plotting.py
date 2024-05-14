@@ -136,16 +136,14 @@ def normalized_outliers_pupil_diameters(raw_pupil_diameter, useMedian = False):
 
     # Set lower and upper bounds from the median
     # cite: Christophe Leys et al. Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median
-    up_threshold = median + m_value * mad
-    low_threshold = median - m_value * mad
+    upper = median + m_value * mad
+    lower = median - m_value * mad
 
     # Filter data based on bounds
-    if useMedian:
-        normalized_pupil_diameter = list(map(lambda x: normalized(x, up_threshold, low_threshold, replacement=median), raw_pupil_diameter))
-    else:
-        normalized_pupil_diameter = list(map(lambda x: normalized(x, up_threshold, low_threshold), raw_pupil_diameter))
+    med = median if useMedian else None
+    normalized_pupil_diameter = list(map(lambda x: normalized(x, upper, lower, replacement=med), raw_pupil_diameter))
 
-    return (normalized_pupil_diameter, up_threshold, low_threshold)
+    return (normalized_pupil_diameter, upper, lower)
  
 def largest(arr):
     return reduce(max, arr)
