@@ -288,6 +288,38 @@ def configured(stage: ExperimentalData):
 def all_same(lst):
     return all(x == lst[0] for x in lst)
 
+def grand_average_rr(experiments: List[ExperimentalData]):
+    easy_rr = []
+    normal_rr = []
+    hard_rr = []
+    for stage in experiments:
+        if stage.level_as_number() == 1:
+            if easy_rr == []: easy_rr = stage.serialData.respiratoryRates
+            else: easy_rr = np.average([easy_rr, stage.serialData.respiratoryRates], axis=0)
+        elif stage.level_as_number() == 2:
+            if normal_rr == []: normal_rr = stage.serialData.respiratoryRates
+            else: normal_rr = np.average([normal_rr, stage.serialData.respiratoryRates], axis=0)
+        else:
+            if hard_rr == []:hard_rr = stage.serialData.respiratoryRates
+            else: hard_rr = np.average([hard_rr, stage.serialData.respiratoryRates], axis=0)
+    return (easy_rr, normal_rr, hard_rr)
+
+def grand_average_pupil(experiments: List[ExperimentalData]):
+    easy_pupil = []
+    normal_pupil = []
+    hard_pupil = []
+    for stage in experiments:
+        if stage.level_as_number() == 1:
+            if easy_pupil == []: easy_pupil = stage.serialData.pupilSizes
+            else: easy_pupil = np.average([easy_pupil, stage.serialData.pupilSizes], axis=0)
+        elif stage.level_as_number() == 2:
+            if normal_pupil == []: normal_pupil = stage.serialData.pupilSizes
+            else: normal_pupil = np.average([normal_pupil, stage.serialData.pupilSizes], axis=0)
+        else:
+            if hard_pupil == []: hard_pupil = stage.serialData.pupilSizes
+            else: hard_pupil = np.average([hard_pupil, stage.serialData.pupilSizes], axis=0)
+    return (easy_pupil, normal_pupil, hard_pupil)
+
 def drawPlot(storageData: StorageData):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
     
@@ -315,7 +347,9 @@ def drawPlot(storageData: StorageData):
         )
     )
     
-    # TODO: create the grand average of the pupil size and respiratory rate
+    # create the grand average of the pupil size and respiratory rate
+    (avg_pupil_easy, avg_pupil_normal, avg_pupil_hard) = grand_average_pupil(experimentals)
+    (avg_rr_easy, avg_rr_normal, avg_rr_hard) = grand_average_rr(experimentals)
     
     # sort the stages based on the level
     experimentals.sort(key=lambda stage: stage.level_as_number())
