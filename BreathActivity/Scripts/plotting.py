@@ -363,8 +363,9 @@ def drawPlot(storageData: StorageData):
         f_mean_pupil = "{:.2f}".format(mean_pupil)
         f_accuracy = "{:.1f}".format(accuracy)
         
-        collumnName = f'level: {level}, nubmer of errors: {error_number}, accuracy rate: {f_accuracy}%, feel difficult: {q1}, stressful: {q2}'
-        collumnName += f'\n average reactiontime: {f_reaction_time} s, mean pupil diameter: {f_mean_pupil} mm'
+        collumnName = f'level: {level}, errors: {error_number} time, accuracy rate: {f_accuracy}%\n'
+        collumnName += f'feel difficult: {q1}, stressful: {q2}\n'
+        collumnName += f'avg reactiontime: {f_reaction_time} s, mean pupil diameter: {f_mean_pupil} mm'
         
         axis[0, stageIndex].plot(pupil_raw_time, configured_pupils, color='brown', label='filtered outlier pupil diameter')
         axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized')
