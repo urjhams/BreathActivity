@@ -259,14 +259,11 @@ def configured(stage: ExperimentalData):
     
     return stage
         
+def all_same(lst):
+    return all(x == lst[0] for x in lst)
+
 def drawPlot(storageData: StorageData):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
-    fig, axis = plt.subplots(3, len(storageData.data), figsize=size)
-        
-    axis[0, 0].set_ylabel('pupil diameter (resampled & outliners filtered-in mm)')
-    axis[1, 0].set_ylabel('Index of Pupillary Activity (Hz)')
-    axis[2, 0].set_ylabel('estimaterd respiratory rate (breaths per minute)')
-    
     maxPupil = largest(list(map(lambda stage: largest(stage.serialData.pupilSizes), storageData.data)))
     minPupil = smallest(list(map(lambda stage: smallest(stage.serialData.pupilSizes), storageData.data)))
     maxRR = 25
@@ -277,9 +274,24 @@ def drawPlot(storageData: StorageData):
     # configure the respiratory rate and pupil size data
     for stage in experimentals:
         stage = configured(stage)
+        
+    # filter the list to remove the corrupted data (which has the same value in whole the pupil size data)
+    experimentals = list(
+        filter(
+            lambda stage: not all_same(stage.serialData.pupilSizes) 
+            and not all_same(stage.serialData.respiratoryRates), 
+            experimentals
+            )
+        )
     
     # sort the stages based on the level
     experimentals.sort(key=lambda stage: stage.level_as_number())
+    
+    # create the plot
+    fig, axis = plt.subplots(3, len(experimentals), figsize=size)
+    axis[0, 0].set_ylabel('pupil diameter (resampled & outliners filtered-in mm)')
+    axis[1, 0].set_ylabel('Index of Pupillary Activity (Hz)')
+    axis[2, 0].set_ylabel('estimaterd respiratory rate (breaths per minute)')
     
     # iterate through each stage and draw the plot
     for stageIndex, stage in enumerate(experimentals):
