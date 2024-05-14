@@ -145,7 +145,7 @@ def normalized_outliers_pupil_diameters(raw_pupil_diameter, useMedian = False):
     else:
          normalized_pupil_diameter = list(map(lambda x: normalized(x, up_threshold, low_threshold), raw_pupil_diameter))
 
-    return normalized_pupil_diameter
+    return (normalized_pupil_diameter, up_threshold, low_threshold)
 
 #cite: Preprocessing pupil size data: Guidelines and code - Mariska E. Kret, Elio E. Sjak-Shie 
 # Function to process raw average pupil size data and return normalized dilation values
@@ -282,8 +282,9 @@ def drawPlot(storageData: StorageData):
         resampled_raw_pupil = resample(stage.serialData.pupilSizes, 300)
         
         # filtered the outlier and replace them with the upper and lower boundary based on Median Absolute Deviation
-        filtered_outlier_pupil = normalized_outliers_pupil_diameters(resampled_raw_pupil)
+        (filtered_outlier_pupil, filtered_max , filtered_min) = normalized_outliers_pupil_diameters(resampled_raw_pupil)
         #TODO: apply the savgol filter to the filtered_outlier_pupil
+        #TODO: calculate the IPA (or RIPA) based on filtered_outlier_pupil
         
         normalized_pupil = savgol_filter(resampled_raw_pupil, 60, 1)
         
@@ -322,7 +323,7 @@ def drawPlot(storageData: StorageData):
         axis[0, stageIndex].set_title(collumnName, size='large')
         
         axis[1, stageIndex].plot(pupil_raw_time, filtered_outlier_pupil, color='blue', label='filtered outlier pupil diameter')
-        axis[1, stageIndex].set_ylim(2, 3)
+        axis[1, stageIndex].set_ylim(2.0, 4.0)
         axis[1, stageIndex].set_xlabel('time (s)')
         
         # TODO: check again the IPA calculation
