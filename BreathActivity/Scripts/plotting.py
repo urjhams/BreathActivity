@@ -153,12 +153,9 @@ def readJsonFromFile(filePath):
 
 # normalize a list based on upper and lower bounds
 def normalized(value, upper, lower, replacement = None):
-    if value > upper:
-        return upper
-    elif value < lower:
-        return lower
-    else:
-        return replacement if replacement else value
+    if value > upper: return upper
+    elif value < lower: return lower
+    else: return replacement if replacement else value
 
 #cite: Preprocessing pupil size data: Guidelines and code - Mariska E. Kret, Elio E. Sjak-Shie 
 def normalized_outliers_pupil_diameters(raw_pupil_diameter, useMedian = False):
@@ -215,7 +212,7 @@ def modmax(d):
 		m[i] = math.fabs(d[i])
 
 	# if value is larger than both neighbours , and strictly
-	# larger than either , then it is a local maximum
+	# larger than either, then it is a local maximum
 	t = [0.0]*len(d)
 	for i in range(len(d)):
 		ll = m[i-1] if i >= 1 else m[i]
@@ -291,8 +288,13 @@ def all_same(lst):
 
 def drawPlot(storageData: StorageData):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
-    maxPupil = largest(list(map(lambda stage: largest(stage.serialData.pupilSizes), storageData.data)))
-    minPupil = smallest(list(map(lambda stage: smallest(stage.serialData.pupilSizes), storageData.data)))
+    
+    maxPupil = largest(
+        list(map(lambda stage: largest(stage.serialData.pupilSizes), storageData.data))
+    )
+    minPupil = smallest(
+        list(map(lambda stage: smallest(stage.serialData.pupilSizes), storageData.data))
+    )
     maxRR = 25
     minRR = 0
     
@@ -308,8 +310,8 @@ def drawPlot(storageData: StorageData):
             lambda stage: not all_same(stage.serialData.pupilSizes) 
             and not all_same(stage.serialData.respiratoryRates), 
             experimentals
-            )
         )
+    )
     
     # sort the stages based on the level
     experimentals.sort(key=lambda stage: stage.level_as_number())
@@ -358,7 +360,7 @@ def drawPlot(storageData: StorageData):
         error_number = stage.number_of_error()
         accuracy = stage.accuracy()
         
-        # format the mean pupil diameter and mean reaction time
+        # format of the information
         f_reaction_time = "{:.2f}".format(mean_reaction_time)
         f_mean_pupil = "{:.2f}".format(mean_pupil)
         f_accuracy = "{:.1f}".format(accuracy)
