@@ -298,12 +298,18 @@ def drawPlot(storageData: StorageData):
                 reactionTimes.append(response.reaction['pressedSpace']['reactionTime'])
         mean_reaction_time = np.mean(reactionTimes)
         
+        # format the mean pupil diameter and mean reaction time
+        f_reaction_time = "{:.2f}".format(mean_reaction_time)
+        f_mean_pupil = "{:.2f}".format(mean_pupil)
+        
+        # information of the stage
         level = stage.level
         correct = int(stage.correctRate)
         q1 = stage.surveyData.q1Answer
         q2 = stage.surveyData.q2Answer
+        
         collumnName = f'{level}, performance: {correct}/100, feel difficult: {q1}, stressful: {q2}'
-        collumnName += f'\n reaction: {"{:.2f}".format(mean_reaction_time)} s, mean pupil diameter: {"{:.2f}".format(mean_pupil)} mm'
+        collumnName += f'\n average reactiontime: {f_reaction_time} s, mean pupil diameter: {f_mean_pupil} mm'
         
         axis[0, stageIndex].plot(pupil_raw_time, filtered_outlier_pupil, color='brown', label='filtered outlier pupil diameter')
         axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized')
