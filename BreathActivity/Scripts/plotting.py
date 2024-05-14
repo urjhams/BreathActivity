@@ -351,6 +351,9 @@ def drawPlot(storageData: StorageData):
     (avg_pupil_easy, avg_pupil_normal, avg_pupil_hard) = grand_average_pupil(experimentals)
     (avg_rr_easy, avg_rr_normal, avg_rr_hard) = grand_average_rr(experimentals)
     
+    # TODO: make the IPA built-in function in ExperimentalData
+    # TODO: make a function to calculate the grand IPA from List[ExperimentalData]
+    
     # sort the stages based on the level
     experimentals.sort(key=lambda stage: stage.level_as_number())
     
