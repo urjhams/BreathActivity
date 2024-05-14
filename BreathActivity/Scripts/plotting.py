@@ -8,6 +8,8 @@ from scipy.signal import resample
 from scipy.stats import median_abs_deviation
 from functools import reduce
 import math , pywt , numpy as np
+from scipy.signal import savgol_filter
+import numpy as np
 
 # parameters
 folderPath = sys.argv[1]
@@ -154,9 +156,6 @@ def smallest(arr):
 # split a list into chunks of size `chunk_size`
 def split_list(lst, chunk_size):
     return list(zip(*[iter(lst)] * chunk_size))
-        
-from scipy.signal import savgol_filter
-import numpy as np
 
 width_inches = 1920 / 100  # 38.4 inches
 height_inches = 1080 / 100  # 21.6 inches
@@ -255,7 +254,11 @@ def drawPlot(storageData: StorageData):
         # filtered the outlier and replace them with the upper and lower boundary based on Median Absolute Deviation
         (filtered_outlier_pupil, filtered_max , filtered_min) = normalized_outliers_pupil_diameters(resampled_raw_pupil)
         
+        # apply savgol filter to smooth the pupil data in a window of 60 samples (which mean 60 seconds)
         normalized_pupil = savgol_filter(filtered_outlier_pupil, 60, 1)
+        
+        # mean pupil diameter
+        mean_pupil = np.mean(filtered_outlier_pupil)
         
         # mapping the pupilData to IPA, `resampled_raw_pupil` contains each element for each second already
         splited = split_list(filtered_outlier_pupil, 5)
@@ -288,7 +291,7 @@ def drawPlot(storageData: StorageData):
         q1 = stage.surveyData.q1Answer
         q2 = stage.surveyData.q2Answer
         collumnName = f'{level}, performance: {correct}/100, feel difficult: {q1}, stressful: {q2}'
-        collumnName += f'\n reaction: {"{:.2f}".format(mean_reaction_time)}s'
+        collumnName += f'\n reaction: {"{:.2f}".format(mean_reaction_time)}s, mean pupil diameter: {"{:.2f}".format(mean_pupil)}mm'
         
         axis[0, stageIndex].plot(pupil_raw_time, filtered_outlier_pupil, color='brown', label='filtered outlier pupil diameter')
         axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized')
