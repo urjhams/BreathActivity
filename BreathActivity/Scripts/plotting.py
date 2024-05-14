@@ -58,6 +58,14 @@ class ExperimentalData:
     serialData: SerialData = SerialData()
     correctRate: Union[float, None] = None
     surveyData: Union[SurveyData, None] = None
+    
+    def level_as_number(self):
+        if self.level == 'easy':
+            return 1
+        elif self.level == 'hard':
+            return 3
+        else:
+            return 2
 
 @dataclass
 class StorageData:
@@ -239,7 +247,11 @@ def drawPlot(storageData: StorageData):
     maxRR = 25
     minRR = 0
     
-    for stageIndex, stage in enumerate(storageData.data):
+    experimentals = storageData.data
+    # sort the stages based on the level
+    experimentals.sort(key=lambda stage: stage.level_as_number())
+    
+    for stageIndex, stage in enumerate(experimentals):
         rr_array = stage.serialData.respiratoryRates
         rr_len = len(rr_array)
         rr_indicies = np.linspace(0, rr_len - 1, num=rr_len)
@@ -291,7 +303,7 @@ def drawPlot(storageData: StorageData):
         q1 = stage.surveyData.q1Answer
         q2 = stage.surveyData.q2Answer
         collumnName = f'{level}, performance: {correct}/100, feel difficult: {q1}, stressful: {q2}'
-        collumnName += f'\n reaction: {"{:.2f}".format(mean_reaction_time)}s, mean pupil diameter: {"{:.2f}".format(mean_pupil)}mm'
+        collumnName += f'\n reaction: {"{:.2f}".format(mean_reaction_time)} s, mean pupil diameter: {"{:.2f}".format(mean_pupil)} mm'
         
         axis[0, stageIndex].plot(pupil_raw_time, filtered_outlier_pupil, color='brown', label='filtered outlier pupil diameter')
         axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized')
