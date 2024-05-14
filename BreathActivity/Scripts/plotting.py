@@ -173,7 +173,9 @@ def normalized_outliers_pupil_diameters(raw_pupil_diameter, useMedian = False):
 
     # Filter data based on bounds
     med = median if useMedian else None
-    normalized_pupil_diameter = list(map(lambda x: normalized(x, upper, lower, replacement=med), raw_pupil_diameter))
+    normalized_pupil_diameter = list(
+        map(lambda x: normalized(x, upper, lower, replacement=med), raw_pupil_diameter)
+    )
 
     return (normalized_pupil_diameter, upper, lower)
  
