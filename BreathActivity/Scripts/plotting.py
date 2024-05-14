@@ -74,6 +74,25 @@ class ExperimentalData:
             if 'pressedSpace' in response.reaction:
                 reactionTimes.append(response.reaction['pressedSpace']['reactionTime'])
         return np.mean(reactionTimes)
+    
+    # number of error in the task made by the user
+    def number_of_error(self):
+        # calculate the number of error
+        error = 0
+        for response in self.response:
+            if 'pressedSpace' in response.reaction and 'incorrect' in response.type:
+                error += 1
+        return error
+    
+    # accuracy rate from the task (from both directly pressed and indirectly passed)
+    def accuracy(self):
+        # number of reaction as pressedSpace and have correct response
+        total_correct = 0
+        for response in self.response:
+            if 'correct' in response.type:
+                total_correct += 1
+        # calculate the accuracy
+        return (total_correct / len(self.response)) * 100
 
 @dataclass
 class StorageData:
@@ -331,18 +350,20 @@ def drawPlot(storageData: StorageData):
         
         pupil_raw_time = np.arange(len(configured_pupils))
         
-        # format the mean pupil diameter and mean reaction time
-        f_reaction_time = "{:.2f}".format(mean_reaction_time)
-        f_mean_pupil = "{:.2f}".format(mean_pupil)
-        
         # information of the stage
         level = stage.level
-        correct = int(stage.correctRate)
         q1 = stage.surveyData.q1Answer
         q2 = stage.surveyData.q2Answer
         mean_reaction_time = stage.mean_reaction_time()
+        error_number = stage.number_of_error()
+        accuracy = stage.accuracy()
         
-        collumnName = f'{level}, performance: {correct}/100, feel difficult: {q1}, stressful: {q2}'
+        # format the mean pupil diameter and mean reaction time
+        f_reaction_time = "{:.2f}".format(mean_reaction_time)
+        f_mean_pupil = "{:.2f}".format(mean_pupil)
+        f_accuracy = "{:.1f}".format(accuracy)
+        
+        collumnName = f'level: {level}, nubmer of errors: {error_number}, accuracy rate: {f_accuracy}%, feel difficult: {q1}, stressful: {q2}'
         collumnName += f'\n average reactiontime: {f_reaction_time} s, mean pupil diameter: {f_mean_pupil} mm'
         
         axis[0, stageIndex].plot(pupil_raw_time, configured_pupils, color='brown', label='filtered outlier pupil diameter')
@@ -379,9 +400,4 @@ def drawPlot(storageData: StorageData):
 data = readJsonFilesFromFolder(folderPath)
 
 if data:
-    # drawPlot(data[1])
-    for storageData in data:
-        try:
-            drawPlot(storageData)
-        except:
-            print('🤷🏻‍♂️ cannot make plot of this')
+    for storageData in data: drawPlot(storageData)
