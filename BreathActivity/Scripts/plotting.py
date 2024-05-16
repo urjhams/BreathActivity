@@ -10,6 +10,7 @@ from functools import reduce
 import math , pywt , numpy as np
 from scipy.signal import savgol_filter
 import numpy as np
+from enum import Enum
 
 # parameters
 folderPath = sys.argv[1]
@@ -328,33 +329,44 @@ def configured(stage: ExperimentalData):
 def all_same(lst):
     return all(x == lst[0] for x in lst)
 
-def grand_average_rr(experiments: List[ExperimentalData]):
-    easy_rr = []
-    normal_rr = []
-    hard_rr = []
-    for stage in experiments:
-        if stage.level_as_number() == 1:
-            if easy_rr != []: easy_rr = np.average([easy_rr, stage.serialData.respiratoryRates], axis=0)
-        elif stage.level_as_number() == 2:
-            if normal_rr != []: normal_rr = np.average([normal_rr, stage.serialData.respiratoryRates], axis=0)
-        else:
-            if hard_rr != []: hard_rr = np.average([hard_rr, stage.serialData.respiratoryRates], axis=0)
-    return (easy_rr, normal_rr, hard_rr)
+class ExperimentDataType(Enum):
+    PUPIL = 1
+    RR = 2
+    
+# grand average class that contains: type (ExperimentDataType), easy, normal, hard data as array
+class GrandAverage:
+    def __init__(self, type: ExperimentDataType, easy: list, normal: list, hard: list):
+        self.type = type
+        self.easy = easy
+        self.normal = normal
+        self.hard = hard
 
-def grand_average_pupil(experiments: List[ExperimentalData]):
-    easy_pupil = []
-    normal_pupil = []
-    hard_pupil = []
-    for stage in experiments:
-        if stage.level_as_number() == 1:
-            if easy_pupil != []: np.average([easy_pupil, stage.serialData.pupilSizes], axis=0)
-        elif stage.level_as_number() == 2:
-            if normal_pupil != []: normal_pupil = np.average([normal_pupil, stage.serialData.pupilSizes], axis=0)
-        else:
-            if hard_pupil != []: hard_pupil = np.average([hard_pupil, stage.serialData.pupilSizes], axis=0)
-    return (easy_pupil, normal_pupil, hard_pupil)
+# grand average of the data in the list of storageData to combine the data 
+# in the same level across the whole candidates
+def grand_average(type: ExperimentDataType, storageDatas: List[StorageData]):
+    
+    easy_data = []
+    normal_data = []
+    hard_data = []
+    
+    for storageData in storageDatas:
+        for stage in storageData.data:
+            # dertemine the data set based on the type
+            if type == ExperimentDataType.PUPIL: dataSet = stage.serialData.pupilSizes
+            else: dataSet = stage.serialData.respiratoryRates
+            
+            # determine the level of the stage and calculate average the data
+            # Calculate the average of each loop to get the grand average of the whole list
+            if stage.level_as_number() == 1:
+                if easy_data != []: easy_data = np.average([easy_data, dataSet], axis=0)
+            elif stage.level_as_number() == 2:
+                if normal_data != []: normal_data = np.average([normal_data, dataSet], axis=0)
+            else:
+                if hard_data != []: hard_data = np.average([hard_data, dataSet], axis=0)
+                
+    return GrandAverage(type, easy_data, normal_data, hard_data)
 
-def drawPlot(storageData: StorageData):
+def drawPlot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_rr: GrandAverage):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
     
     maxPupil = largest(
@@ -380,10 +392,6 @@ def drawPlot(storageData: StorageData):
             experimentals
         )
     )
-    
-    # create the grand average of the pupil size and respiratory rate
-    (avg_pupil_easy, avg_pupil_normal, avg_pupil_hard) = grand_average_pupil(experimentals)
-    (avg_rr_easy, avg_rr_normal, avg_rr_hard) = grand_average_rr(experimentals)
     
     # TODO: make the IPA built-in function in ExperimentalData
     # TODO: make a function to calculate the grand IPA from List[ExperimentalData]
@@ -478,5 +486,10 @@ def drawPlot(storageData: StorageData):
 
 data = readJsonFilesFromFolder(folderPath)
 
+# calculate the grand average of the pupil size and respiratory rate
+grand_average_pupil = grand_average(ExperimentDataType.PUPIL, data)
+grand_average_rr = grand_average(ExperimentDataType.RR, data)
+
+# draw the plots
 if data:
-    for storageData in data: drawPlot(storageData)
+    for storageData in data: drawPlot(storageData, grand_average_pupil, grand_average_rr)
