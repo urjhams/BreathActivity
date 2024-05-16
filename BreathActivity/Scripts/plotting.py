@@ -368,19 +368,32 @@ def grand_average(type: ExperimentDataType, storageDatas: List[StorageData]):
     hard_data = []
     
     for storageData in storageDatas:
+        print(f'🙆🏻 calculating grand average of {storageData.userData.name}, type: {type}')
         for stage in storageData.data:
             # dertemine the data set based on the type
             if type == ExperimentDataType.PUPIL: dataSet = stage.serialData.pupilSizes
             else: dataSet = stage.serialData.respiratoryRates
             
+            # skip the loop if this is an empty data set
+            if len(dataSet) == 0: continue
+
             # determine the level of the stage and calculate average the data
             # Calculate the average of each loop to get the grand average of the whole list
             if stage.level_as_number() == 1:
-                if easy_data != []: easy_data = np.average([easy_data, dataSet], axis=0)
+                print(f'calculating easy data ({len(easy_data)}) with dataSet ({len(dataSet)})')
+                if len(easy_data) == 0: easy_data = dataSet
+                else: easy_data = np.average([easy_data, dataSet], axis=0)
+                print(f'result: {len(easy_data)}')
             elif stage.level_as_number() == 2:
-                if normal_data != []: normal_data = np.average([normal_data, dataSet], axis=0)
+                print(f'calculating normal data ({len(normal_data)}) with dataSet ({len(dataSet)})')
+                if len(normal_data) == 0: normal_data = normal_data = dataSet
+                else: np.average([normal_data, dataSet], axis=0)
+                print(f'result: {len(normal_data)}')
             else:
-                if hard_data != []: hard_data = np.average([hard_data, dataSet], axis=0)
+                print(f'calculating hard data ({len(hard_data)}) with dataSet ({len(dataSet)})')
+                if len(hard_data) == 0: hard_data = dataSet
+                else: hard_data = np.average([hard_data, dataSet], axis=0)
+                print(f'result: {len(hard_data)}')
                 
     return GrandAverage(type, easy_data, normal_data, hard_data)
 
@@ -388,19 +401,6 @@ def drawPlot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
     
     experimentals = storageData.data
-    
-    # # configure the respiratory rate and pupil size data
-    # for stage in experimentals:
-    #     stage = configured(stage)
-        
-    # # filter the list to remove the corrupted data (which has the same value in whole the pupil size data)
-    # experimentals = list(
-    #     filter(
-    #         lambda stage: not all_same(stage.serialData.pupilSizes) 
-    #         and not all_same(stage.serialData.respiratoryRates), 
-    #         experimentals
-    #     )
-    # )
     
     # define the maximum and minimum value of the pupil size and respiratory rate in the plot
     maxPupil = largest(
@@ -508,12 +508,15 @@ def drawPlot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_
 data = readJsonFilesFromFolder(folderPath)
 
 if data:
-    
+    # apply the configuration step on the data
     for storageData in data: configure_storageData(storageData)
     
     # calculate the grand average of the pupil size and respiratory rate
     grand_average_pupil = grand_average(ExperimentDataType.PUPIL, data)
     grand_average_rr = grand_average(ExperimentDataType.RR, data)
+    
+    print(len(grand_average_rr.easy))
+    print(len(grand_average_pupil.easy))
 
-    # draw the plots
-    for storageData in data: drawPlot(storageData, grand_average_pupil, grand_average_rr)
+    # # draw the plots
+    # for storageData in data: drawPlot(storageData, grand_average_pupil, grand_average_rr)
