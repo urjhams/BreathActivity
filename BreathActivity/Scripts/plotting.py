@@ -325,7 +325,25 @@ def configured(stage: ExperimentalData):
     stage.serialData.pupilSizes = filtered_outlier_pupil
     
     return stage
+
+def configure_storageData(storageData: StorageData):
+    experimentals = storageData.data
+    
+    # configure the respiratory rate and pupil size data
+    for stage in experimentals:
+        stage = configured(stage)
         
+    # filter the list to remove the corrupted data (which has the same value in whole the pupil size data)
+    experimentals = list(
+        filter(
+            lambda stage: not all_same(stage.serialData.pupilSizes) 
+            and not all_same(stage.serialData.respiratoryRates), 
+            experimentals
+        )
+    )
+    
+    storageData.data = experimentals
+
 def all_same(lst):
     return all(x == lst[0] for x in lst)
 
@@ -371,26 +389,26 @@ def drawPlot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_
     
     experimentals = storageData.data
     
-    # configure the respiratory rate and pupil size data
-    for stage in experimentals:
-        stage = configured(stage)
+    # # configure the respiratory rate and pupil size data
+    # for stage in experimentals:
+    #     stage = configured(stage)
         
-    # filter the list to remove the corrupted data (which has the same value in whole the pupil size data)
-    experimentals = list(
-        filter(
-            lambda stage: not all_same(stage.serialData.pupilSizes) 
-            and not all_same(stage.serialData.respiratoryRates), 
-            experimentals
-        )
-    )
+    # # filter the list to remove the corrupted data (which has the same value in whole the pupil size data)
+    # experimentals = list(
+    #     filter(
+    #         lambda stage: not all_same(stage.serialData.pupilSizes) 
+    #         and not all_same(stage.serialData.respiratoryRates), 
+    #         experimentals
+    #     )
+    # )
     
     # define the maximum and minimum value of the pupil size and respiratory rate in the plot
     maxPupil = largest(
         list(map(lambda stage: largest(stage.serialData.pupilSizes), experimentals))
-    )
+    ) + 0.1
     minPupil = smallest(
         list(map(lambda stage: smallest(stage.serialData.pupilSizes), experimentals))
-    )
+    ) - 0.1
     maxRR = 25
     minRR = 0
     
@@ -456,7 +474,7 @@ def drawPlot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_
         
         axis[0, stageIndex].plot(pupil_raw_time, configured_pupils, color='brown', label='filtered outlier pupil diameter')
         axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized')
-        axis[0, stageIndex].plot(pupil_raw_time, grand_avg_pupil, color='green', label='grand average pupil diameter')
+        # axis[0, stageIndex].plot(pupil_raw_time, grand_avg_pupil, color='green', label='grand average pupil diameter')
         axis[0, stageIndex].set_ylim(minPupil, maxPupil)
         axis[0, stageIndex].set_xlabel('time (s)')
         axis[0, stageIndex].set_title(collumnName, size='large')
@@ -467,7 +485,7 @@ def drawPlot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_
         axis[1, stageIndex].set_title(f'Task IPA: {"{:.3f}".format(grand_ipa)}Hz')
         
         axis[2, stageIndex].plot(time, configured_rr, color='red', label='Respiratoy rate')
-        axis[2, stageIndex].plot(time, grand_avg_rr, color='green', label='grand average respiratory rate')
+        # axis[2, stageIndex].plot(time, grand_avg_rr, color='green', label='grand average respiratory rate')
         axis[2, stageIndex].set_ylim(minRR, maxRR)
         axis[2, stageIndex].set_xlabel('time (every 5s)')
         
@@ -489,10 +507,13 @@ def drawPlot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_
 
 data = readJsonFilesFromFolder(folderPath)
 
-# calculate the grand average of the pupil size and respiratory rate
-grand_average_pupil = grand_average(ExperimentDataType.PUPIL, data)
-grand_average_rr = grand_average(ExperimentDataType.RR, data)
-
-# draw the plots
 if data:
+    
+    for storageData in data: configure_storageData(storageData)
+    
+    # calculate the grand average of the pupil size and respiratory rate
+    grand_average_pupil = grand_average(ExperimentDataType.PUPIL, data)
+    grand_average_rr = grand_average(ExperimentDataType.RR, data)
+
+    # draw the plots
     for storageData in data: drawPlot(storageData, grand_average_pupil, grand_average_rr)
