@@ -358,6 +358,19 @@ class GrandAverage:
         self.easy = easy
         self.normal = normal
         self.hard = hard
+        
+    def combined(self):
+        result = []
+        for element in self.easy: result.append(element)
+        for element in self.normal: result.append(element)
+        for element in self.hard: result.append(element)
+        return result
+        
+    def min(self):
+        return smallest(self.combined())
+    
+    def max(self):
+        return largest(self.combined())
 
 # grand average of the data in the list of storageData to combine the data 
 # in the same level across the whole candidates
@@ -390,24 +403,18 @@ def grand_average(type: ExperimentDataType, storageDatas: List[StorageData]):
                 
     return GrandAverage(type, easy_data, normal_data, hard_data)
 
-def drawPlot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_rr: GrandAverage):
+def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_rr: GrandAverage):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
     
     experimentals = storageData.data
     
     # define the maximum and minimum value of the pupil size and respiratory rate in the plot
-    maxPupil = largest(
-        list(map(lambda stage: largest(stage.serialData.pupilSizes), experimentals))
-    ) + 0.1
-    minPupil = smallest(
-        list(map(lambda stage: smallest(stage.serialData.pupilSizes), experimentals))
-    ) - 0.1
+    maxPupil = largest(list(map(lambda stage: largest(stage.serialData.pupilSizes), experimentals)))
+    pupil_up_bound = max(maxPupil, grand_average_pupil.max()) + 0.1
+    minPupil = smallest(list(map(lambda stage: smallest(stage.serialData.pupilSizes), experimentals)))
+    pupil_min_bound = min(minPupil, grand_average_pupil.min()) - 0.1
     maxRR = 25
     minRR = 0
-    
-    # TODO: make the IPA built-in function in ExperimentalData
-    # TODO: make a function to calculate the grand IPA from List[ExperimentalData]
-    # TODO: draw the grand average and grand IPA in the plot
     
     # sort the stages based on the level
     experimentals.sort(key=lambda stage: stage.level_as_number())
@@ -477,9 +484,9 @@ def drawPlot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_
         
         axis[0, stageIndex].plot(pupil_raw_time, configured_pupils, color='brown', label='filtered outlier pupil diameter')
         axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized')
-        axis[0, stageIndex].plot(pupil_raw_time, avg_pupil, color='green', label='grand average pupil diameter')
-        # axis[0, stageIndex].set_ylim(minPupil, maxPupil)
-        axis[0, stageIndex].set_ylim(2, 4)
+        axis[0, stageIndex].plot(pupil_raw_time, avg_pupil, color='green', label='grand average pupil diameter', linestyle='solid', alpha=0.4)
+        axis[0, stageIndex].set_ylim(pupil_min_bound, pupil_up_bound)
+        # axis[0, stageIndex].set_ylim(2.2, 4.4)
         axis[0, stageIndex].set_xlabel('time (s)')
         axis[0, stageIndex].set_title(collumnName, size='large')
         
@@ -489,7 +496,7 @@ def drawPlot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_
         axis[1, stageIndex].set_title(f'Task IPA: {"{:.3f}".format(grand_ipa)}Hz')
         
         axis[2, stageIndex].plot(time, configured_rr, color='red', label='Respiratoy rate')
-        axis[2, stageIndex].plot(time, avg_rr, color='green', label='grand average respiratory rate')
+        axis[2, stageIndex].plot(time, avg_rr, color='green', label='grand average respiratory rate', linestyle='dashed', alpha=0.7)
         axis[2, stageIndex].set_ylim(minRR, maxRR)
         axis[2, stageIndex].set_xlabel('time (every 5s)')
         
@@ -499,13 +506,14 @@ def drawPlot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_
     # Adjust layout to prevent overlapping of labels
     plt.tight_layout()
     
+    # save the plot
     plots_dir = f'{folderPath}/plots'
     os.makedirs(plots_dir, exist_ok=True)
     plot = f'{plots_dir}/{storageData.userData.name} ({storageData.userData.levelTried}).png'
-    print(f'🙆🏻 saving {plot}')
     
     plt.savefig(plot)
     plt.close()
+    print(f'🙆🏻 plot saved at {plot}')
     
 # ------------------ main -----------------
 
@@ -518,6 +526,6 @@ if data:
     # calculate the grand average of the pupil size and respiratory rate
     grand_average_pupil = grand_average(ExperimentDataType.PUPIL, data)
     grand_average_rr = grand_average(ExperimentDataType.RR, data)
-
+    
     # draw the plots
-    for storageData in data: drawPlot(storageData, grand_average_pupil, grand_average_rr)
+    for storageData in data: generate_plot(storageData, grand_average_pupil, grand_average_rr)
