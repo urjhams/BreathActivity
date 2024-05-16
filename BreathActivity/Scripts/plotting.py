@@ -369,15 +369,6 @@ def grand_average(type: ExperimentDataType, storageDatas: List[StorageData]):
 def drawPlot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_rr: GrandAverage):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
     
-    maxPupil = largest(
-        list(map(lambda stage: largest(stage.serialData.pupilSizes), storageData.data))
-    )
-    minPupil = smallest(
-        list(map(lambda stage: smallest(stage.serialData.pupilSizes), storageData.data))
-    )
-    maxRR = 25
-    minRR = 0
-    
     experimentals = storageData.data
     
     # configure the respiratory rate and pupil size data
@@ -392,6 +383,16 @@ def drawPlot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_
             experimentals
         )
     )
+    
+    # define the maximum and minimum value of the pupil size and respiratory rate in the plot
+    maxPupil = largest(
+        list(map(lambda stage: largest(stage.serialData.pupilSizes), experimentals))
+    )
+    minPupil = smallest(
+        list(map(lambda stage: smallest(stage.serialData.pupilSizes), experimentals))
+    )
+    maxRR = 25
+    minRR = 0
     
     # TODO: make the IPA built-in function in ExperimentalData
     # TODO: make a function to calculate the grand IPA from List[ExperimentalData]
@@ -455,6 +456,7 @@ def drawPlot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_
         
         axis[0, stageIndex].plot(pupil_raw_time, configured_pupils, color='brown', label='filtered outlier pupil diameter')
         axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized')
+        axis[0, stageIndex].plot(pupil_raw_time, grand_avg_pupil, color='green', label='grand average pupil diameter')
         axis[0, stageIndex].set_ylim(minPupil, maxPupil)
         axis[0, stageIndex].set_xlabel('time (s)')
         axis[0, stageIndex].set_title(collumnName, size='large')
@@ -465,6 +467,7 @@ def drawPlot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_
         axis[1, stageIndex].set_title(f'Task IPA: {"{:.3f}".format(grand_ipa)}Hz')
         
         axis[2, stageIndex].plot(time, configured_rr, color='red', label='Respiratoy rate')
+        axis[2, stageIndex].plot(time, grand_avg_rr, color='green', label='grand average respiratory rate')
         axis[2, stageIndex].set_ylim(minRR, maxRR)
         axis[2, stageIndex].set_xlabel('time (every 5s)')
         
