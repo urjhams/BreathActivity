@@ -368,7 +368,6 @@ def grand_average(type: ExperimentDataType, storageDatas: List[StorageData]):
     hard_data = []
     
     for storageData in storageDatas:
-        print(f'🙆🏻 calculating grand average of {storageData.userData.name}, type: {type}')
         for stage in storageData.data:
             # dertemine the data set based on the type
             if type == ExperimentDataType.PUPIL: dataSet = stage.serialData.pupilSizes
@@ -380,20 +379,14 @@ def grand_average(type: ExperimentDataType, storageDatas: List[StorageData]):
             # determine the level of the stage and calculate average the data
             # Calculate the average of each loop to get the grand average of the whole list
             if stage.level_as_number() == 1:
-                print(f'calculating easy data ({len(easy_data)}) with dataSet ({len(dataSet)})')
                 if len(easy_data) == 0: easy_data = dataSet
                 else: easy_data = np.average([easy_data, dataSet], axis=0)
-                print(f'result: {len(easy_data)}')
             elif stage.level_as_number() == 2:
-                print(f'calculating normal data ({len(normal_data)}) with dataSet ({len(dataSet)})')
                 if len(normal_data) == 0: normal_data = normal_data = dataSet
                 else: np.average([normal_data, dataSet], axis=0)
-                print(f'result: {len(normal_data)}')
             else:
-                print(f'calculating hard data ({len(hard_data)}) with dataSet ({len(dataSet)})')
                 if len(hard_data) == 0: hard_data = dataSet
                 else: hard_data = np.average([hard_data, dataSet], axis=0)
-                print(f'result: {len(hard_data)}')
                 
     return GrandAverage(type, easy_data, normal_data, hard_data)
 
@@ -429,6 +422,16 @@ def drawPlot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_
     for stageIndex, stage in enumerate(experimentals):
         configured_rr = stage.serialData.respiratoryRates
         configured_pupils = stage.serialData.pupilSizes
+        
+        if stage.level_as_number() == 1:
+            avg_pupil = grand_avg_pupil.easy
+            avg_rr = grand_avg_rr.easy
+        elif stage.level_as_number() == 2:
+            avg_pupil = grand_avg_pupil.normal
+            avg_rr = grand_avg_rr.normal
+        else:
+            avg_pupil = grand_avg_pupil.hard
+            avg_rr = grand_avg_rr.hard
         
         # apply savgol filter to smooth the pupil data in a window of 60 samples (which mean 60 seconds)
         normalized_pupil = savgol_filter(configured_pupils, 60, 1)
@@ -474,8 +477,9 @@ def drawPlot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_
         
         axis[0, stageIndex].plot(pupil_raw_time, configured_pupils, color='brown', label='filtered outlier pupil diameter')
         axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized')
-        # axis[0, stageIndex].plot(pupil_raw_time, grand_avg_pupil, color='green', label='grand average pupil diameter')
-        axis[0, stageIndex].set_ylim(minPupil, maxPupil)
+        axis[0, stageIndex].plot(pupil_raw_time, avg_pupil, color='green', label='grand average pupil diameter')
+        # axis[0, stageIndex].set_ylim(minPupil, maxPupil)
+        axis[0, stageIndex].set_ylim(2, 4)
         axis[0, stageIndex].set_xlabel('time (s)')
         axis[0, stageIndex].set_title(collumnName, size='large')
         
@@ -485,7 +489,7 @@ def drawPlot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_
         axis[1, stageIndex].set_title(f'Task IPA: {"{:.3f}".format(grand_ipa)}Hz')
         
         axis[2, stageIndex].plot(time, configured_rr, color='red', label='Respiratoy rate')
-        # axis[2, stageIndex].plot(time, grand_avg_rr, color='green', label='grand average respiratory rate')
+        axis[2, stageIndex].plot(time, avg_rr, color='green', label='grand average respiratory rate')
         axis[2, stageIndex].set_ylim(minRR, maxRR)
         axis[2, stageIndex].set_xlabel('time (every 5s)')
         
@@ -514,9 +518,6 @@ if data:
     # calculate the grand average of the pupil size and respiratory rate
     grand_average_pupil = grand_average(ExperimentDataType.PUPIL, data)
     grand_average_rr = grand_average(ExperimentDataType.RR, data)
-    
-    print(len(grand_average_rr.easy))
-    print(len(grand_average_pupil.easy))
 
-    # # draw the plots
-    # for storageData in data: drawPlot(storageData, grand_average_pupil, grand_average_rr)
+    # draw the plots
+    for storageData in data: drawPlot(storageData, grand_average_pupil, grand_average_rr)
