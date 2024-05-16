@@ -260,6 +260,46 @@ def ipa(d: list[float]):
     
 	return IPA
 
+def lhipa(d: list[float]):
+    # find max decompostiion level
+    w = pywt.Wavelet('sym16')
+    maxlev = pywt.dwt_max_level(len(d), w.dec_len)
+    
+    # set high and low frequency band indeces
+    hif, lof = 1, int(maxlev/2)
+    
+    # get detail coefficients of pupil diameter signal d
+    cD_H = pywt.downcoef('d', d, 'sym16', 'per', level=hif)
+    cD_L = pywt.downcoef('d', d, 'sym16', 'per', level=lof)
+    
+    #normalized by 1/sqrt(2^j)
+    cD_H[:] = [x / math.sqrt(2**hif) for x in cD_H]
+    cD_L[:] = [x / math.sqrt(2**lof) for x in cD_L]
+    
+    #obtain the LH:HF ratio
+    cD_LH = cD_L
+    for index in range(len(cD_LH)):
+        cD_LH[index] = cD_L[index] / cD_H[((2**lof)/(2**hif))/index]
+        
+    # detect modulus maxima
+    cD_LHm = modmax(cD_LH)
+    
+    #threshold using universal threshold lambda_univ = omega*sqrt(p(2 log n))
+    #where omega is the standard deviation of the noise
+    lambda_univ = np.std(cD_LHm) * math.sqrt(2.0 * np.log2(len(cD_LHm)))
+    cD_LHt = pywt.threshold(cD_LHm, lambda_univ, mode='less')
+    
+    # get signal duration (in seconds)
+    tt = len(d)
+    
+    #compute LHIPA
+    ctr = 0
+    for i in range(len(cD_LHt)):
+        if math.fabs(cD_LHt[i]) > 0: ctr += 1
+    LHIPA = float(ctr)/tt
+    
+    return LHIPA
+
 def configured(stage: ExperimentalData):
     original_rr = stage.serialData.respiratoryRates
     original_pupils = stage.serialData.pupilSizes
@@ -353,6 +393,7 @@ def drawPlot(storageData: StorageData):
     
     # TODO: make the IPA built-in function in ExperimentalData
     # TODO: make a function to calculate the grand IPA from List[ExperimentalData]
+    # TODO: draw the grand average and grand IPA in the plot
     
     # sort the stages based on the level
     experimentals.sort(key=lambda stage: stage.level_as_number())
