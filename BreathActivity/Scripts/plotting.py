@@ -1,7 +1,7 @@
 import os
 import json
 from dataclasses import dataclass, field
-from typing import List, Union
+from typing import List
 import sys
 import matplotlib.pyplot as plt
 from scipy.signal import resample
@@ -27,7 +27,7 @@ class ResponseType:
 @dataclass
 class CollectedData:
     pupilSize: float
-    respiratoryRate: Union[int, None]
+    respiratoryRate: int | None
 
 @dataclass
 class SerialData:
@@ -37,7 +37,7 @@ class SerialData:
 @dataclass
 class Response:
     type: ResponseType
-    reaction: Union[ReactionType, None]
+    reaction: ReactionType | None
 
 @dataclass
 class UserData:
@@ -48,8 +48,8 @@ class UserData:
 
 @dataclass
 class SurveyData:
-    q1Answer: Union[int, None]
-    q2Answer: Union[int, None]
+    q1Answer: int | None
+    q2Answer: int | None
 
 @dataclass
 class ExperimentalData:
@@ -57,8 +57,8 @@ class ExperimentalData:
     response: List[Response]
     collectedData: List[CollectedData]
     serialData: SerialData = SerialData()
-    correctRate: Union[float, None] = None
-    surveyData: Union[SurveyData, None] = None
+    correctRate: float | None = None
+    surveyData: SurveyData | None = None
     
     def level_as_number(self):
         if self.level == 'easy':
@@ -102,7 +102,7 @@ class StorageData:
     comment: str
 
 def readJsonFilesFromFolder(path):
-    storageDataList:Union[StorageData, None] = []
+    storageDataList: StorageData | None = []
     try:
         # Iterate through each file in the folder
         for filename in os.listdir(path):
@@ -556,10 +556,13 @@ if data:
     for storageData in data: configure_storageData(storageData)
     
     # calculate the grand average of the pupil size and respiratory rate
-    grand_average_pupil = grand_average(ExperimentDataType.PUPIL, data)
-    grand_average_rr = grand_average(ExperimentDataType.RR, data)
+    grand_average_pupil = grand_average_signal(ExperimentDataType.PUPIL, data)
+    grand_average_rr = grand_average_signal(ExperimentDataType.RR, data)
     
-    # TODO: draw the grand average sigbal in a seperate plot (with calculated grand average IPA)
+    # TODO: draw the grand average signal in a seperate plot (with calculated grand average IPA)
+    # TODO: in the grand average signal, maybe : for each index in the same level array, 
+    # find the array of all candidate's at that index and remove outliers then calculate 
+    # the mean of the array as the value of that index
     
     # draw the plots
     for storageData in data: generate_plot(storageData, grand_average_pupil, grand_average_rr)
