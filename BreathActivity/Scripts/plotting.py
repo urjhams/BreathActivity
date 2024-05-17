@@ -208,98 +208,98 @@ class PupilData(float):
 		self.X = diameter
 		self.timestamp = 0
 
-def modmax(d):
-	# compute signal modulus
-	m = [0.0] * len(d)
-	for i in range(len(d)):
-		m[i] = math.fabs(d[i])
+def find_modulus_maxima(data):
+    # compute signal modulus
+    modulus = [0.0] * len(data)
+    for i in range(len(data)):
+        modulus[i] = math.fabs(data[i])
 
-	# if value is larger than both neighbours , and strictly
-	# larger than either, then it is a local maximum
-	t = [0.0]*len(d)
-	for i in range(len(d)):
-		ll = m[i-1] if i >= 1 else m[i]
-		oo = m[i]
-		rr = m[i+1] if i < len(d)-2 else m[i]
-		if (ll <= oo and oo >= rr) and (ll < oo or oo > rr):
-			# compute magnitude
-			t[i] = math.sqrt(d[i]**2)
-		else:
-			t[i] = 0.0
-	return t
+    # if value is larger than both neighbours , and strictly
+    # larger than either, then it is a local maximum
+    local_maxima = [0.0]*len(data)
+    for i in range(len(data)):
+        left_neighbour = modulus[i-1] if i >= 1 else modulus[i]
+        current_value = modulus[i]
+        right_neighbour = modulus[i+1] if i < len(data)-2 else modulus[i]
+        if (left_neighbour <= current_value and current_value >= right_neighbour) and (left_neighbour < current_value or current_value > right_neighbour):
+            # compute magnitude
+            local_maxima[i] = math.sqrt(data[i]**2)
+        else:
+            local_maxima[i] = 0.0
+    return local_maxima
 
-# requirement: d is a list of float that represent the signal samples every one second.
-def ipa(d: list[float]):
-	# obtain 2-level DWT of pupil diameter signal d
-	try:
-		(cA2,cD2,cD1) = pywt.wavedec(d, 'sym16', 'per', level=2)
-	except ValueError:
-		return
+# requirement: signal_samples is a list of float that represent the signal samples every one second.
+def compute_ipa(signal_samples: list[float]):
+    # obtain 2-level DWT of pupil diameter signal
+    try:
+        (approx_coeff_2, detail_coeff_2, detail_coeff_1) = pywt.wavedec(signal_samples, 'sym16', 'per', level=2)
+    except ValueError:
+        return
 
-	# get signal duration (IN SECONDS)
-	tt = len(d)
+    # get signal duration (IN SECONDS)
+    signal_duration = len(signal_samples)
 
-	# normalize by 1=2j , j = 2 for 2-level DWT
-	cA2[:] = [x / math.sqrt(4.0) for x in cA2]
-	cD1[:] = [x / math.sqrt(2.0) for x in cD1]
-	cD2[:] = [x / math.sqrt(4.0) for x in cD2]
+    # normalize by 1=2j , j = 2 for 2-level DWT
+    approx_coeff_2[:] = [x / math.sqrt(4.0) for x in approx_coeff_2]
+    detail_coeff_1[:] = [x / math.sqrt(2.0) for x in detail_coeff_1]
+    detail_coeff_2[:] = [x / math.sqrt(4.0) for x in detail_coeff_2]
 
-	# detect modulus maxima
-	cD2m = modmax(cD2)
+    # detect modulus maxima
+    modulus_maxima = find_modulus_maxima(detail_coeff_2)
 
-	# threshold using universal threshold lambda_univ = s*sqrt(p(2 log n))
-	lambda_univ = np.std(cD2m) * math.sqrt(2.0 * np.log2(len(cD2m)))
-	# where s is the standard deviation of the noise
-	cD2t = pywt.threshold(cD2m ,lambda_univ, mode='hard')
+    # threshold using universal threshold lambda_univ = s*sqrt(p(2 log n))
+    universal_threshold = np.std(modulus_maxima) * math.sqrt(2.0 * np.log2(len(modulus_maxima)))
+    # where s is the standard deviation of the noise
+    thresholded_data = pywt.threshold(modulus_maxima, universal_threshold, mode='hard')
 
-	# compute IPA
-	ctr = 0
-	for i in range(len(cD2t)):
-		if math.fabs(cD2t[i]) > 0: ctr += 1
+    # compute IPA
+    count = 0
+    for i in range(len(thresholded_data)):
+        if math.fabs(thresholded_data[i]) > 0: count += 1
   
-	IPA = float(ctr)/tt
+    ipa = float(count)/signal_duration
     
-	return IPA
+    return ipa
 
-def lhipa(d: list[float]):
-    # find max decompostiion level
-    w = pywt.Wavelet('sym16')
-    maxlev = pywt.dwt_max_level(len(d), w.dec_len)
+def compute_lhipa(pupil_diameter_data: list[float]):
+    # find max decomposition level
+    wavelet = pywt.Wavelet('sym16')
+    max_level = pywt.dwt_max_level(len(pupil_diameter_data), wavelet.dec_len)
     
-    # set high and low frequency band indeces
-    hif, lof = 1, int(maxlev/2)
+    # set high and low frequency band indices
+    high_freq, low_freq = 1, int(max_level/2)
     
-    # get detail coefficients of pupil diameter signal d
-    cD_H = pywt.downcoef('d', d, 'sym16', 'per', level=hif)
-    cD_L = pywt.downcoef('d', d, 'sym16', 'per', level=lof)
+    # get detail coefficients of pupil diameter signal
+    high_freq_coeff = pywt.downcoef('d', pupil_diameter_data, 'sym16', 'per', level=high_freq)
+    low_freq_coeff = pywt.downcoef('d', pupil_diameter_data, 'sym16', 'per', level=low_freq)
     
-    #normalized by 1/sqrt(2^j)
-    cD_H[:] = [x / math.sqrt(2**hif) for x in cD_H]
-    cD_L[:] = [x / math.sqrt(2**lof) for x in cD_L]
+    # normalize by 1/sqrt(2^j)
+    high_freq_coeff[:] = [x / math.sqrt(2**high_freq) for x in high_freq_coeff]
+    low_freq_coeff[:] = [x / math.sqrt(2**low_freq) for x in low_freq_coeff]
     
-    #obtain the LH:HF ratio
-    cD_LH = cD_L
-    for index in range(len(cD_LH)):
-        cD_LH[index] = cD_L[index] / cD_H[((2**lof)/(2**hif))/index]
+    # obtain the LH:HF ratio
+    lh_hf_ratio = low_freq_coeff
+    for index in range(len(lh_hf_ratio)):
+        lh_hf_ratio[index] = low_freq_coeff[index] / high_freq_coeff[((2**low_freq)/(2**high_freq))/index]
         
     # detect modulus maxima
-    cD_LHm = modmax(cD_LH)
+    modulus_maxima = find_modulus_maxima(lh_hf_ratio)
     
-    #threshold using universal threshold lambda_univ = omega*sqrt(p(2 log n))
-    #where omega is the standard deviation of the noise
-    lambda_univ = np.std(cD_LHm) * math.sqrt(2.0 * np.log2(len(cD_LHm)))
-    cD_LHt = pywt.threshold(cD_LHm, lambda_univ, mode='less')
+    # threshold using universal threshold lambda_univ = omega*sqrt(p(2 log n))
+    # where omega is the standard deviation of the noise
+    universal_threshold = np.std(modulus_maxima) * math.sqrt(2.0 * np.log2(len(modulus_maxima)))
+    thresholded_data = pywt.threshold(modulus_maxima, universal_threshold, mode='less')
     
     # get signal duration (in seconds)
-    tt = len(d)
+    signal_duration = len(pupil_diameter_data)
     
-    #compute LHIPA
-    ctr = 0
-    for i in range(len(cD_LHt)):
-        if math.fabs(cD_LHt[i]) > 0: ctr += 1
-    LHIPA = float(ctr)/tt
+    # compute LHIPA
+    count = 0
+    for i in range(len(thresholded_data)):
+        if math.fabs(thresholded_data[i]) > 0: count += 1
+    lhipa = float(count)/signal_duration
     
-    return LHIPA
+    return lhipa
 
 def configured(stage: ExperimentalData):
     original_rr = stage.serialData.respiratoryRates
@@ -434,7 +434,7 @@ def grand_average_signal(type: ExperimentDataType, storageDatas: List[StorageDat
                 
     return GrandAverage(type, easy_data, normal_data, hard_data)
 
-# TODO: re-calculate the grand average: use the mean of all the means
+# generate plots for each candidate
 def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_rr: GrandAverage):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
     
@@ -482,10 +482,10 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
         splited = split_list(configured_pupils, 5)
         
         # here we calculate the IPA in each section of 5 seconds.
-        ipa_values = list(map(lambda data: ipa(data), splited))
+        ipa_values = list(map(lambda data: compute_ipa(data), splited))
         
         # calculate the grand IPA of the whole task
-        grand_ipa = ipa(configured_pupils)
+        grand_ipa = compute_ipa(configured_pupils)
         
         # smoothing the IPA values
         smoothed_ipa_values = savgol_filter(ipa_values, 12, 1)
@@ -558,6 +558,8 @@ if data:
     # calculate the grand average of the pupil size and respiratory rate
     grand_average_pupil = grand_average(ExperimentDataType.PUPIL, data)
     grand_average_rr = grand_average(ExperimentDataType.RR, data)
+    
+    # TODO: draw the grand average sigbal in a seperate plot (with calculated grand average IPA)
     
     # draw the plots
     for storageData in data: generate_plot(storageData, grand_average_pupil, grand_average_rr)
