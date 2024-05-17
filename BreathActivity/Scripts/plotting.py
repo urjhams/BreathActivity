@@ -371,10 +371,41 @@ class GrandAverage:
     
     def max(self):
         return largest(self.combined())
-
-# grand average of the data in the list of storageData to combine the data 
-# in the same level across the whole candidates
+    
+# grand average of the data in the list of storageData to combine the data
 def grand_average(type: ExperimentDataType, storageDatas: List[StorageData]):
+        
+        easy_data = []
+        normal_data = []
+        hard_data = []
+        
+        for storageData in storageDatas:
+            for stage in storageData.data:
+                # dertemine the data set based on the type
+                if type == ExperimentDataType.PUPIL: dataSet = stage.serialData.pupilSizes
+                else: dataSet = stage.serialData.respiratoryRates
+                
+                mean = np.mean(dataSet)
+                
+                # skip the loop if this is an empty data set
+                if len(dataSet) == 0: continue
+    
+                # determine the level of the stage and calculate mean of the data
+                if stage.level_as_number() == 1:
+                    if len(easy_data) == 0: easy_data = [mean] * len(dataSet)
+                    else: easy_data = [(easy_data[0] + mean) / 2] * len(dataSet)
+                elif stage.level_as_number() == 2:
+                    if len(normal_data) == 0: normal_data = [mean] * len(dataSet)
+                    else: normal_data = [(normal_data[0] + mean) / 2] * len(dataSet)
+                else:
+                    if len(hard_data) == 0: hard_data = [mean] * len(dataSet)
+                    else: hard_data = [(hard_data[0] + mean) / 2] * len(dataSet)
+                    
+        return GrandAverage(type, easy_data, normal_data, hard_data)
+
+# grand average of the data in the list of storageData to combine the data (as signal)
+# in the same level across the whole candidates
+def grand_average_signal(type: ExperimentDataType, storageDatas: List[StorageData]):
     
     easy_data = []
     normal_data = []
@@ -403,6 +434,7 @@ def grand_average(type: ExperimentDataType, storageDatas: List[StorageData]):
                 
     return GrandAverage(type, easy_data, normal_data, hard_data)
 
+# TODO: re-calculate the grand average: use the mean of all the means
 def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_rr: GrandAverage):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
     
