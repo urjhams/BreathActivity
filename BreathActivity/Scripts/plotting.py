@@ -487,9 +487,6 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
         # here we calculate the IPA in each section of 5 seconds.
         ipa_values = list(map(lambda data: compute_ipa(data), splited))
         
-        # calculate the grand IPA of the whole task
-        grand_ipa = compute_ipa(configured_pupils)
-        
         # smoothing the IPA values
         smoothed_ipa_values = savgol_filter(ipa_values, 5, 1)
         
@@ -528,7 +525,6 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
         axis[1, stageIndex].plot(ipa_time_blocks, smoothed_ipa_values, color='orange', label='IPA')
         axis[1, stageIndex].set_ylim(0, 0.2)
         axis[1, stageIndex].set_xlabel('time (every 5s)')
-        axis[1, stageIndex].set_title(f'Task IPA: {"{:.3f}".format(grand_ipa)}Hz')
         
         axis[2, stageIndex].plot(time, configured_rr, color='red', label='Respiratoy rate')
         axis[2, stageIndex].plot(time, avg_rr, color='green', label='grand average respiratory rate', linestyle='dashed', alpha=0.7)
@@ -583,6 +579,8 @@ def generate_grand_average_plot(grand_avg_pupil: GrandAverage, grand_avg_rr: Gra
         
          # smoothing the IPA values with the window of 5 samples (5 seconds of data)
         smoothed_ipa_values = savgol_filter(ipa_values, 5, 1)
+        
+        # TODO: calculate the mean accuracy rate and mean reaction time
         
         axis[0, index].plot(pupil_time, filtered_outlier_pupil, label=f'pupil diameter', color='brown')
         axis[0, index].plot(pupil_time, normalized_pupil, label=f'normalized pupil diameter', color='black')
