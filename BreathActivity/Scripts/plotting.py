@@ -514,13 +514,14 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
         collumnName += f'feel difficult: {q1}, stressful: {q2}\n'
         collumnName += f'avg reaction time: {f_reaction_time} s, mean pupil diameter: {f_mean_pupil} mm'
         
-        axis[0, stageIndex].plot(pupil_raw_time, configured_pupils, color='brown', label='filtered outlier pupil diameter')
+        axis[0, stageIndex].plot(pupil_raw_time, configured_pupils, color='brown', label='pupil diameter')
         axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized')
-        axis[0, stageIndex].plot(pupil_raw_time, avg_pupil, color='green', label='grand average pupil diameter', linestyle='solid', alpha=0.4)
+        axis[0, stageIndex].plot(pupil_raw_time, avg_pupil, color='green', label='grand average', linestyle='solid', alpha=0.4)
         axis[0, stageIndex].set_ylim(pupil_min_bound, pupil_up_bound)
         # axis[0, stageIndex].set_ylim(2.2, 4.4)
         axis[0, stageIndex].set_xlabel('time (s)')
         axis[0, stageIndex].set_title(collumnName, size='large')
+        axis[0, stageIndex].legend()
         
         axis[1, stageIndex].plot(ipa_time_blocks, smoothed_ipa_values, color='orange', label='IPA')
         axis[1, stageIndex].set_ylim(0, 0.2)
