@@ -372,6 +372,9 @@ class GrandAverage:
     def max(self):
         return largest(self.combined())
     
+    def average(self):
+        return np.average([self.easy, self.normal, self.hard], axis=0)
+    
 # grand average of the data in the list of storageData to combine the data
 def grand_average(type: ExperimentDataType, storageDatas: List[StorageData]):
         
@@ -488,7 +491,7 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
         grand_ipa = compute_ipa(configured_pupils)
         
         # smoothing the IPA values
-        smoothed_ipa_values = savgol_filter(ipa_values, 12, 1)
+        smoothed_ipa_values = savgol_filter(ipa_values, 5, 1)
         
         # the time blocks for IPA calculation (each 5 seconds)
         ipa_time_blocks = list(map(lambda index: index * 5, range(len(ipa_values))))
@@ -547,6 +550,63 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
     plt.close()
     print(f'🙆🏻 plot saved at {plot}')
     
+def generate_grand_average_plot(grand_avg_pupil: GrandAverage, grand_avg_rr: GrandAverage):
+    print()
+    levels = [
+        ('easy', grand_avg_pupil.easy, grand_avg_rr.easy), 
+        ('normal', grand_avg_pupil.normal, grand_avg_rr.normal), 
+        ('hard', grand_avg_pupil.hard, grand_avg_rr.hard)
+    ]
+        
+    fig, axis = plt.subplots(3, len(levels), figsize=size)
+    axis[0, 0].set_ylabel('pupil diameter (resampled & outliners filtered-in mm)')
+    axis[1, 0].set_ylabel('Index of Pupillary Activity (Hz)')
+    axis[2, 0].set_ylabel('estimaterd respiratory rate (breaths per minute)')
+    
+    for index, (level, pupil, rr) in enumerate(levels):
+        print(f'🙆🏻 generate grand average plot')
+        pupil_time = np.arange(len(pupil))
+        
+        # apply savgol filter to smooth the pupil data in a window of 60 samples (which mean 60 seconds)
+        normalized_pupil = savgol_filter(pupil, 60, 1)
+        
+        rr_time = list(map(lambda index: index * 5, range(len(rr))))
+        
+         # mapping the pupilData to IPA, `resampled_raw_pupil` contains each element for each second already
+        splited = split_list(pupil, 5)
+        
+        # here we calculate the IPA in each section of 5 seconds.
+        ipa_values = list(map(lambda data: compute_ipa(data), splited))
+        
+        ipa_time_blocks = list(map(lambda index: index * 5, range(len(ipa_values))))
+        
+         # smoothing the IPA values with the window of 5 samples (5 seconds of data)
+        smoothed_ipa_values = savgol_filter(ipa_values, 5, 1)
+        
+        axis[0, index].plot(pupil_time, pupil, label=f'pupil diameter', color='blue')
+        axis[0, index].plot(pupil_time, normalized_pupil, label=f'normalized pupil diameter', color='black')
+        axis[0, index].set_xlabel('time (in second)')
+        axis[0, index].set_title(level, size='large')
+        
+        axis[1, index].plot(ipa_time_blocks, smoothed_ipa_values, label=f'pupil diameter', color='blue')
+        axis[1, index].set_xlabel('time (every 5s)')
+        
+        axis[2, index].plot(rr_time, rr, label=f'respiratory rate', color='red')
+        axis[2, index].set_ylim(0, 25)
+        axis[2, index].set_xlabel('time (every 5s)')
+        
+    plt.suptitle('Grand Average', fontweight = 'bold', fontsize=18)
+    
+    # Adjust layout to prevent overlapping of labels    
+    plt.tight_layout()
+     # save the plot
+    plots_dir = f'{folderPath}/plots'
+    os.makedirs(plots_dir, exist_ok=True)
+    plot = f'{plots_dir}/Average.png'
+    plt.savefig(plot)
+    plt.close()
+    print(f'🙆🏻 plot saved at {plot}')
+     
 # ------------------ main -----------------
 
 data = readJsonFilesFromFolder(folderPath)
@@ -562,7 +622,9 @@ if data:
     # TODO: draw the grand average signal in a seperate plot (with calculated grand average IPA)
     # TODO: in the grand average signal, maybe : for each index in the same level array, 
     # find the array of all candidate's at that index and remove outliers then calculate 
-    # the mean of the array as the value of that index
+    # the mean of the array as the value of that index    
+    
+    generate_grand_average_plot(grand_average_pupil, grand_average_rr)
     
     # draw the plots
     for storageData in data: generate_plot(storageData, grand_average_pupil, grand_average_rr)
