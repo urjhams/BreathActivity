@@ -133,7 +133,12 @@ extension ExperimentalView {
   }
 }
 
+import BreathObsever
+
 #Preview {
+  @State var breathObserver = BreathObsever()
+  
   return ExperimentalView()
     .frame(minWidth: 500)
+    .environment(breathObserver)
 }

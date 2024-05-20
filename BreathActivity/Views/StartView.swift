@@ -106,19 +106,7 @@ struct StartView: View {
       .frame(maxWidth: 300)
       .pickerStyle(.menu)
       
-      if viewModel.showAmplitude {
-        Spacer()
-        amplitudeView(
-          $viewModel.amplitudes,
-          subject: observer.amplitudeSubject.eraseToAnyPublisher()
-        )
-        .frame(height: 80 * offSet)
-        .scenePadding([.leading, .trailing])
-        .padding()
-        Spacer()
-      } else {
-        Spacer()
-      }
+      Spacer()
       
       Toggle(isOn: $viewModel.showAmplitude) {
         Label {
@@ -127,6 +115,7 @@ struct StartView: View {
             .foregroundStyle(.gray)
         } icon: { Text("") }
       }
+      .padding()
       .toggleStyle(.switch)
       .onChange(of: viewModel.showAmplitude) { oldValue, newValue in
         if newValue {
@@ -136,7 +125,7 @@ struct StartView: View {
           viewModel.amplitudes = []
         }
       }
-      
+      Spacer()
       HStack {
         iconButton(
           text: "Start",
@@ -170,6 +159,18 @@ struct StartView: View {
         .foregroundStyle(.orange)
         .padding()
       }
+      .opacity(viewModel.showAmplitude ? 0 : 1)
+      .overlay {
+        if viewModel.showAmplitude {
+          amplitudeView(
+            $viewModel.amplitudes,
+            subject: observer.amplitudeSubject.eraseToAnyPublisher()
+          )
+          .frame(minHeight: 80 * offSet)
+          .padding()
+        }
+      }
+      Spacer()
     }
     .padding()
   }
@@ -223,11 +224,7 @@ extension StartView {
   private func text(for sequence: [Level]) -> String {
     var result = ""
     sequence.forEach { level in
-      if result == "" {
-        result = level.name
-      } else {
-        result += " \(level.name)"
-      }
+      result = result == "" ? level.name : result + " \(level.name)"
     }
     return result
   }
@@ -304,6 +301,7 @@ extension StartView {
   @State var label: Bool = true
   @State var showAmplitude: Bool = false
   @Bindable var storage = DataStorage()
+  @State var breathObserver = BreathObsever()
   
   return StartView(
     selection: $selection,
@@ -313,4 +311,5 @@ extension StartView {
     aboutButtonClick: {}
   )
   .frame(minHeight: 500)
+  .environment(breathObserver)
 }

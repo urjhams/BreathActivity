@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from scipy.signal import resample
 from scipy.stats import median_abs_deviation
 from functools import reduce
-import math , pywt , numpy as np
+import math, pywt, numpy as np
 from scipy.signal import savgol_filter
 import numpy as np
 from enum import Enum
