@@ -136,7 +136,7 @@ extension ExperimentalView {
 import BreathObsever
 
 #Preview {
-  @State var breathObserver = BreathObsever()
+  @Bindable var breathObserver = BreathObsever()
   
   return ExperimentalView()
     .frame(minWidth: 500)
