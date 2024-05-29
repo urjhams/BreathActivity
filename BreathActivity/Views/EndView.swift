@@ -29,11 +29,9 @@ struct EndView: View {
       }
       .padding(.top)
       
-      TextField(text: $storage.comment) {
-        Text("Answer (optional)")
-      }
-      .textFieldStyle(.roundedBorder)
-      
+      TextEditor(text: $storage.comment)
+        .clipShape(.rect(cornerRadius: 5))
+        .padding()
       
       Spacer()
       

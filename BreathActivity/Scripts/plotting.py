@@ -350,6 +350,19 @@ def all_same(lst):
 class ExperimentDataType(Enum):
     PUPIL = 1
     RR = 2
+
+class MeanInformation:
+    def __init__(self, type: ExperimentDataType, mean: float, upper: float, lower: float):
+        self.type = type
+        self.mean = mean
+        self.upper = upper
+        self.lower = lower
+class Mean:
+    def __init__(self, type: ExperimentDataType, easy: MeanInformation, normal: MeanInformation, hard: MeanInformation):
+        self.type = type
+        self.easy = easy
+        self.normal = normal
+        self.hard = hard
     
 # grand average class that contains: type (ExperimentDataType), easy, normal, hard data as array
 class GrandAverage:
@@ -376,12 +389,10 @@ class GrandAverage:
         return np.average([self.easy, self.normal, self.hard], axis=0)
     
 # grand average of the data in the list of storageData to combine the data
-def grand_average(type: ExperimentDataType, storageDatas: List[StorageData]):
-        
-        easy_data = []
-        normal_data = []
-        hard_data = []
-        
+def grand_mean(type: ExperimentDataType, storageDatas: List[StorageData]):
+        easy = MeanInformation(type, 0, 0, 0)
+        normal = MeanInformation(type, 0, 0, 0)
+        hard = MeanInformation(type, 0, 0, 0)
         for storageData in storageDatas:
             for stage in storageData.data:
                 # dertemine the data set based on the type
@@ -389,22 +400,42 @@ def grand_average(type: ExperimentDataType, storageDatas: List[StorageData]):
                 else: dataSet = stage.serialData.respiratoryRates
                 
                 mean = np.mean(dataSet)
+                upper = np.max(dataSet)
+                lower = np.min(dataSet)
                 
                 # skip the loop if this is an empty data set
                 if len(dataSet) == 0: continue
     
                 # determine the level of the stage and calculate mean of the data
                 if stage.level_as_number() == 1:
-                    if len(easy_data) == 0: easy_data = [mean] * len(dataSet)
-                    else: easy_data = [(easy_data[0] + mean) / 2] * len(dataSet)
-                elif stage.level_as_number() == 2:
-                    if len(normal_data) == 0: normal_data = [mean] * len(dataSet)
-                    else: normal_data = [(normal_data[0] + mean) / 2] * len(dataSet)
-                else:
-                    if len(hard_data) == 0: hard_data = [mean] * len(dataSet)
-                    else: hard_data = [(hard_data[0] + mean) / 2] * len(dataSet)
+                   if easy.mean == 0 and easy.upper == 0 and easy.lower == 0:
+                       easy.mean = mean
+                       easy.upper = upper
+                       easy.lower = lower
+                   else:
+                       easy.mean = (easy.mean + mean) / 2
+                       easy.upper = max(easy.upper, upper)
+                       easy.lower = min(easy.lower, lower)
                     
-        return GrandAverage(type, easy_data, normal_data, hard_data)
+                elif stage.level_as_number() == 2:
+                    if normal.mean == 0 and normal.upper == 0 and normal.lower == 0:
+                        normal.mean = mean
+                        normal.upper = upper
+                        normal.lower = lower
+                    else:
+                        normal.mean = (normal.mean + mean) / 2
+                        normal.upper = max(normal.upper, upper)
+                        normal.lower = min(normal.lower, lower)
+                else:
+                    if hard.mean == 0 and hard.upper == 0 and hard.lower == 0:
+                        hard.mean = mean
+                        hard.upper = upper
+                        hard.lower = lower
+                    else:
+                        hard.mean = (hard.mean + mean) / 2
+                        hard.upper = max(hard.upper, upper)
+                        hard.lower = min(hard.lower, lower)
+        return Mean(type, easy, normal, hard)
 
 # grand average of the data in the list of storageData to combine the data (as signal)
 # in the same level across the whole candidates
@@ -436,6 +467,44 @@ def grand_average_signal(type: ExperimentDataType, storageDatas: List[StorageDat
                 else: hard_data = np.average([hard_data, dataSet], axis=0)
                 
     return GrandAverage(type, easy_data, normal_data, hard_data)
+
+def analyze_median(storagesData: List[StorageData]):
+    print('level, mean pupul diameter (mm), mean respiratory rate (bpm)')
+    for data in storagesData:
+        print(f'🙆🏻 analyzing data from {data.userData.name}')
+        for stage in data.data:
+            configured_rr = stage.serialData.respiratoryRates
+            configured_pupils = stage.serialData.pupilSizes
+            # mean pupil diameter
+            mean_pupil = np.mean(configured_pupils)
+            
+            #mean respiratory rate
+            mean_rr = np.mean(configured_rr)
+            
+            f_mean_pupil = "{:.2f}".format(mean_pupil)
+            f_mean_rr = "{:.2f}".format(mean_rr)
+            
+            print(f'{stage.level}, {f_mean_pupil}, {f_mean_rr}')
+            
+def median_box_plot(storagesData: list[StorageData]):
+    grand_mean_pupil_data = grand_mean(ExperimentDataType.PUPIL, storagesData)
+    grand_mean_rr_data = grand_mean(ExperimentDataType.RR, storagesData)
+    
+    print('Making box plot of the median data')
+    
+    fig, axis = plt.subplots(1, 2, figsize=size)
+    axis[0].set_ylabel('mean pupil diameter (mm)')
+    axis[1].set_ylabel('mean respiratory rate (bpm)')
+    
+    # create the box plot for the pupil size
+    axis[0].boxplot([grand_mean_pupil_data.easy.mean, grand_mean_pupil_data.normal.mean, grand_mean_pupil_data.hard.mean])
+    
+    # create the box plot for the respiratory rate
+    axis[1].boxplot([grand_mean_rr_data.easy.mean, grand_mean_rr_data.normal.mean, grand_mean_rr_data.hard.mean])
+    
+    # show the plot
+    plt.show()
+    
 
 # generate plots for each candidate
 def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_rr: GrandAverage):
@@ -481,6 +550,8 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
         # mean pupil diameter
         mean_pupil = np.mean(configured_pupils)
         
+        mean_rr = np.mean(configured_rr)
+        
         # mapping the pupilData to IPA, `resampled_raw_pupil` contains each element for each second already
         splited = split_list(configured_pupils, 5)
         
@@ -508,11 +579,12 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
         # format of the information
         f_reaction_time = "{:.2f}".format(mean_reaction_time)
         f_mean_pupil = "{:.2f}".format(mean_pupil)
+        f_mean_rr = "{:.2f}".format(mean_rr)
         f_accuracy = "{:.1f}".format(accuracy)
         
         collumnName = f'level: {level}, errors: {error_number} time, accuracy rate: {f_accuracy}%\n'
         collumnName += f'feel difficult: {q1}, stressful: {q2}\n'
-        collumnName += f'avg reaction time: {f_reaction_time} s, mean pupil diameter: {f_mean_pupil} mm'
+        collumnName += f'avg reaction time: {f_reaction_time} s, mean pupil diameter: {f_mean_pupil} mm\n, mean respiratory rate: {f_mean_rr} bpm\n'
         
         axis[0, stageIndex].plot(pupil_raw_time, configured_pupils, color='brown', label='pupil diameter')
         axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized')
@@ -624,8 +696,14 @@ if data:
     grand_average_pupil = grand_average_signal(ExperimentDataType.PUPIL, data)
     grand_average_rr = grand_average_signal(ExperimentDataType.RR, data)
     
+    # analyze the median of the data from each candidate
+    analyze_median(data)
+    
+    # create the mean table and boxplot
+    median_box_plot(data)
+    
     # draw the plots
-    for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
+    # for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
     
     # draw the grand average plot
-    generate_grand_average_plot(grand_average_pupil_signal, grand_average_rr_signal)
+    # generate_grand_average_plot(grand_average_pupil_signal, grand_average_rr_signal)
