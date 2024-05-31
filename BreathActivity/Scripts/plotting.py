@@ -584,7 +584,8 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
         
         collumnName = f'level: {level}, errors: {error_number} time, accuracy rate: {f_accuracy}%\n'
         collumnName += f'feel difficult: {q1}, stressful: {q2}\n'
-        collumnName += f'avg reaction time: {f_reaction_time} s, mean pupil diameter: {f_mean_pupil} mm\n, mean respiratory rate: {f_mean_rr} bpm\n'
+        collumnName += f'avg reaction time: {f_reaction_time} s, mean pupil diameter: {f_mean_pupil} mm'
+        collumnName += f'\n, mean respiratory rate: {f_mean_rr} bpm'
         
         axis[0, stageIndex].plot(pupil_raw_time, configured_pupils, color='brown', label='pupil diameter')
         axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized')
