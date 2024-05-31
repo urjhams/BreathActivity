@@ -11,6 +11,7 @@ import math, pywt, numpy as np
 from scipy.signal import savgol_filter
 import numpy as np
 from enum import Enum
+import seaborn as sns
 
 # parameters
 folderPath = sys.argv[1]
@@ -261,6 +262,57 @@ def compute_ipa(signal_samples: list[float]):
     
     return ipa
 
+def compute_ripa(signal_samples: list[float], interval_length=5, window_length=11, polyorder=2, threshold=0.5):
+    """
+    Calculate the Real-Time Index of Pupillary Activity (RIPA) for every interval_length seconds.
+    
+    Parameters:
+    pupil_diameter (list): List of pupil diameter measurements recorded every second.
+    interval_length (int): The length of each interval in seconds (default is 5 seconds).
+    window_length (int): The length of the Savitzky-Golay filter window (must be odd, default is 11).
+    polyorder (int): The order of the polynomial used to fit the samples (default is 2).
+    threshold (float): The threshold for detecting significant oscillations (default is 0.5).
+    
+    Returns:
+    ripa_values (list): The calculated RIPA values for each interval.
+    """
+
+    def moving_median(data, window_size):
+        """Calculate the moving median with a given window size."""
+        return np.array([np.median(data[max(0, i - window_size):i + 1]) for i in range(len(data))])
+
+    def delta_function(value, threshold):
+        """Kronecker delta function modified for RIPA calculation."""
+        return 1 if value > threshold else 0
+
+    ripa_values = []
+    num_intervals = len(signal_samples) // interval_length
+
+    for i in range(num_intervals):
+        start_idx = i * interval_length
+        end_idx = start_idx + interval_length
+        segment = signal_samples[start_idx:end_idx]
+        
+        if len(segment) < window_length:
+            # If segment is smaller than window length, skip the calculation
+            continue
+        
+        # Apply Savitzky-Golay filter to the segment
+        smoothed_data = savgol_filter(segment, window_length, polyorder)
+        first_derivative = savgol_filter(segment, window_length, polyorder, deriv=1)
+        
+        # Calculate RIPA for the segment
+        median = np.median(smoothed_data)
+        count = sum(1 if abs(first_derivative[j]) > median + threshold else 0 for j in range(len(first_derivative)))
+        ripa = count / len(first_derivative)
+        
+        # Normalize and invert RIPA
+        ripa_normalized = 1 - ripa
+        
+        ripa_values.append(ripa_normalized)
+    
+    return ripa_values
+
 def compute_lhipa(pupil_diameter_data: list[float]):
     # find max decomposition level
     wavelet = pywt.Wavelet('sym16')
@@ -486,25 +538,19 @@ def analyze_median(storagesData: List[StorageData]):
             
             print(f'{stage.level}, {f_mean_pupil}, {f_mean_rr}')
             
-def median_box_plot(storagesData: list[StorageData]):
-    grand_mean_pupil_data = grand_mean(ExperimentDataType.PUPIL, storagesData)
-    grand_mean_rr_data = grand_mean(ExperimentDataType.RR, storagesData)
+def median_box_plot(grand_avg: list[GrandAverage]):
     
-    print('Making box plot of the median data')
+    fig, axis = plt.subplots(1, len(grand_avg), figsize=(10, 5))
     
-    fig, axis = plt.subplots(1, 2, figsize=size)
-    axis[0].set_ylabel('mean pupil diameter (mm)')
-    axis[1].set_ylabel('mean respiratory rate (bpm)')
-    
-    # create the box plot for the pupil size
-    axis[0].boxplot([grand_mean_pupil_data.easy.mean, grand_mean_pupil_data.normal.mean, grand_mean_pupil_data.hard.mean])
-    
-    # create the box plot for the respiratory rate
-    axis[1].boxplot([grand_mean_rr_data.easy.mean, grand_mean_rr_data.normal.mean, grand_mean_rr_data.hard.mean])
-    
-    # show the plot
+    for index, avg in enumerate(grand_avg):
+        if avg.type == ExperimentDataType.PUPIL: title = 'mean pupil diameter (mm) for each level'
+        else: title = 'mean respiratory rate (bpm) for each level'
+        # create the box plot for the pupil size
+        axis[index].boxplot([np.array(avg.easy), np.array(avg.normal), np.array(avg.hard)])
+        axis[index].set_title(title)
+        axis[index].set_xticklabels(['easy', 'normal', 'hard'])
+   
     plt.show()
-    
 
 # generate plots for each candidate
 def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_rr: GrandAverage):
@@ -694,14 +740,14 @@ if data:
     grand_average_pupil_signal = grand_average_signal(ExperimentDataType.PUPIL, data)
     grand_average_rr_signal = grand_average_signal(ExperimentDataType.RR, data)
     
-    grand_average_pupil = grand_average_signal(ExperimentDataType.PUPIL, data)
-    grand_average_rr = grand_average_signal(ExperimentDataType.RR, data)
-    
     # analyze the median of the data from each candidate
     analyze_median(data)
     
+    
+    # TODO: remove outliers from the rr signal data
+    
     # create the mean table and boxplot
-    median_box_plot(data)
+    median_box_plot([grand_average_pupil_signal, grand_average_rr_signal])
     
     # draw the plots
     # for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
