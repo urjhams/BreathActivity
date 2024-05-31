@@ -530,7 +530,7 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
     axis[2, 0].set_ylabel('estimaterd respiratory rate (breaths per minute)')
     
     # iterate through each stage and draw the plot
-    for stageIndex, stage in enumerate(experimentals):
+    for index, stage in enumerate(experimentals):
         configured_rr = stage.serialData.respiratoryRates
         configured_pupils = stage.serialData.pupilSizes
         
@@ -587,23 +587,23 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
         collumnName += f'avg reaction time: {f_reaction_time} s, mean pupil diameter: {f_mean_pupil} mm'
         collumnName += f'\n, mean respiratory rate: {f_mean_rr} bpm'
         
-        axis[0, stageIndex].plot(pupil_raw_time, configured_pupils, color='brown', label='pupil diameter')
-        axis[0, stageIndex].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized')
-        axis[0, stageIndex].plot(pupil_raw_time, avg_pupil, color='green', label='grand average', linestyle='solid', alpha=0.4)
-        axis[0, stageIndex].set_ylim(pupil_min_bound, pupil_up_bound)
+        axis[0, index].plot(pupil_raw_time, configured_pupils, color='brown', label='pupil diameter')
+        axis[0, index].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized')
+        axis[0, index].plot(pupil_raw_time, avg_pupil, color='green', label='grand average', linestyle='solid', alpha=0.4)
+        axis[0, index].set_ylim(pupil_min_bound, pupil_up_bound)
         # axis[0, stageIndex].set_ylim(2.2, 4.4)
-        axis[0, stageIndex].set_xlabel('time (s)')
-        axis[0, stageIndex].set_title(collumnName, size='large')
-        axis[0, stageIndex].legend()
+        axis[0, index].set_xlabel('time (s)')
+        axis[0, index].set_title(collumnName, size='large')
+        axis[0, index].legend()
         
-        axis[1, stageIndex].plot(ipa_time_blocks, smoothed_ipa_values, color='orange', label='IPA')
-        axis[1, stageIndex].set_ylim(0, 0.2)
-        axis[1, stageIndex].set_xlabel('time (every 5s)')
+        axis[1, index].plot(ipa_time_blocks, smoothed_ipa_values, color='orange', label='IPA')
+        axis[1, index].set_ylim(0, 0.2)
+        axis[1, index].set_xlabel('time (every 5s)')
         
-        axis[2, stageIndex].plot(time, configured_rr, color='red', label='Respiratoy rate')
-        axis[2, stageIndex].plot(time, avg_rr, color='green', label='grand average respiratory rate', linestyle='dashed', alpha=0.7)
-        axis[2, stageIndex].set_ylim(minRR, maxRR)
-        axis[2, stageIndex].set_xlabel('time (every 5s)')
+        axis[2, index].plot(time, configured_rr, color='red', label='Respiratoy rate')
+        axis[2, index].plot(time, avg_rr, color='green', label='grand average respiratory rate', linestyle='dashed', alpha=0.7)
+        axis[2, index].set_ylim(minRR, maxRR)
+        axis[2, index].set_xlabel('time (every 5s)')
         
     userData = storageData.userData
     plt.suptitle(f'{userData.gender} - {userData.age}', fontweight = 'bold', fontsize=18)
