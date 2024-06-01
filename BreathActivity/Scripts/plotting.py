@@ -530,12 +530,13 @@ def analyze_median(storagesData: List[StorageData]):
     # 2D list to store name and respiratory rate data of each candidate
     rr_data_all: list[list[str]] = []
     
-    headers = ['Name', 'Easy', 'Normal', 'Hard']
+    headers = ['Name', 'Age', 'Gender', 'Easy', 'Normal', 'Hard']
     
     for data in storagesData:
         print(f'🙆🏻 analyzing data from {data.userData.name}')
-        pupil_data = [data.userData.name, 'x', 'x', 'x']
-        rr_data = [data.userData.name, 'x', 'x', 'x']
+        
+        pupil_data = [data.userData.name, data.userData.age, data.userData.gender, 'x', 'x', 'x']
+        rr_data = [data.userData.name, data.userData.age, data.userData.gender, 'x', 'x', 'x']
         for stage in data.data:
             configured_rr = stage.serialData.respiratoryRates
             configured_pupils = stage.serialData.pupilSizes
@@ -547,29 +548,21 @@ def analyze_median(storagesData: List[StorageData]):
             
             f_mean_pupil = "{:.2f}".format(mean_pupil)
             f_mean_rr = "{:.2f}".format(mean_rr)
-            
-            if stage.level_as_number() == 1: 
-                pupil_data[1] = f_mean_pupil
-                rr_data[1] = f_mean_rr
-            elif stage.level_as_number() == 2:
-                pupil_data[2] = f_mean_pupil
-                rr_data[2] = f_mean_rr
-            elif stage.level_as_number() == 3:
-                pupil_data[3] = f_mean_pupil
-                rr_data[3] = f_mean_rr
+            pupil_data[stage.level_as_number() + 2] = f_mean_pupil
+            rr_data[stage.level_as_number() + 2] = f_mean_rr
             
         rr_data_all.append(rr_data)
         pupil_data_all.append(pupil_data)
         
     # save the data to csv files
     
-    with open(f'{folderPath}/rr_data.csv', mode='w', newline='') as rr_file:
+    with open(f'{folderPath}/individual_mean_respiratory_rate.csv', mode='w', newline='') as rr_file:
         rr_writer = csv.writer(rr_file)
         rr_writer.writerow(headers)
         for row in rr_data_all:
             rr_writer.writerow(np.array(row))
     
-    with open(f'{folderPath}/pupil_data.csv', mode='w', newline='') as pupil_file:
+    with open(f'{folderPath}/individual_mean_pupil_diameter.csv', mode='w', newline='') as pupil_file:
         pupil_writer = csv.writer(pupil_file)
         pupil_writer.writerow(headers)
         for row in pupil_data_all:
@@ -793,6 +786,6 @@ if data:
     
     # draw the plots
     # for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
-    
+    # 
     # draw the grand average plot
-    # generate_grand_average_plot(grand_average_pupil_signal, grand_average_rr_signal)
+    generate_grand_average_plot(grand_average_pupil_signal, grand_average_rr_signal)
