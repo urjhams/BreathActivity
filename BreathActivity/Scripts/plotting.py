@@ -540,18 +540,25 @@ def analyze_median(storagesData: List[StorageData]):
             
 def median_box_plot(grand_avg: list[GrandAverage]):
     
-    fig, axis = plt.subplots(1, len(grand_avg), figsize=(10, 5))
+    fig, axis = plt.subplots(1, len(grand_avg), figsize=(14, 7))
     
     for index, avg in enumerate(grand_avg):
-        if avg.type == ExperimentDataType.PUPIL: title = 'mean pupil diameter (mm) for each level'
-        else: title = 'mean respiratory rate (bpm) for each level'
+        if avg.type == ExperimentDataType.PUPIL: title = 'median pupil diameter (mm) for each level'
+        else: title = 'median respiratory rate (bpm) for each level'
         # create the box plot for the pupil size
         axis[index].boxplot([np.array(avg.easy), np.array(avg.normal), np.array(avg.hard)])
         axis[index].set_title(title)
         axis[index].set_xticklabels(['easy', 'normal', 'hard'])
+        
+    plt.suptitle('Grand Average', fontweight = 'bold', fontsize=18)
+    
+    plots_dir = f'{folderPath}/plots'
+    os.makedirs(plots_dir, exist_ok=True)
+    plot = f'{plots_dir}/Average_box.png'
+    plt.savefig(plot)
+    plt.close()
+    print(f'🙆🏻 box plot saved at {plot}')
    
-    plt.show()
-
 # generate plots for each candidate
 def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand_avg_rr: GrandAverage):
     print(f'🙆🏻 making plot of data from {storageData.userData.name}')
@@ -560,9 +567,9 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
     
     # define the maximum and minimum value of the pupil size and respiratory rate in the plot
     maxPupil = largest(list(map(lambda stage: largest(stage.serialData.pupilSizes), experimentals)))
-    pupil_up_bound = max(maxPupil, grand_average_pupil.max()) + 0.1
+    pupil_up_bound = max(maxPupil, grand_avg_pupil.max()) + 0.1
     minPupil = smallest(list(map(lambda stage: smallest(stage.serialData.pupilSizes), experimentals)))
-    pupil_min_bound = min(minPupil, grand_average_pupil.min()) - 0.1
+    pupil_min_bound = min(minPupil, grand_avg_pupil.min()) - 0.1
     maxRR = 25
     minRR = 0
     
@@ -742,10 +749,7 @@ if data:
     
     # analyze the median of the data from each candidate
     analyze_median(data)
-    
-    # TODO: remove outliers from the rr signal data
-    cleared_grand_average_rr-signal = 
-    
+        
     # create the mean table and boxplot
     median_box_plot([grand_average_pupil_signal, grand_average_rr_signal])
     
