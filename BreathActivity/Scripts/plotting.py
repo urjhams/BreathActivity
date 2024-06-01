@@ -11,7 +11,7 @@ import math, pywt, numpy as np
 from scipy.signal import savgol_filter
 import numpy as np
 from enum import Enum
-import seaborn as sns
+import csv
 
 # parameters
 folderPath = sys.argv[1]
@@ -64,10 +64,12 @@ class ExperimentalData:
     def level_as_number(self):
         if self.level == 'easy':
             return 1
+        elif self.level == 'normal':
+            return 2
         elif self.level == 'hard':
             return 3
         else:
-            return 2
+            return 0
         
     def mean_reaction_time(self):
         # calculate the mean reaction time
@@ -522,8 +524,18 @@ def grand_average_signal(type: ExperimentDataType, storageDatas: List[StorageDat
 
 def analyze_median(storagesData: List[StorageData]):
     print('level, mean pupul diameter (mm), mean respiratory rate (bpm)')
+    
+    # 2D list to store name and pupil data of each candidate
+    pupil_data_all: list[list[str]] = []
+    # 2D list to store name and respiratory rate data of each candidate
+    rr_data_all: list[list[str]] = []
+    
+    headers = ['Name', 'Easy', 'Normal', 'Hard']
+    
     for data in storagesData:
         print(f'🙆🏻 analyzing data from {data.userData.name}')
+        pupil_data = [data.userData.name, 'x', 'x', 'x']
+        rr_data = [data.userData.name, 'x', 'x', 'x']
         for stage in data.data:
             configured_rr = stage.serialData.respiratoryRates
             configured_pupils = stage.serialData.pupilSizes
@@ -536,7 +548,33 @@ def analyze_median(storagesData: List[StorageData]):
             f_mean_pupil = "{:.2f}".format(mean_pupil)
             f_mean_rr = "{:.2f}".format(mean_rr)
             
-            print(f'{stage.level}, {f_mean_pupil}, {f_mean_rr}')
+            if stage.level_as_number() == 1: 
+                pupil_data[1] = f_mean_pupil
+                rr_data[1] = f_mean_rr
+            elif stage.level_as_number() == 2:
+                pupil_data[2] = f_mean_pupil
+                rr_data[2] = f_mean_rr
+            elif stage.level_as_number() == 3:
+                pupil_data[3] = f_mean_pupil
+                rr_data[3] = f_mean_rr
+            
+        rr_data_all.append(rr_data)
+        pupil_data_all.append(pupil_data)
+        
+    # save the data to csv files
+    
+    with open(f'{folderPath}/rr_data.csv', mode='w', newline='') as rr_file:
+        rr_writer = csv.writer(rr_file)
+        rr_writer.writerow(headers)
+        for row in rr_data_all:
+            rr_writer.writerow(np.array(row))
+    
+    with open(f'{folderPath}/pupil_data.csv', mode='w', newline='') as pupil_file:
+        pupil_writer = csv.writer(pupil_file)
+        pupil_writer.writerow(headers)
+        for row in pupil_data_all:
+            pupil_writer.writerow(np.array(row))
+    
             
 def median_box_plot(grand_avg: list[GrandAverage]):
     
@@ -747,7 +785,7 @@ if data:
     grand_average_pupil_signal = grand_average_signal(ExperimentDataType.PUPIL, data)
     grand_average_rr_signal = grand_average_signal(ExperimentDataType.RR, data)
     
-    # analyze the median of the data from each candidate
+    # analyze the median of the data from each candidate and save into csv file
     analyze_median(data)
         
     # create the mean table and boxplot
