@@ -160,11 +160,11 @@ def normalized(value, upper, lower, replacement = None):
     else: return replacement if replacement else value
 
 #cite: Preprocessing pupil size data: Guidelines and code - Mariska E. Kret, Elio E. Sjak-Shie 
-def normalized_outliers_pupil_diameters(raw_pupil_diameter, useMedian = False):
+def normalized_outliers(raw_data, useMedian = False):
     # Calculate the median absolute deviation from the median
-    mad = median_abs_deviation(raw_pupil_diameter)
+    mad = median_abs_deviation(raw_data)
     
-    median = np.median(raw_pupil_diameter)
+    median = np.median(raw_data)
     
     m_value = 2.5   # moderately conservative
 
@@ -175,11 +175,11 @@ def normalized_outliers_pupil_diameters(raw_pupil_diameter, useMedian = False):
 
     # Filter data based on bounds
     med = median if useMedian else None
-    normalized_pupil_diameter = list(
-        map(lambda x: normalized(x, upper, lower, replacement=med), raw_pupil_diameter)
+    normalized_data = list(
+        map(lambda x: normalized(x, upper, lower, replacement=med), raw_data)
     )
 
-    return (normalized_pupil_diameter, upper, lower)
+    return (normalized_data, upper, lower)
  
  # find maximum value in a list
 def largest(arr):
@@ -371,7 +371,7 @@ def configured(stage: ExperimentalData):
     resampled_raw_pupil = resample(original_pupils, 300)
         
     # filtered the outlier and replace them with the upper and lower boundary based on Median Absolute Deviation
-    (filtered_outlier_pupil, filtered_max , filtered_min) = normalized_outliers_pupil_diameters(resampled_raw_pupil)
+    (filtered_outlier_pupil, filtered_max , filtered_min) = normalized_outliers(resampled_raw_pupil)
         
     # apply the filtered to original pupil data
     stage.serialData.pupilSizes = filtered_outlier_pupil
@@ -682,7 +682,7 @@ def generate_grand_average_plot(grand_avg_pupil: GrandAverage, grand_avg_rr: Gra
     for index, (level, pupil, rr) in enumerate(levels):
         pupil_time = np.arange(len(pupil))
         
-        (filtered_outlier_pupil, filtered_max , filtered_min) = normalized_outliers_pupil_diameters(pupil)
+        (filtered_outlier_pupil, filtered_max , filtered_min) = normalized_outliers(pupil)
         
         # apply savgol filter to smooth the pupil data in a window of 60 samples (which mean 60 seconds)
         normalized_pupil = savgol_filter(filtered_outlier_pupil, 60, 1)
@@ -743,8 +743,8 @@ if data:
     # analyze the median of the data from each candidate
     analyze_median(data)
     
-    
     # TODO: remove outliers from the rr signal data
+    cleared_grand_average_rr-signal = 
     
     # create the mean table and boxplot
     median_box_plot([grand_average_pupil_signal, grand_average_rr_signal])
