@@ -373,11 +373,11 @@ def configured(stage: ExperimentalData):
     resampled_raw_pupil = resample(original_pupils, 300)
         
     # filtered the outlier and replace them with the upper and lower boundary based on Median Absolute Deviation
-    (filtered_outlier_pupil, filtered_max , filtered_min) = normalized_outliers(resampled_raw_pupil)
-        
+    (filtered_outlier_pupil, _ , _) = normalized_outliers(resampled_raw_pupil)
+            
     # apply the filtered to original pupil data
     stage.serialData.pupilSizes = filtered_outlier_pupil
-    
+        
     return stage
 
 def configure_storageData(storageData: StorageData):
@@ -778,8 +778,12 @@ if data:
     grand_average_pupil_signal = grand_average_signal(ExperimentDataType.PUPIL, data)
     grand_average_rr_signal = grand_average_signal(ExperimentDataType.RR, data)
     
+    # grand_average_rr_signal.easy = normalized_outliers(grand_average_rr_signal.easy)[0]
+    # grand_average_rr_signal.normal = normalized_outliers(grand_average_rr_signal.normal)[0]
+    # grand_average_rr_signal.hard = normalized_outliers(grand_average_rr_signal.hard)[0]
+    
     # analyze the median of the data from each candidate and save into csv file
-    analyze_median(data)
+    # analyze_median(data)
         
     # create the mean table and boxplot
     median_box_plot([grand_average_pupil_signal, grand_average_rr_signal])
@@ -788,4 +792,4 @@ if data:
     # for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
     # 
     # draw the grand average plot
-    generate_grand_average_plot(grand_average_pupil_signal, grand_average_rr_signal)
+    # generate_grand_average_plot(grand_average_pupil_signal, grand_average_rr_signal)
