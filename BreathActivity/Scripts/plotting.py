@@ -765,6 +765,59 @@ def generate_grand_average_plot(grand_avg_pupil: GrandAverage, grand_avg_rr: Gra
     plt.savefig(plot)
     plt.close()
     print(f'🙆🏻 plot saved at {plot}')
+    
+# create box plots for the survey data in average
+def survey_box_plot(data: list[StorageData]):
+    print(f'🙆🏻 creating box plot for survey data')
+    
+    fig, axis = plt.subplots(1, 2, figsize=(14, 7))
+    
+    all_experiment_data = list(map(lambda storageData: storageData.data, data))
+    
+    merged = [item for sublist in all_experiment_data for item in sublist]
+    
+    # all_survey_data = list(map(lambda stage: stage.surveyData, merged))    
+        
+    # easy
+    easy_data = list(filter(lambda stage: stage.level_as_number() == 1, merged))
+    easy_q1 = list(map(lambda stage: stage.surveyData.q1Answer, easy_data))
+    easy_q2 = list(map(lambda stage: stage.surveyData.q2Answer, easy_data))
+    
+    # normal
+    normal_data = list(filter(lambda stage: stage.level_as_number() == 2, merged))
+    normal_q1 = list(map(lambda stage: stage.surveyData.q1Answer, normal_data))
+    normal_q2 = list(map(lambda stage: stage.surveyData.q2Answer, normal_data))
+    
+    # hard
+    hard_data = list(filter(lambda stage: stage.level_as_number() == 3, merged))
+    hard_q1 = list(map(lambda stage: stage.surveyData.q1Answer, hard_data))
+    hard_q2 = list(map(lambda stage: stage.surveyData.q2Answer, hard_data))
+    
+    axis[0].boxplot([np.array(easy_q1), np.array(normal_q1), np.array(hard_q1)])
+    axis[0].set_title("feel diffcult")
+    axis[0].set_xticklabels(['easy', 'normal', 'hard'])
+    
+    axis[1].boxplot([np.array(easy_q2), np.array(normal_q2), np.array(hard_q2)])
+    axis[1].set_title('Feel stressful')
+    axis[1].set_xticklabels(['easy', 'normal', 'hard'])
+    
+    plt.suptitle('Survey Data', fontweight = 'bold', fontsize=18)
+    
+    # save the plot
+    plots_dir = f'{folderPath}/plots'
+    os.makedirs(plots_dir, exist_ok=True)
+    plot = f'{plots_dir}/Survey_box.png'
+    plt.savefig(plot)
+    plt.close()
+    print(f'🙆🏻 box plot saved at {plot}')
+    
+# accuracy rate box plot
+def accuracy_box_plot(data: list[StorageData]):
+    pass
+
+# reaction time box plot
+def reaction_time_box_plot(data: list[StorageData]):
+    pass
      
 # ------------------ main -----------------
 
@@ -780,13 +833,16 @@ if data:
     
     # grand_average_rr_signal.easy = normalized_outliers(grand_average_rr_signal.easy)[0]
     # grand_average_rr_signal.normal = normalized_outliers(grand_average_rr_signal.normal)[0]
-    # grand_average_rr_signal.hard = normalized_outliers(grand_average_rr_signal.hard)[0]
+    # grand_average_rr_signal.hard = normalized_outliers(grand_average_rr_signal.hard)[0]``
     
     # analyze the median of the data from each candidate and save into csv file
     # analyze_median(data)
         
     # create the mean table and boxplot
-    median_box_plot([grand_average_pupil_signal, grand_average_rr_signal])
+    # median_box_plot([grand_average_pupil_signal, grand_average_rr_signal])
+    
+    # create the box plot for the survey data
+    # survey_box_plot(data)
     
     # draw the plots
     # for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
