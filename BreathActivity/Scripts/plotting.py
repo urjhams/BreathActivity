@@ -75,7 +75,7 @@ class ExperimentalData:
         # calculate the mean reaction time
         reactionTimes = []
         for response in self.response:
-            if 'pressedSpace' in response.reaction:
+            if 'pressedSpace' in response.reaction and 'correct' in response.type:
                 reactionTimes.append(response.reaction['pressedSpace']['reactionTime'])
         return np.mean(reactionTimes)
     
@@ -818,18 +818,18 @@ def accuracy_box_plot(data: list[StorageData]):
     all_experiment_data = list(map(lambda storageData: storageData.data, data))
     
     merged = [item for sublist in all_experiment_data for item in sublist]
-    
+        
     # easy
     easy_data = list(filter(lambda stage: stage.level_as_number() == 1, merged))
-    easy_accuracy = list(map(lambda stage: stage.correctRate, easy_data))
+    easy_accuracy = list(map(lambda stage: stage.correctRate / 100, easy_data))
     
     # normal
     normal_data = list(filter(lambda stage: stage.level_as_number() == 2, merged))
-    normal_accuracy = list(map(lambda stage: stage.correctRate, normal_data))
+    normal_accuracy = list(map(lambda stage: stage.correctRate / 100, normal_data))
     
     # hard
     hard_data = list(filter(lambda stage: stage.level_as_number() == 3, merged))
-    hard_accuracy = list(map(lambda stage: stage.correctRate, hard_data))
+    hard_accuracy = list(map(lambda stage: stage.correctRate / 100, hard_data))
     
     axis.boxplot([np.array(easy_accuracy), np.array(normal_accuracy), np.array(hard_accuracy)])
     axis.set_title("accuracy rate")
@@ -847,7 +847,40 @@ def accuracy_box_plot(data: list[StorageData]):
 
 # reaction time box plot
 def reaction_time_box_plot(data: list[StorageData]):
-    pass
+    
+    print(f'🙆🏻 creating box plot for reaction')
+    
+    fig, axis = plt.subplots()
+    
+    all_experiment_data = list(map(lambda storageData: storageData.data, data))
+    
+    merged = [item for sublist in all_experiment_data for item in sublist]
+    
+     # easy
+    easy_data = list(filter(lambda stage: stage.level_as_number() == 1, merged))
+    easy_reaction_time = list(map(lambda stage: stage.mean_reaction_time(), easy_data))
+    
+    # normal
+    normal_data = list(filter(lambda stage: stage.level_as_number() == 2, merged))
+    normal_reaction_time = list(map(lambda stage: stage.mean_reaction_time(), normal_data))
+    
+    # hard
+    hard_data = list(filter(lambda stage: stage.level_as_number() == 3, merged))
+    hard_reaction_time = list(map(lambda stage: stage.mean_reaction_time(), hard_data))
+    
+    axis.boxplot([np.array(easy_reaction_time), np.array(normal_reaction_time), np.array(hard_reaction_time)])
+    axis.set_title("reaction time (s)")
+    axis.set_xticklabels(['easy', 'normal', 'hard'])
+    
+    plt.suptitle('Reaction time', fontweight = 'bold', fontsize=18)
+        
+    # save the plot
+    plots_dir = f'{folderPath}/plots'
+    os.makedirs(plots_dir, exist_ok=True)
+    plot = f'{plots_dir}/Reaction_time_box.png'
+    plt.savefig(plot)
+    plt.close()
+    print(f'🙆🏻 box plot saved at {plot}')
      
 # ------------------ main -----------------
 
@@ -875,7 +908,10 @@ if data:
     # survey_box_plot(data)
     
     # create the box plot for the accuracy rate
-    accuracy_box_plot(data)
+    # accuracy_box_plot(data)
+    
+    # create the box plot for the reaction time
+    reaction_time_box_plot(data)
     
     # draw the plots
     # for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
