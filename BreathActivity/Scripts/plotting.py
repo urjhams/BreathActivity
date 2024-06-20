@@ -775,9 +775,7 @@ def survey_box_plot(data: list[StorageData]):
     all_experiment_data = list(map(lambda storageData: storageData.data, data))
     
     merged = [item for sublist in all_experiment_data for item in sublist]
-    
-    # all_survey_data = list(map(lambda stage: stage.surveyData, merged))    
-        
+            
     # easy
     easy_data = list(filter(lambda stage: stage.level_as_number() == 1, merged))
     easy_q1 = list(map(lambda stage: stage.surveyData.q1Answer, easy_data))
@@ -813,7 +811,39 @@ def survey_box_plot(data: list[StorageData]):
     
 # accuracy rate box plot
 def accuracy_box_plot(data: list[StorageData]):
-    pass
+    print(f'🙆🏻 creating box plot for accuracy rate')
+    
+    fig, axis = plt.subplots()
+    
+    all_experiment_data = list(map(lambda storageData: storageData.data, data))
+    
+    merged = [item for sublist in all_experiment_data for item in sublist]
+    
+    # easy
+    easy_data = list(filter(lambda stage: stage.level_as_number() == 1, merged))
+    easy_accuracy = list(map(lambda stage: stage.correctRate, easy_data))
+    
+    # normal
+    normal_data = list(filter(lambda stage: stage.level_as_number() == 2, merged))
+    normal_accuracy = list(map(lambda stage: stage.correctRate, normal_data))
+    
+    # hard
+    hard_data = list(filter(lambda stage: stage.level_as_number() == 3, merged))
+    hard_accuracy = list(map(lambda stage: stage.correctRate, hard_data))
+    
+    axis.boxplot([np.array(easy_accuracy), np.array(normal_accuracy), np.array(hard_accuracy)])
+    axis.set_title("accuracy rate")
+    axis.set_xticklabels(['easy', 'normal', 'hard'])
+    
+    plt.suptitle('Accuracy rate', fontweight = 'bold', fontsize=18)
+        
+    # save the plot
+    plots_dir = f'{folderPath}/plots'
+    os.makedirs(plots_dir, exist_ok=True)
+    plot = f'{plots_dir}/Accuracy_rate_box.png'
+    plt.savefig(plot)
+    plt.close()
+    print(f'🙆🏻 box plot saved at {plot}')
 
 # reaction time box plot
 def reaction_time_box_plot(data: list[StorageData]):
@@ -844,8 +874,11 @@ if data:
     # create the box plot for the survey data
     # survey_box_plot(data)
     
+    # create the box plot for the accuracy rate
+    accuracy_box_plot(data)
+    
     # draw the plots
     # for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
-    # 
+    
     # draw the grand average plot
     # generate_grand_average_plot(grand_average_pupil_signal, grand_average_rr_signal)
