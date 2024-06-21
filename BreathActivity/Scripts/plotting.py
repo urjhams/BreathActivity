@@ -911,27 +911,28 @@ if data:
     grand_average_pupil_signal = grand_average_signal(ExperimentDataType.PUPIL, data)
     grand_average_rr_signal = grand_average_signal(ExperimentDataType.RR, data)
     
-    # grand_average_rr_signal.easy = normalized_outliers(grand_average_rr_signal.easy)[0]
-    # grand_average_rr_signal.normal = normalized_outliers(grand_average_rr_signal.normal)[0]
-    # grand_average_rr_signal.hard = normalized_outliers(grand_average_rr_signal.hard)[0]
-    
     # analyze the median of the data from each candidate and save into csv file
-    # analyze_median(data)
-        
-    # create the mean table and boxplot
-    # median_box_plot([grand_average_pupil_signal, grand_average_rr_signal])
+    analyze_median(data)
     
     # create the box plot for the survey data
-    # survey_box_plot(data)
+    survey_box_plot(data)
     
     # create the box plot for the accuracy rate
-    # accuracy_box_plot(data)
+    accuracy_box_plot(data)
     
     # create the box plot for the reaction time
-    # reaction_time_box_plot(data)
+    reaction_time_box_plot(data)
     
-    # draw the plots
+    # draw the individual plots
     for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
     
     # draw the grand average plot
-    # generate_grand_average_plot(grand_average_pupil_signal, grand_average_rr_signal)
+    generate_grand_average_plot(grand_average_pupil_signal, grand_average_rr_signal)
+    
+    # remove outliers from the grand average signal
+    grand_average_rr_signal.easy = normalized_outliers(grand_average_rr_signal.easy)[0]
+    grand_average_rr_signal.normal = normalized_outliers(grand_average_rr_signal.normal)[0]
+    grand_average_rr_signal.hard = normalized_outliers(grand_average_rr_signal.hard)[0]
+    
+    # create the mean table and boxplot
+    median_box_plot([grand_average_pupil_signal, grand_average_rr_signal])
