@@ -355,6 +355,12 @@ def compute_lhipa(pupil_diameter_data: list[float]):
     
     return lhipa
 
+def compute_pupil_size_change(raw: list[float]):
+    result = [0.0]
+    for i in range(1, len(raw)):
+        result.append(raw[i] - raw[i - 1])
+    return result
+
 def configured(stage: ExperimentalData):
     original_rr = stage.serialData.respiratoryRates
     original_pupils = stage.serialData.pupilSizes
@@ -636,17 +642,20 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
         
         mean_rr = np.mean(configured_rr)
         
-        # mapping the pupilData to IPA, `resampled_raw_pupil` contains each element for each second already
-        splited = split_list(configured_pupils, 5)
+        # calculation of changed pupil size over time
+        pupil_size_change_over_time = compute_pupil_size_change(configured_pupils)
         
-        # here we calculate the IPA in each section of 5 seconds.
-        ipa_values = list(map(lambda data: compute_ipa(data), splited))
+        # # mapping the pupilData to IPA, `resampled_raw_pupil` contains each element for each second already
+        # splited = split_list(configured_pupils, 5)
         
-        # smoothing the IPA values
-        smoothed_ipa_values = savgol_filter(ipa_values, 5, 1)
+        # # here we calculate the IPA in each section of 5 seconds.
+        # ipa_values = list(map(lambda data: compute_ipa(data), splited))
         
-        # the time blocks for IPA calculation (each 5 seconds)
-        ipa_time_blocks = list(map(lambda index: index * 5, range(len(ipa_values))))
+        # # smoothing the IPA values
+        # smoothed_ipa_values = savgol_filter(ipa_values, 5, 1)
+        
+        # # the time blocks for IPA calculation (each 5 seconds)
+        # ipa_time_blocks = list(map(lambda index: index * 5, range(len(ipa_values))))
         
         time = list(map(lambda index: index * 5, range(len(configured_rr))))
         
@@ -680,8 +689,7 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
         axis[0, index].set_title(collumnName, size='large')
         axis[0, index].legend()
         
-        axis[1, index].plot(ipa_time_blocks, smoothed_ipa_values, color='orange', label='IPA')
-        axis[1, index].set_ylim(0, 0.2)
+        axis[1, index].plot(pupil_raw_time, pupil_size_change_over_time, color='orange', label='Pupil diameter change over time')
         axis[1, index].set_xlabel('time (every 5s)')
         
         axis[2, index].plot(time, configured_rr, color='red', label='Respiratoy rate')
@@ -713,9 +721,9 @@ def generate_grand_average_plot(grand_avg_pupil: GrandAverage, grand_avg_rr: Gra
     ]
         
     fig, axis = plt.subplots(3, len(levels), figsize=size)
-    axis[0, 0].set_ylabel('pupil diameter (resampled & outliners filtered-in mm)')
-    axis[1, 0].set_ylabel('Index of Pupillary Activity (Hz)')
-    axis[2, 0].set_ylabel('estimaterd respiratory rate (breaths per minute)')
+    axis[0, 0].set_ylabel('resampled & outliners filtered pupil diameter (mm)')
+    axis[1, 0].set_ylabel('Change in pupil diameter over time (mm)')
+    axis[2, 0].set_ylabel('Estimaterd respiratory rate (breaths per minute)')
     
     for index, (level, pupil, rr) in enumerate(levels):
         pupil_time = np.arange(len(pupil))
@@ -727,19 +735,21 @@ def generate_grand_average_plot(grand_avg_pupil: GrandAverage, grand_avg_rr: Gra
         
         rr_time = list(map(lambda index: index * 5, range(len(rr))))
         
-         # mapping the pupilData to IPA, `resampled_raw_pupil` contains each element for each second already
-        splited = split_list(filtered_outlier_pupil, 5)
+        # # mapping the pupilData to IPA, `resampled_raw_pupil` contains each element for each second already
+        # splited = split_list(filtered_outlier_pupil, 5)
         
-        # here we calculate the IPA in each section of 5 seconds.
-        ipa_values = list(map(lambda data: compute_ipa(data), splited))
+        # # here we calculate the IPA in each section of 5 seconds.
+        # ipa_values = list(map(lambda data: compute_ipa(data), splited))
         
-        ipa_time_blocks = list(map(lambda index: index * 5, range(len(ipa_values))))
+        # ipa_time_blocks = list(map(lambda index: index * 5, range(len(ipa_values))))
         
-         # smoothing the IPA values with the window of 5 samples (5 seconds of data)
-        smoothed_ipa_values = savgol_filter(ipa_values, 5, 1)
+        #  # smoothing the IPA values with the window of 5 samples (5 seconds of data)
+        # smoothed_ipa_values = savgol_filter(ipa_values, 5, 1)
         
-        # TODO: calculate the mean accuracy rate and mean reaction time
-        
+        pupil_size_change_over_time = compute_pupil_size_change(filtered_outlier_pupil)
+        normalized_pupil_size_change_over_time = savgol_filter(pupil_size_change_over_time, 5, 1)
+        pupil_size_change_time_blocks = list(map(lambda index: index, range(len(pupil_size_change_over_time))))
+                
         axis[0, index].plot(pupil_time, filtered_outlier_pupil, label=f'pupil diameter', color='brown')
         axis[0, index].plot(pupil_time, normalized_pupil, label=f'normalized pupil diameter', color='black')
         axis[0, index].set_xlabel('time (s)')
@@ -747,8 +757,11 @@ def generate_grand_average_plot(grand_avg_pupil: GrandAverage, grand_avg_rr: Gra
         axis[0, index].set_title(level, size='large')
         axis[0, index].legend()
         
-        axis[1, index].plot(ipa_time_blocks, smoothed_ipa_values, label=f'pupil diameter', color='orange')
-        axis[1, index].set_xlabel('time (every 5s)')
+        axis[1, index].plot(pupil_size_change_time_blocks, pupil_size_change_over_time, label=f'pupil diameter change over time', color='orange')
+        axis[1, index].plot(pupil_size_change_time_blocks, normalized_pupil_size_change_over_time, label=f'normalized value', color='black')
+        axis[1, index].set_ylim(-0.6, 0.6)
+        axis[1, index].set_xlabel('time (s)')
+        axis[1, index].legend()
         
         axis[2, index].plot(rr_time, rr, label=f'respiratory rate', color='red')
         axis[2, index].set_ylim(0, 25)
@@ -896,7 +909,7 @@ if data:
     
     # grand_average_rr_signal.easy = normalized_outliers(grand_average_rr_signal.easy)[0]
     # grand_average_rr_signal.normal = normalized_outliers(grand_average_rr_signal.normal)[0]
-    # grand_average_rr_signal.hard = normalized_outliers(grand_average_rr_signal.hard)[0]``
+    # grand_average_rr_signal.hard = normalized_outliers(grand_average_rr_signal.hard)[0]
     
     # analyze the median of the data from each candidate and save into csv file
     # analyze_median(data)
@@ -911,10 +924,10 @@ if data:
     # accuracy_box_plot(data)
     
     # create the box plot for the reaction time
-    reaction_time_box_plot(data)
+    # reaction_time_box_plot(data)
     
     # draw the plots
-    # for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
+    for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
     
     # draw the grand average plot
     # generate_grand_average_plot(grand_average_pupil_signal, grand_average_rr_signal)
