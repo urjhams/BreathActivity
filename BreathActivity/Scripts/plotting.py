@@ -592,18 +592,19 @@ def median_box_plot(grand_avg: list[GrandAverage]):
     fig, axis = plt.subplots(1, len(grand_avg), figsize=(14, 7))
     
     for index, avg in enumerate(grand_avg):
-        if avg.type == ExperimentDataType.PUPIL: title = 'median pupil diameter (mm) for each level'
-        else: title = 'median respiratory rate (bpm) for each level'
+        if avg.type == ExperimentDataType.PUPIL: title = 'median pupil diameter (mm)'
+        else: title = 'median respiratory rate (bpm)'
         # create the box plot for the pupil size
         axis[index].boxplot([np.array(avg.easy), np.array(avg.normal), np.array(avg.hard)])
-        axis[index].set_title(title)
+        axis[index].set_ylabel(title)
+        axis[index].set_xlabel('Task level')
         axis[index].set_xticklabels(['easy', 'normal', 'hard'])
         
-    plt.suptitle('Grand Average', fontweight = 'bold', fontsize=18)
+    # plt.suptitle('Grand Average', fontweight = 'bold', fontsize=18)
     
     plots_dir = f'{folderPath}/plots'
     os.makedirs(plots_dir, exist_ok=True)
-    plot = f'{plots_dir}/Average_box.png'
+    plot = f'{plots_dir}/Median_box_plot.png'
     plt.savefig(plot)
     plt.close()
     print(f'🙆🏻 box plot saved at {plot}')
@@ -821,14 +822,16 @@ def survey_box_plot(data: list[StorageData]):
     hard_q2 = list(map(lambda stage: stage.surveyData.q2Answer, hard_data))
     
     axis[0].boxplot([np.array(easy_q1), np.array(normal_q1), np.array(hard_q1)])
-    axis[0].set_title("feel diffcult")
+    axis[0].set_ylabel('Difficulty rating (scale 1-5)')
+    axis[0].set_xlabel('Task level')
     axis[0].set_xticklabels(['easy', 'normal', 'hard'])
     
     axis[1].boxplot([np.array(easy_q2), np.array(normal_q2), np.array(hard_q2)])
-    axis[1].set_title('Feel stressful')
+    axis[1].set_ylabel('Stressful rating (scale 1-5)')
+    axis[1].set_xlabel('Task level')
     axis[1].set_xticklabels(['easy', 'normal', 'hard'])
     
-    plt.suptitle('Survey Data', fontweight = 'bold', fontsize=18)
+    # plt.suptitle('Survey Data', fontweight = 'bold', fontsize=18)
     
     # save the plot
     plots_dir = f'{folderPath}/plots'
@@ -861,10 +864,11 @@ def accuracy_box_plot(data: list[StorageData]):
     hard_accuracy = list(map(lambda stage: stage.correctRate / 100, hard_data))
     
     axis.boxplot([np.array(easy_accuracy), np.array(normal_accuracy), np.array(hard_accuracy)])
-    axis.set_title("accuracy rate")
+    axis.set_ylabel('Accuracy rate (scale 0-1)')
+    axis.set_xlabel('Task level')
     axis.set_xticklabels(['easy', 'normal', 'hard'])
     
-    plt.suptitle('Accuracy rate', fontweight = 'bold', fontsize=18)
+    # plt.suptitle('Accuracy rate', fontweight = 'bold', fontsize=18)
         
     # save the plot
     plots_dir = f'{folderPath}/plots'
@@ -896,10 +900,11 @@ def omission_box_plot(data: list[StorageData]):
     hard_omission = list(map(lambda stage: stage.omission(), hard_data))
     
     axis.boxplot([np.array(easy_ommision), np.array(normal_ommision), np.array(hard_omission)])
-    axis.set_title("omission")
+    axis.set_ylabel('Number of ommision')
+    axis.set_xlabel('Task level')
     axis.set_xticklabels(['easy', 'normal', 'hard'])
     
-    plt.suptitle('Omission', fontweight = 'bold', fontsize=18)
+    # plt.suptitle('Omission', fontweight = 'bold', fontsize=18)
         
     # save the plot
     plots_dir = f'{folderPath}/plots'
@@ -933,10 +938,11 @@ def reaction_time_box_plot(data: list[StorageData]):
     hard_reaction_time = list(map(lambda stage: stage.mean_reaction_time(), hard_data))
     
     axis.boxplot([np.array(easy_reaction_time), np.array(normal_reaction_time), np.array(hard_reaction_time)])
-    axis.set_title("reaction time (s)")
+    axis.set_ylabel('reaction time (s)')
+    axis.set_xlabel('Task level')
     axis.set_xticklabels(['easy', 'normal', 'hard'])
     
-    plt.suptitle('Reaction time', fontweight = 'bold', fontsize=18)
+    # plt.suptitle('Reaction time', fontweight = 'bold', fontsize=18)
         
     # save the plot
     plots_dir = f'{folderPath}/plots'
@@ -959,7 +965,7 @@ if data:
     grand_average_rr_signal = grand_average_signal(ExperimentDataType.RR, data)
     
     # analyze the median of the data from each candidate and save into csv file
-    analyze_median(data)
+    # analyze_median(data)
     
     # create the box plot for the survey data
     survey_box_plot(data)
