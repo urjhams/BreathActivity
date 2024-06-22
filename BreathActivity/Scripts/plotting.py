@@ -511,17 +511,19 @@ def grand_mean(type: ExperimentDataType, storageDatas: List[StorageData]):
 
 # grand average of the data in the list of storageData to combine the data (as signal)
 # in the same level across the whole candidates
-def grand_average_signal(type: ExperimentDataType, storageDatas: List[StorageData]):
-    
+def grand_average_signal(type: ExperimentDataType, list: List[StorageData]):
+    print(f'avg signal data of {type}')
     easy_data = []
     normal_data = []
     hard_data = []
     
-    for storageData in storageDatas:
+    for storageData in list:
         for stage in storageData.data:
             # dertemine the data set based on the type
-            if type == ExperimentDataType.PUPIL: dataSet = stage.serialData.pupilSizes
-            else: dataSet = stage.serialData.respiratoryRates
+            if type == ExperimentDataType.PUPIL: 
+                dataSet = stage.serialData.pupilSizes
+            else: 
+                dataSet = stage.serialData.respiratoryRates
             
             # skip the loop if this is an empty data set
             if len(dataSet) == 0: continue
@@ -529,15 +531,20 @@ def grand_average_signal(type: ExperimentDataType, storageDatas: List[StorageDat
             # determine the level of the stage and calculate average the data
             # Calculate the average of each loop to get the grand average of the whole list
             if stage.level_as_number() == 1:
-                if len(easy_data) == 0: easy_data = dataSet
-                else: easy_data = np.average([easy_data, dataSet], axis=0)
+                if len(easy_data) == 0: 
+                    easy_data = dataSet
+                else: 
+                    easy_data = np.average([easy_data, dataSet], axis=0)
             elif stage.level_as_number() == 2:
-                if len(normal_data) == 0: normal_data = normal_data = dataSet
-                else: np.average([normal_data, dataSet], axis=0)
+                if len(normal_data) == 0: 
+                    normal_data = normal_data = dataSet
+                else: 
+                    normal_data = np.average([normal_data, dataSet], axis=0)
             else:
-                if len(hard_data) == 0: hard_data = dataSet
-                else: hard_data = np.average([hard_data, dataSet], axis=0)
-                
+                if len(hard_data) == 0: 
+                    hard_data = dataSet
+                else: 
+                    hard_data = np.average([hard_data, dataSet], axis=0)
     return GrandAverage(type, easy_data, normal_data, hard_data)
 
 def analyze_median(storagesData: List[StorageData]):
@@ -592,8 +599,8 @@ def median_box_plot(grand_avg: list[GrandAverage]):
     fig, axis = plt.subplots(1, len(grand_avg), figsize=(14, 7))
     
     for index, avg in enumerate(grand_avg):
-        if avg.type == ExperimentDataType.PUPIL: title = 'median pupil diameter (mm)'
-        else: title = 'median respiratory rate (bpm)'
+        if avg.type == ExperimentDataType.PUPIL: title = 'pupil diameter (mm)'
+        else: title = 'respiratory rate (breath per minute)'
         # create the box plot for the pupil size
         axis[index].boxplot([np.array(avg.easy), np.array(avg.normal), np.array(avg.hard)])
         axis[index].set_ylabel(title)
@@ -604,7 +611,7 @@ def median_box_plot(grand_avg: list[GrandAverage]):
     
     plots_dir = f'{folderPath}/plots'
     os.makedirs(plots_dir, exist_ok=True)
-    plot = f'{plots_dir}/Median_box_plot.png'
+    plot = f'{plots_dir}/Average_box.png'
     plt.savefig(plot)
     plt.close()
     print(f'🙆🏻 box plot saved at {plot}')
@@ -979,16 +986,16 @@ if data:
     # create the box plot for the reaction time
     reaction_time_box_plot(data)
     
+    # remove outliers from the grand average signal
+    grand_average_rr_signal.easy = normalized_outliers(grand_average_rr_signal.easy)[0]
+    grand_average_rr_signal.normal = normalized_outliers(grand_average_rr_signal.normal)[0]
+    grand_average_rr_signal.hard = normalized_outliers(grand_average_rr_signal.hard)[0]
+    
     # draw the individual plots
     for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
     
     # draw the grand average plot
     generate_grand_average_plot(grand_average_pupil_signal, grand_average_rr_signal)
-    
-    # remove outliers from the grand average signal
-    grand_average_rr_signal.easy = normalized_outliers(grand_average_rr_signal.easy)[0]
-    grand_average_rr_signal.normal = normalized_outliers(grand_average_rr_signal.normal)[0]
-    grand_average_rr_signal.hard = normalized_outliers(grand_average_rr_signal.hard)[0]
     
     # create the mean table and boxplot
     median_box_plot([grand_average_pupil_signal, grand_average_rr_signal])
