@@ -851,7 +851,6 @@ def accuracy_box_plot(data: list[StorageData]):
     # easy
     easy_data = list(filter(lambda stage: stage.level_as_number() == 1, merged))
     easy_accuracy = list(map(lambda stage: stage.correctRate / 100, easy_data))
-    easy_ommision = list(map(lambda stage: stage.omission, easy_data))
     
     # normal
     normal_data = list(filter(lambda stage: stage.level_as_number() == 2, merged))
@@ -871,6 +870,41 @@ def accuracy_box_plot(data: list[StorageData]):
     plots_dir = f'{folderPath}/plots'
     os.makedirs(plots_dir, exist_ok=True)
     plot = f'{plots_dir}/Accuracy_rate_box.png'
+    plt.savefig(plot)
+    plt.close()
+    print(f'🙆🏻 box plot saved at {plot}')
+
+def omission_box_plot(data: list[StorageData]):
+    print(f'🙆🏻 creating box plot for omission')
+    
+    fig, axis = plt.subplots()
+    
+    all_experiment_data = list(map(lambda storageData: storageData.data, data))
+    
+    merged = [item for sublist in all_experiment_data for item in sublist]
+        
+    # easy
+    easy_data = list(filter(lambda stage: stage.level_as_number() == 1, merged))
+    easy_ommision = list(map(lambda stage: stage.omission(), easy_data))
+    
+    #normal
+    normal_data = list(filter(lambda stage: stage.level_as_number() == 2, merged))
+    normal_ommision = list(map(lambda stage: stage.omission(), normal_data))
+    
+    # hard
+    hard_data = list(filter(lambda stage: stage.level_as_number() == 3, merged))
+    hard_omission = list(map(lambda stage: stage.omission(), hard_data))
+    
+    axis.boxplot([np.array(easy_ommision), np.array(normal_ommision), np.array(hard_omission)])
+    axis.set_title("omission")
+    axis.set_xticklabels(['easy', 'normal', 'hard'])
+    
+    plt.suptitle('Omission', fontweight = 'bold', fontsize=18)
+        
+    # save the plot
+    plots_dir = f'{folderPath}/plots'
+    os.makedirs(plots_dir, exist_ok=True)
+    plot = f'{plots_dir}/Omission_box.png'
     plt.savefig(plot)
     plt.close()
     print(f'🙆🏻 box plot saved at {plot}')
@@ -932,6 +966,9 @@ if data:
     
     # create the box plot for the accuracy rate
     accuracy_box_plot(data)
+    
+    # create the box plot for the omission
+    omission_box_plot(data)
     
     # create the box plot for the reaction time
     reaction_time_box_plot(data)
