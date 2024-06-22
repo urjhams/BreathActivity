@@ -88,6 +88,18 @@ class ExperimentalData:
                 error += 1
         return error
     
+    def omission(self):
+        """
+        Calculuate the number of omission in the task made by the user.
+        Omission is when the user should have pressed the space bar but did not (When there is a targeted image appear).
+        """
+        # calculate the omission rate
+        omission = 0
+        for response in self.response:
+            if 'doNothing' in response.reaction and 'incorrect' in response.type:
+                omission += 1
+        return omission
+    
     # accuracy rate from the task (from both directly pressed and indirectly passed)
     def accuracy(self):
         # number of reaction as pressedSpace and have correct response
@@ -839,6 +851,7 @@ def accuracy_box_plot(data: list[StorageData]):
     # easy
     easy_data = list(filter(lambda stage: stage.level_as_number() == 1, merged))
     easy_accuracy = list(map(lambda stage: stage.correctRate / 100, easy_data))
+    easy_ommision = list(map(lambda stage: stage.omission, easy_data))
     
     # normal
     normal_data = list(filter(lambda stage: stage.level_as_number() == 2, merged))
