@@ -552,8 +552,24 @@ def analyze_median(storagesData: List[StorageData]):
     
     # 2D list to store name and pupil data of each candidate
     pupil_data_all: list[list[str]] = []
+    
     # 2D list to store name and respiratory rate data of each candidate
     rr_data_all: list[list[str]] = []
+    
+    # 2D list to store name and accuracy data of each candidate
+    accuracy_data_all: list[list[str]] = []
+    
+    # 2D list to store name and omission data of each candidate
+    omission_data_all: list[list[str]] = []
+    
+    # 2D list to store name and reaction time data of each candidate
+    reaction_time_data_all: list[list[str]] = []
+    
+    # 2D list to store name and rating data of each candidate (difficulty)
+    rating_data_difficulty_all: list[list[str]] = []
+    
+    # 2D list to store name and rating data of each candidate (stressful)
+    rating_data_stressful_all: list[list[str]] = []
     
     headers = ['Name', 'Age', 'Gender', 'Easy', 'Normal', 'Hard']
     
@@ -562,6 +578,15 @@ def analyze_median(storagesData: List[StorageData]):
         
         pupil_data = [data.userData.name, data.userData.age, data.userData.gender, 'x', 'x', 'x']
         rr_data = [data.userData.name, data.userData.age, data.userData.gender, 'x', 'x', 'x']
+        
+        accuracy_data = [data.userData.name, data.userData.age, data.userData.gender, 'x', 'x', 'x']
+        omission_data = [data.userData.name, data.userData.age, data.userData.gender, 'x', 'x', 'x']
+        reaction_time_data = [data.userData.name, data.userData.age, data.userData.gender, 'x', 'x', 'x']
+        
+        rating_data_difficulty = [data.userData.name, data.userData.age, data.userData.gender, 'x', 'x', 'x']
+        
+        rating_data_stressful = [data.userData.name, data.userData.age, data.userData.gender, 'x', 'x', 'x']
+        
         for stage in data.data:
             configured_rr = stage.serialData.respiratoryRates
             configured_pupils = stage.serialData.pupilSizes
@@ -571,13 +596,29 @@ def analyze_median(storagesData: List[StorageData]):
             #mean respiratory rate
             mean_rr = np.mean(configured_rr)
             
-            f_mean_pupil = "{:.2f}".format(mean_pupil)
-            f_mean_rr = "{:.2f}".format(mean_rr)
-            pupil_data[stage.level_as_number() + 2] = f_mean_pupil
-            rr_data[stage.level_as_number() + 2] = f_mean_rr
+            # accuracy rate
+            accuracy = stage.correctRate
+            
+            #omission
+            omission = stage.omission()
+            
+            reaction_time = stage.mean_reaction_time()
+            
+            pupil_data[stage.level_as_number() + 2] = "{:.2f}".format(mean_pupil)
+            rr_data[stage.level_as_number() + 2] = "{:.2f}".format(mean_rr)
+            accuracy_data[stage.level_as_number() + 2] = "{:.1f}".format(accuracy)
+            omission_data[stage.level_as_number() + 2] = omission
+            reaction_time_data[stage.level_as_number() + 2] = "{:.2f}".format(reaction_time)
+            rating_data_difficulty[stage.level_as_number() + 2] = stage.surveyData.q1Answer
+            rating_data_stressful[stage.level_as_number() + 2] = stage.surveyData.q2Answer
             
         rr_data_all.append(rr_data)
         pupil_data_all.append(pupil_data)
+        accuracy_data_all.append(accuracy_data)
+        omission_data_all.append(omission_data)
+        reaction_time_data_all.append(reaction_time_data)
+        rating_data_difficulty_all.append(rating_data_difficulty)
+        rating_data_stressful_all.append(rating_data_stressful)
         
     # save the data to csv files
     
@@ -592,7 +633,36 @@ def analyze_median(storagesData: List[StorageData]):
         pupil_writer.writerow(headers)
         for row in pupil_data_all:
             pupil_writer.writerow(np.array(row))
+            
+    with open(f'{folderPath}/individual_accuracy_rate.csv', mode='w', newline='') as accuracy_file:
+        accuracy_writer = csv.writer(accuracy_file)
+        accuracy_writer.writerow(headers)
+        for row in accuracy_data_all:
+            accuracy_writer.writerow(np.array(row))
     
+    with open(f'{folderPath}/individual_omission_rate.csv', mode='w', newline='') as omission_file:
+        omission_writer = csv.writer(omission_file)
+        omission_writer.writerow(headers)
+        for row in omission_data_all:
+            omission_writer.writerow(np.array(row))
+    
+    with open(f'{folderPath}/individual_reaction_time.csv', mode='w', newline='') as reaction_time_file:
+        reaction_time_writer = csv.writer(reaction_time_file)
+        reaction_time_writer.writerow(headers)
+        for row in reaction_time_data_all:
+            reaction_time_writer.writerow(np.array(row))
+    
+    with open(f'{folderPath}/individual_rating_difficulty.csv', mode='w', newline='') as rating_difficulty_file:
+        rating_difficulty_writer = csv.writer(rating_difficulty_file)
+        rating_difficulty_writer.writerow(headers)
+        for row in rating_data_difficulty_all:
+            rating_difficulty_writer.writerow(np.array(row))
+    
+    with open(f'{folderPath}/individual_rating_stressful.csv', mode='w', newline='') as rating_stressful_file:
+        rating_stressful_writer = csv.writer(rating_stressful_file)
+        rating_stressful_writer.writerow(headers)
+        for row in rating_data_stressful_all:
+            rating_stressful_writer.writerow(np.array(row))
             
 def median_box_plot(grand_avg: list[GrandAverage]):
     
@@ -964,15 +1034,16 @@ def reaction_time_box_plot(data: list[StorageData]):
 data = readJsonFilesFromFolder(folderPath)
 
 if data:
+    
+    # analyze the median of the data from each candidate and save into csv file
+    analyze_median(data)
+    
     # apply the configuration step on the data
     for storageData in data: configure_storageData(storageData)
     
     # calculate the grand average of the pupil size and respiratory rate
     grand_average_pupil_signal = grand_average_signal(ExperimentDataType.PUPIL, data)
     grand_average_rr_signal = grand_average_signal(ExperimentDataType.RR, data)
-    
-    # analyze the median of the data from each candidate and save into csv file
-    # analyze_median(data)
     
     # create the box plot for the survey data
     survey_box_plot(data)
