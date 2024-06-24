@@ -694,9 +694,9 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
     
     # define the maximum and minimum value of the pupil size and respiratory rate in the plot
     maxPupil = largest(list(map(lambda stage: largest(stage.serialData.pupilSizes), experimentals)))
-    pupil_up_bound = max(maxPupil, grand_avg_pupil.max()) + 0.1
+    pupil_up_bound = maxPupil + 0.1 #max(maxPupil, grand_avg_pupil.max()) + 0.1
     minPupil = smallest(list(map(lambda stage: smallest(stage.serialData.pupilSizes), experimentals)))
-    pupil_min_bound = min(minPupil, grand_avg_pupil.min()) - 0.1
+    pupil_min_bound = minPupil - 0.1 #min(minPupil, grand_avg_pupil.min()) - 0.1
     maxRR = 25
     minRR = 0
     
@@ -704,10 +704,10 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
     experimentals.sort(key=lambda stage: stage.level_as_number())
     
     # create the plot
-    fig, axis = plt.subplots(3, len(experimentals), figsize=size)
+    fig, axis = plt.subplots(2, len(experimentals), figsize=size)
     axis[0, 0].set_ylabel('pupil diameter (resampled & outliners filtered-in mm)')
-    axis[1, 0].set_ylabel('Change in pupil diameter over time (mm)')
-    axis[2, 0].set_ylabel('estimaterd respiratory rate (breaths per minute)')
+    # axis[1, 0].set_ylabel('Change in pupil diameter over time (mm)')
+    axis[1, 0].set_ylabel('estimaterd respiratory rate (breaths per minute)')
     
     # iterate through each stage and draw the plot
     for index, stage in enumerate(experimentals):
@@ -715,26 +715,26 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
         configured_pupils = stage.serialData.pupilSizes
         
         if stage.level_as_number() == 1:
-            avg_pupil = grand_avg_pupil.easy
+            # avg_pupil = grand_avg_pupil.easy
             avg_rr = grand_avg_rr.easy
         elif stage.level_as_number() == 2:
-            avg_pupil = grand_avg_pupil.normal
+            # avg_pupil = grand_avg_pupil.normal
             avg_rr = grand_avg_rr.normal
         else:
-            avg_pupil = grand_avg_pupil.hard
+            # avg_pupil = grand_avg_pupil.hard
             avg_rr = grand_avg_rr.hard
         
         # apply savgol filter to smooth the pupil data in a window of 60 samples (which mean 60 seconds)
         normalized_pupil = savgol_filter(configured_pupils, 60, 1)
         
-        # mean pupil diameter
-        mean_pupil = np.mean(configured_pupils)
+        # # mean pupil diameter
+        # mean_pupil = np.mean(configured_pupils)
         
-        mean_rr = np.mean(configured_rr)
+        # mean_rr = np.mean(configured_rr)
         
         # calculation of changed pupil size over time
-        pupil_size_change_over_time = compute_pupil_size_change(configured_pupils)
-        normalized_pupil_size_change = savgol_filter(pupil_size_change_over_time, 5, 1)
+        # pupil_size_change_over_time = compute_pupil_size_change(configured_pupils)
+        # normalized_pupil_size_change = savgol_filter(pupil_size_change_over_time, 5, 1)
         
         # # mapping the pupilData to IPA, `resampled_raw_pupil` contains each element for each second already
         # splited = split_list(configured_pupils, 5)
@@ -754,45 +754,31 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
         
         # information of the stage
         level = stage.level
-        q1 = stage.surveyData.q1Answer
-        q2 = stage.surveyData.q2Answer
-        mean_reaction_time = stage.mean_reaction_time()
-        error_number = stage.number_of_error()
-        accuracy = stage.accuracy()
         
-        # format of the information
-        f_reaction_time = "{:.2f}".format(mean_reaction_time)
-        f_mean_pupil = "{:.2f}".format(mean_pupil)
-        f_mean_rr = "{:.2f}".format(mean_rr)
-        f_accuracy = "{:.1f}".format(accuracy)
-        
-        collumnName =  f'level: {level}' #f'level: {level}, errors: {error_number} time, accuracy rate: {f_accuracy}%\n'
-        # collumnName += f'feel difficult: {q1}, stressful: {q2}\n'
-        # collumnName += f'avg reaction time: {f_reaction_time} s, mean pupil diameter: {f_mean_pupil} mm'
-        # collumnName += f'\n, mean respiratory rate: {f_mean_rr} bpm'
+        collumnName =  f'level: {level}'
         
         axis[0, index].plot(pupil_raw_time, configured_pupils, color='brown', label='pupil diameter')
         axis[0, index].plot(pupil_raw_time, normalized_pupil, color='black', label='normalized')
-        axis[0, index].plot(pupil_raw_time, avg_pupil, color='green', label='grand average', linestyle='solid', alpha=0.4)
+        # axis[0, index].plot(pupil_raw_time, avg_pupil, color='green', label='grand average', linestyle='solid', alpha=0.4)
         axis[0, index].set_ylim(pupil_min_bound, pupil_up_bound)
         # axis[0, stageIndex].set_ylim(2.2, 4.4)
         axis[0, index].set_xlabel('time (s)')
         axis[0, index].set_title(collumnName, size='large')
         axis[0, index].legend()
         
-        axis[1, index].plot(pupil_raw_time, pupil_size_change_over_time, color='orange', label='Pupil diameter change over time')
-        axis[1, index].plot(pupil_raw_time, normalized_pupil_size_change, color='black', label='normalized value')
+        # axis[1, index].plot(pupil_raw_time, pupil_size_change_over_time, color='orange', label='Pupil diameter change over time')
+        # axis[1, index].plot(pupil_raw_time, normalized_pupil_size_change, color='black', label='normalized value')
+        # axis[1, index].set_xlabel('time (every 5s)')
+        # axis[1, index].legend()
+        
+        axis[1, index].plot(time, configured_rr, color='red', label='Respiratoy rate')
+        axis[1, index].plot(time, avg_rr, color='green', label='grand average respiratory rate', linestyle='dashed', alpha=0.7)
+        axis[1, index].set_ylim(minRR, maxRR)
         axis[1, index].set_xlabel('time (every 5s)')
         axis[1, index].legend()
         
-        axis[2, index].plot(time, configured_rr, color='red', label='Respiratoy rate')
-        axis[2, index].plot(time, avg_rr, color='green', label='grand average respiratory rate', linestyle='dashed', alpha=0.7)
-        axis[2, index].set_ylim(minRR, maxRR)
-        axis[2, index].set_xlabel('time (every 5s)')
-        axis[2, index].legend()
-        
     userData = storageData.userData
-    plt.suptitle(f'{userData.gender} - {userData.age}', fontweight = 'bold', fontsize=18)
+    # plt.suptitle(f'{userData.gender} - {userData.age}', fontweight = 'bold', fontsize=18)
     
     # Adjust layout to prevent overlapping of labels
     plt.tight_layout()
@@ -1036,7 +1022,7 @@ data = readJsonFilesFromFolder(folderPath)
 if data:
     
     # analyze the median of the data from each candidate and save into csv file
-    analyze_median(data)
+    # analyze_median(data)
     
     # apply the configuration step on the data
     for storageData in data: configure_storageData(storageData)
@@ -1057,10 +1043,15 @@ if data:
     # create the box plot for the reaction time
     reaction_time_box_plot(data)
     
-    # remove outliers from the grand average signal
+    # remove outliers from the grand average signal (respiratory rate)
     grand_average_rr_signal.easy = normalized_outliers(grand_average_rr_signal.easy)[0]
     grand_average_rr_signal.normal = normalized_outliers(grand_average_rr_signal.normal)[0]
     grand_average_rr_signal.hard = normalized_outliers(grand_average_rr_signal.hard)[0]
+    
+    # remove outliers from the grand average signal (pupil size)
+    grand_average_pupil_signal.easy = normalized_outliers(grand_average_pupil_signal.easy)[0]
+    grand_average_pupil_signal.normal = normalized_outliers(grand_average_pupil_signal.normal)[0]
+    grand_average_pupil_signal.hard = normalized_outliers(grand_average_pupil_signal.hard)[0]
     
     # draw the individual plots
     for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
