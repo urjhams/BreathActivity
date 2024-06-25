@@ -800,10 +800,10 @@ def generate_grand_average_plot(grand_avg_pupil: GrandAverage, grand_avg_rr: Gra
         ('Hard Task', grand_avg_pupil.hard, grand_avg_rr.hard)
     ]
         
-    fig, axis = plt.subplots(3, len(levels), figsize=size)
+    fig, axis = plt.subplots(2, len(levels), figsize=size)
     axis[0, 0].set_ylabel('resampled & outliners filtered pupil diameter (mm)')
-    axis[1, 0].set_ylabel('Change in pupil diameter over time (mm)')
-    axis[2, 0].set_ylabel('Estimaterd respiratory rate (breaths per minute)')
+    # axis[1, 0].set_ylabel('Change in pupil diameter over time (mm)')
+    axis[1, 0].set_ylabel('Estimaterd respiratory rate (breaths per minute)')
     
     for index, (level, pupil, rr) in enumerate(levels):
         pupil_time = np.arange(len(pupil))
@@ -827,8 +827,8 @@ def generate_grand_average_plot(grand_avg_pupil: GrandAverage, grand_avg_rr: Gra
         # smoothed_ipa_values = savgol_filter(ipa_values, 5, 1)
         
         pupil_size_change_over_time = compute_pupil_size_change(filtered_outlier_pupil)
-        normalized_pupil_size_change_over_time = savgol_filter(pupil_size_change_over_time, 5, 1)
-        pupil_size_change_time_blocks = list(map(lambda index: index, range(len(pupil_size_change_over_time))))
+        # normalized_pupil_size_change_over_time = savgol_filter(pupil_size_change_over_time, 5, 1)
+        # pupil_size_change_time_blocks = list(map(lambda index: index, range(len(pupil_size_change_over_time))))
                 
         axis[0, index].plot(pupil_time, filtered_outlier_pupil, label=f'pupil diameter', color='brown')
         axis[0, index].plot(pupil_time, normalized_pupil, label=f'normalized pupil diameter', color='black')
@@ -837,17 +837,18 @@ def generate_grand_average_plot(grand_avg_pupil: GrandAverage, grand_avg_rr: Gra
         axis[0, index].set_title(level, size='large')
         axis[0, index].legend()
         
-        axis[1, index].plot(pupil_size_change_time_blocks, pupil_size_change_over_time, label=f'pupil diameter change over time', color='orange')
-        axis[1, index].plot(pupil_size_change_time_blocks, normalized_pupil_size_change_over_time, label=f'normalized value', color='black')
-        axis[1, index].set_ylim(-0.6, 0.6)
-        axis[1, index].set_xlabel('time (s)')
-        axis[1, index].legend()
+        # axis[1, index].plot(pupil_size_change_time_blocks, pupil_size_change_over_time, label=f'pupil diameter change over time', color='orange')
+        # axis[1, index].plot(pupil_size_change_time_blocks, normalized_pupil_size_change_over_time, label=f'normalized value', color='black')
+        # axis[1, index].set_ylim(-0.6, 0.6)
+        # axis[1, index].set_xlabel('time (s)')
+        # axis[1, index].legend()
         
-        axis[2, index].plot(rr_time, rr, label=f'respiratory rate', color='red')
-        axis[2, index].set_ylim(0, 25)
-        axis[2, index].set_xlabel('time (every 5s)')
+        axis[1, index].plot(rr_time, rr, label=f'respiratory rate', color='red')
+        axis[1, index].set_ylim(0, 25)
+        axis[1, index].set_title(level, size='large')
+        axis[1, index].set_xlabel('time (every 5s)')
         
-    plt.suptitle('Grand Average', fontweight = 'bold', fontsize=18)
+    # plt.suptitle('Grand Average', fontweight = 'bold', fontsize=18)
     
     # Adjust layout to prevent overlapping of labels    
     plt.tight_layout()
