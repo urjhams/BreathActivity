@@ -1098,17 +1098,17 @@ if data:
     grand_average_pupil_signal = grand_average_signal(ExperimentDataType.PUPIL, data)
     grand_average_rr_signal = grand_average_signal(ExperimentDataType.RR, data)
     
-    # # create the box plot for the survey data
-    # survey_box_plot(data)
+    # create the box plot for the survey data
+    survey_box_plot(data)
     
-    # # create the box plot for the accuracy rate
-    # accuracy_box_plot(data)
+    # create the box plot for the accuracy rate
+    accuracy_box_plot(data)
     
-    # # create the box plot for the omission
-    # omission_box_plot(data)
+    # create the box plot for the omission
+    omission_box_plot(data)
     
-    # # create the box plot for the reaction time
-    # reaction_time_box_plot(data)
+    # create the box plot for the reaction time
+    reaction_time_box_plot(data)
     
     # remove outliers from the grand average signal (respiratory rate)
     grand_average_rr_signal.easy = normalized_outliers(grand_average_rr_signal.easy)[0]
