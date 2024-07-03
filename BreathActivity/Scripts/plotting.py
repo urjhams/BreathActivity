@@ -537,7 +537,7 @@ def grand_average_signal(type: ExperimentDataType, list: List[StorageData]):
                     easy_data = np.average([easy_data, dataSet], axis=0)
             elif stage.level_as_number() == 2:
                 if len(normal_data) == 0: 
-                    normal_data = normal_data = dataSet
+                    normal_data = dataSet
                 else: 
                     normal_data = np.average([normal_data, dataSet], axis=0)
             else:
@@ -604,6 +604,7 @@ def analyze_median(storagesData: List[StorageData]):
             
             reaction_time = stage.mean_reaction_time()
             
+            #because easy = 1, normal = 2, hard = 3; we add 2 to the index 
             pupil_data[stage.level_as_number() + 2] = "{:.2f}".format(mean_pupil)
             rr_data[stage.level_as_number() + 2] = "{:.2f}".format(mean_rr)
             accuracy_data[stage.level_as_number() + 2] = "{:.1f}".format(accuracy)
@@ -664,7 +665,7 @@ def analyze_median(storagesData: List[StorageData]):
         for row in rating_data_stressful_all:
             rating_stressful_writer.writerow(np.array(row))
             
-def median_box_plot(grand_avg: list[GrandAverage]):
+def grand_avg_box_plot(grand_avg: list[GrandAverage]):
     
     fig, axis = plt.subplots(1, len(grand_avg), figsize=(14, 7))
     
@@ -682,6 +683,68 @@ def median_box_plot(grand_avg: list[GrandAverage]):
     plots_dir = f'{folderPath}/plots'
     os.makedirs(plots_dir, exist_ok=True)
     plot = f'{plots_dir}/Average_box.png'
+    plt.savefig(plot)
+    plt.close()
+    print(f'🙆🏻 box plot saved at {plot}')
+    
+def mean_box_plot_rr(storagesData: List[StorageData]):
+    easy = []
+    normal = []
+    hard = []
+    
+    for data in storagesData:
+        for stage in data.data:
+            configured_rr = stage.serialData.respiratoryRates
+            
+            #mean respiratory rate
+            mean_rr = np.mean(configured_rr)
+            
+            if stage.level_as_number() == 1: easy.append(mean_rr)
+            elif stage.level_as_number() == 2: normal.append(mean_rr)
+            else: hard.append(mean_rr)
+    
+    fig, axis = plt.subplots()
+    
+    axis.boxplot([np.array(easy), np.array(normal), np.array(hard)])
+    axis.set_ylabel('Mean respiratory rate (breath per minute)')
+    axis.set_xlabel('Task level')
+    axis.set_xticklabels(['easy', 'normal', 'hard'])
+    
+    # save the plot
+    plots_dir = f'{folderPath}/plots'
+    os.makedirs(plots_dir, exist_ok=True)
+    plot = f'{plots_dir}/mean_rr_box_plot.png'
+    plt.savefig(plot)
+    plt.close()
+    print(f'🙆🏻 box plot saved at {plot}')
+
+def mean_box_plot_pupil(storagesData: List[StorageData]):
+    easy = []
+    normal = []
+    hard = []
+    
+    for data in storagesData:
+        for stage in data.data:
+            configured_pupils = stage.serialData.pupilSizes
+            # mean pupil diameter
+            
+            mean_pupil = np.mean(configured_pupils)
+            
+            if stage.level_as_number() == 1: easy.append(mean_pupil)
+            elif stage.level_as_number() == 2: normal.append(mean_pupil)
+            else: hard.append(mean_pupil)
+    
+    fig, axis = plt.subplots()
+    
+    axis.boxplot([np.array(easy), np.array(normal), np.array(hard)])
+    axis.set_ylabel('Mean pupil diameter (mm)')
+    axis.set_xlabel('Task level')
+    axis.set_xticklabels(['easy', 'normal', 'hard'])
+    
+    # save the plot
+    plots_dir = f'{folderPath}/plots'
+    os.makedirs(plots_dir, exist_ok=True)
+    plot = f'{plots_dir}/mean_pupil_box_plot.png'
     plt.savefig(plot)
     plt.close()
     print(f'🙆🏻 box plot saved at {plot}')
@@ -1022,27 +1085,30 @@ data = readJsonFilesFromFolder(folderPath)
 
 if data:
     
-    # analyze the median of the data from each candidate and save into csv file
+    # # analyze the median of the data from each candidate and save into csv file
     # analyze_median(data)
     
     # apply the configuration step on the data
     for storageData in data: configure_storageData(storageData)
     
+    # analyze the median of the data from each candidate and save into csv file
+    analyze_median(data)
+    
     # calculate the grand average of the pupil size and respiratory rate
     grand_average_pupil_signal = grand_average_signal(ExperimentDataType.PUPIL, data)
     grand_average_rr_signal = grand_average_signal(ExperimentDataType.RR, data)
     
-    # create the box plot for the survey data
-    survey_box_plot(data)
+    # # create the box plot for the survey data
+    # survey_box_plot(data)
     
-    # create the box plot for the accuracy rate
-    accuracy_box_plot(data)
+    # # create the box plot for the accuracy rate
+    # accuracy_box_plot(data)
     
-    # create the box plot for the omission
-    omission_box_plot(data)
+    # # create the box plot for the omission
+    # omission_box_plot(data)
     
-    # create the box plot for the reaction time
-    reaction_time_box_plot(data)
+    # # create the box plot for the reaction time
+    # reaction_time_box_plot(data)
     
     # remove outliers from the grand average signal (respiratory rate)
     grand_average_rr_signal.easy = normalized_outliers(grand_average_rr_signal.easy)[0]
@@ -1055,10 +1121,14 @@ if data:
     grand_average_pupil_signal.hard = normalized_outliers(grand_average_pupil_signal.hard)[0]
     
     # draw the individual plots
-    for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
+    # for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
     
     # draw the grand average plot
-    generate_grand_average_plot(grand_average_pupil_signal, grand_average_rr_signal)
+    # generate_grand_average_plot(grand_average_pupil_signal, grand_average_rr_signal)
     
-    # create the mean table and boxplot
-    median_box_plot([grand_average_pupil_signal, grand_average_rr_signal])
+    # create the grand average table and boxplot
+    grand_avg_box_plot([grand_average_pupil_signal, grand_average_rr_signal])
+    
+    #create the mean box plot of respiratory rate and pupil size
+    mean_box_plot_rr(data)
+    mean_box_plot_pupil(data)
