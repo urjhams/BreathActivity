@@ -1121,10 +1121,10 @@ if data:
     grand_average_pupil_signal.hard = normalized_outliers(grand_average_pupil_signal.hard)[0]
     
     # draw the individual plots
-    # for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
+    for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
     
     # draw the grand average plot
-    # generate_grand_average_plot(grand_average_pupil_signal, grand_average_rr_signal)
+    generate_grand_average_plot(grand_average_pupil_signal, grand_average_rr_signal)
     
     # create the grand average table and boxplot
     grand_avg_box_plot([grand_average_pupil_signal, grand_average_rr_signal])
