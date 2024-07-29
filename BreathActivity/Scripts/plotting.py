@@ -71,6 +71,16 @@ class ExperimentalData:
         else:
             return 0
         
+    def level_as_n_back(self):
+        if self.level == 'easy':
+            return '1-back'
+        elif self.level == 'normal':
+            return '2-back'
+        elif self.level == 'hard':
+            return '3-back'
+        else:
+            return 'unknown'
+    
     def mean_reaction_time(self):
         # calculate the mean reaction time
         reactionTimes = []
@@ -675,8 +685,8 @@ def grand_avg_box_plot(grand_avg: list[GrandAverage]):
         # create the box plot for the pupil size
         axis[index].boxplot([np.array(avg.easy), np.array(avg.normal), np.array(avg.hard)])
         axis[index].set_ylabel(title)
-        axis[index].set_xlabel('Task level')
-        axis[index].set_xticklabels(['easy', 'normal', 'hard'])
+        axis[index].set_xlabel('N-back Task')
+        axis[index].set_xticklabels(['1-back', '2-back', '3-back'])
         
     # plt.suptitle('Grand Average', fontweight = 'bold', fontsize=18)
     
@@ -707,8 +717,8 @@ def mean_box_plot_rr(storagesData: List[StorageData]):
     
     axis.boxplot([np.array(easy), np.array(normal), np.array(hard)])
     axis.set_ylabel('Mean respiratory rate (breath per minute)')
-    axis.set_xlabel('Task level')
-    axis.set_xticklabels(['easy', 'normal', 'hard'])
+    axis.set_xlabel('N-back Task')
+    axis.set_xticklabels(['1-back', '2-back', '3-back'])
     
     # save the plot
     plots_dir = f'{folderPath}/plots'
@@ -738,8 +748,8 @@ def mean_box_plot_pupil(storagesData: List[StorageData]):
     
     axis.boxplot([np.array(easy), np.array(normal), np.array(hard)])
     axis.set_ylabel('Mean pupil diameter (mm)')
-    axis.set_xlabel('Task level')
-    axis.set_xticklabels(['easy', 'normal', 'hard'])
+    axis.set_xlabel('N-back Task')
+    axis.set_xticklabels(['1-back', '2-back', '3-back'])
     
     # save the plot
     plots_dir = f'{folderPath}/plots'
@@ -816,7 +826,7 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
         pupil_raw_time = np.arange(len(configured_pupils))
         
         # information of the stage
-        level = stage.level
+        level = stage.level_as_n_back()
         
         collumnName =  f'level: {level}'
         
@@ -840,7 +850,7 @@ def generate_plot(storageData: StorageData, grand_avg_pupil: GrandAverage, grand
         axis[1, index].set_xlabel('time (every 5s)')
         axis[1, index].legend()
         
-    userData = storageData.userData
+    # userData = storageData.userData
     # plt.suptitle(f'{userData.gender} - {userData.age}', fontweight = 'bold', fontsize=18)
     
     # Adjust layout to prevent overlapping of labels
@@ -950,13 +960,13 @@ def survey_box_plot(data: list[StorageData]):
     
     axis[0].boxplot([np.array(easy_q1), np.array(normal_q1), np.array(hard_q1)])
     axis[0].set_ylabel('Difficulty rating (scale 1-5)')
-    axis[0].set_xlabel('Task level')
-    axis[0].set_xticklabels(['easy', 'normal', 'hard'])
+    axis[0].set_xlabel('N-back Task')
+    axis[0].set_xticklabels(['1-back', '2-back', '3-back'])
     
     axis[1].boxplot([np.array(easy_q2), np.array(normal_q2), np.array(hard_q2)])
     axis[1].set_ylabel('Stressful rating (scale 1-5)')
-    axis[1].set_xlabel('Task level')
-    axis[1].set_xticklabels(['easy', 'normal', 'hard'])
+    axis[1].set_xlabel('N-back Task')
+    axis[1].set_xticklabels(['1-back', '2-back', '3-back'])
     
     # plt.suptitle('Survey Data', fontweight = 'bold', fontsize=18)
     
@@ -992,8 +1002,8 @@ def accuracy_box_plot(data: list[StorageData]):
     
     axis.boxplot([np.array(easy_accuracy), np.array(normal_accuracy), np.array(hard_accuracy)])
     axis.set_ylabel('Accuracy rate (scale 0-1)')
-    axis.set_xlabel('Task level')
-    axis.set_xticklabels(['easy', 'normal', 'hard'])
+    axis.set_xlabel('N-back Task')
+    axis.set_xticklabels(['1-back', '2-back', '3-back'])
     
     # plt.suptitle('Accuracy rate', fontweight = 'bold', fontsize=18)
         
@@ -1028,8 +1038,8 @@ def omission_box_plot(data: list[StorageData]):
     
     axis.boxplot([np.array(easy_ommision), np.array(normal_ommision), np.array(hard_omission)])
     axis.set_ylabel('Number of ommision')
-    axis.set_xlabel('Task level')
-    axis.set_xticklabels(['easy', 'normal', 'hard'])
+    axis.set_xlabel('N-back Task')
+    axis.set_xticklabels(['1-back', '2-back', '3-back'])
     
     # plt.suptitle('Omission', fontweight = 'bold', fontsize=18)
         
@@ -1066,8 +1076,8 @@ def reaction_time_box_plot(data: list[StorageData]):
     
     axis.boxplot([np.array(easy_reaction_time), np.array(normal_reaction_time), np.array(hard_reaction_time)])
     axis.set_ylabel('reaction time (s)')
-    axis.set_xlabel('Task level')
-    axis.set_xticklabels(['easy', 'normal', 'hard'])
+    axis.set_xlabel('N-back Task')
+    axis.set_xticklabels(['1-back', '2-back', '3-back'])
     
     # plt.suptitle('Reaction time', fontweight = 'bold', fontsize=18)
         
@@ -1091,12 +1101,31 @@ if data:
     # apply the configuration step on the data
     for storageData in data: configure_storageData(storageData)
     
-    # analyze the median of the data from each candidate and save into csv file
-    analyze_median(data)
+    # # analyze the median of the data from each candidate and save into csv file
+    # analyze_median(data)
     
-    # calculate the grand average of the pupil size and respiratory rate
+    # # calculate the grand average of the pupil size and respiratory rate
     grand_average_pupil_signal = grand_average_signal(ExperimentDataType.PUPIL, data)
     grand_average_rr_signal = grand_average_signal(ExperimentDataType.RR, data)
+    
+    # # remove outliers from the grand average signal (respiratory rate)
+    # grand_average_rr_signal.easy = normalized_outliers(grand_average_rr_signal.easy)[0]
+    # grand_average_rr_signal.normal = normalized_outliers(grand_average_rr_signal.normal)[0]
+    # grand_average_rr_signal.hard = normalized_outliers(grand_average_rr_signal.hard)[0]
+    
+    # # remove outliers from the grand average signal (pupil size)
+    # grand_average_pupil_signal.easy = normalized_outliers(grand_average_pupil_signal.easy)[0]
+    # grand_average_pupil_signal.normal = normalized_outliers(grand_average_pupil_signal.normal)[0]
+    # grand_average_pupil_signal.hard = normalized_outliers(grand_average_pupil_signal.hard)[0]
+    
+    # # draw the individual plots
+    for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
+    
+    # # draw the grand average plot
+    # generate_grand_average_plot(grand_average_pupil_signal, grand_average_rr_signal)
+    
+    # # create the grand average table and boxplot
+    # grand_avg_box_plot([grand_average_pupil_signal, grand_average_rr_signal])
     
     # create the box plot for the survey data
     survey_box_plot(data)
@@ -1109,25 +1138,6 @@ if data:
     
     # create the box plot for the reaction time
     reaction_time_box_plot(data)
-    
-    # remove outliers from the grand average signal (respiratory rate)
-    grand_average_rr_signal.easy = normalized_outliers(grand_average_rr_signal.easy)[0]
-    grand_average_rr_signal.normal = normalized_outliers(grand_average_rr_signal.normal)[0]
-    grand_average_rr_signal.hard = normalized_outliers(grand_average_rr_signal.hard)[0]
-    
-    # remove outliers from the grand average signal (pupil size)
-    grand_average_pupil_signal.easy = normalized_outliers(grand_average_pupil_signal.easy)[0]
-    grand_average_pupil_signal.normal = normalized_outliers(grand_average_pupil_signal.normal)[0]
-    grand_average_pupil_signal.hard = normalized_outliers(grand_average_pupil_signal.hard)[0]
-    
-    # draw the individual plots
-    for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
-    
-    # draw the grand average plot
-    generate_grand_average_plot(grand_average_pupil_signal, grand_average_rr_signal)
-    
-    # create the grand average table and boxplot
-    grand_avg_box_plot([grand_average_pupil_signal, grand_average_rr_signal])
     
     #create the mean box plot of respiratory rate and pupil size
     mean_box_plot_rr(data)
