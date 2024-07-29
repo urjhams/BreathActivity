@@ -583,9 +583,11 @@ def analyze_median(storagesData: List[StorageData]):
     
     headers = ['Name', 'Age', 'Gender', 'Easy', 'Normal', 'Hard']
     
+    # number = 1
+    
     for data in storagesData:
         print(f'🙆🏻 analyzing data from {data.userData.name}')
-        
+        # name = 'Candidate ' + str(number)
         pupil_data = [data.userData.name, data.userData.age, data.userData.gender, 'x', 'x', 'x']
         rr_data = [data.userData.name, data.userData.age, data.userData.gender, 'x', 'x', 'x']
         
@@ -596,6 +598,8 @@ def analyze_median(storagesData: List[StorageData]):
         rating_data_difficulty = [data.userData.name, data.userData.age, data.userData.gender, 'x', 'x', 'x']
         
         rating_data_stressful = [data.userData.name, data.userData.age, data.userData.gender, 'x', 'x', 'x']
+        
+        # number += 1
         
         for stage in data.data:
             configured_rr = stage.serialData.respiratoryRates
@@ -1096,7 +1100,7 @@ data = readJsonFilesFromFolder(folderPath)
 if data:
     
     # # analyze the median of the data from each candidate and save into csv file
-    # analyze_median(data)
+    analyze_median(data)
     
     # apply the configuration step on the data
     for storageData in data: configure_storageData(storageData)
@@ -1109,14 +1113,14 @@ if data:
     grand_average_rr_signal = grand_average_signal(ExperimentDataType.RR, data)
     
     # # remove outliers from the grand average signal (respiratory rate)
-    # grand_average_rr_signal.easy = normalized_outliers(grand_average_rr_signal.easy)[0]
-    # grand_average_rr_signal.normal = normalized_outliers(grand_average_rr_signal.normal)[0]
-    # grand_average_rr_signal.hard = normalized_outliers(grand_average_rr_signal.hard)[0]
+    grand_average_rr_signal.easy = normalized_outliers(grand_average_rr_signal.easy)[0]
+    grand_average_rr_signal.normal = normalized_outliers(grand_average_rr_signal.normal)[0]
+    grand_average_rr_signal.hard = normalized_outliers(grand_average_rr_signal.hard)[0]
     
     # # remove outliers from the grand average signal (pupil size)
-    # grand_average_pupil_signal.easy = normalized_outliers(grand_average_pupil_signal.easy)[0]
-    # grand_average_pupil_signal.normal = normalized_outliers(grand_average_pupil_signal.normal)[0]
-    # grand_average_pupil_signal.hard = normalized_outliers(grand_average_pupil_signal.hard)[0]
+    grand_average_pupil_signal.easy = normalized_outliers(grand_average_pupil_signal.easy)[0]
+    grand_average_pupil_signal.normal = normalized_outliers(grand_average_pupil_signal.normal)[0]
+    grand_average_pupil_signal.hard = normalized_outliers(grand_average_pupil_signal.hard)[0]
     
     # # draw the individual plots
     for storageData in data: generate_plot(storageData, grand_average_pupil_signal, grand_average_rr_signal)
